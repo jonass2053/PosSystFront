@@ -1,0 +1,70 @@
+
+<div class="containerConfiguraciones">
+
+    <div class="containerInter">
+      <div class="titulo">
+        <div class="containerIcoText">
+          <mat-icon>group_add</mat-icon> Mantenimiento de los prodcutos
+        </div>
+  
+        <a [routerLink]="['/layout/configuraciones']">
+          <div class="containerIcoText"><mat-icon>arrow_back</mat-icon>Retroceder</div>
+        </a>
+      </div>
+
+
+
+
+      
+    </div>
+
+    <div class="container-fluid" >
+
+      <div class="row">
+        <div class="col-lg-8 col-md-6 col-sm-12 cardProduct">
+          <div class="cardProductItem"></div>
+        </div>
+  
+        <div class="col-lg-4 col-md-6 col-sm-12 cardProduct">
+          <div class="cardProductItem">
+         
+            <input type="file" class="file" id="uploadBtn">
+            <label for="uploadBtn" class="file"><i class="bi bi-card-image iconImg"></i> <section> Seleccionar imagen del producto</section></label>
+            <div class="file">
+             <h3 style="text-align: center;">Nombre del producto <br>RD$50.00</h3>
+          
+              <mat-form-field appearance="outline" class="">
+                <mat-label>Categoria</mat-label>
+                <mat-select formControlName="tipoIdentificacion">      
+                   <mat-option  *ngFor="let tipo of tipoIdentificacion" 
+                     [value]="tipo.nombre">{{tipo.nombre}}</mat-option> 
+                </mat-select>
+  
+              </mat-form-field>
+            
+            </div>
+          </div>
+        </div>
+  
+      </div>
+  
+
+  
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+

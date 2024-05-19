@@ -1,0 +1,65 @@
+.cardProduct
+{
+    /* border: 1px solid silver; */
+    height: 500px; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.cardProductItem
+{
+    border: 1px solid silver;
+    height: 92%; 
+    width: 99.5%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.cardProductItem input
+{
+   border: non;
+}
+.file
+{
+    width: 80%;
+    height: 45%;
+    border: 1px solid silver;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+input[type="file"]{
+    display: none;
+}
+
+label{
+    display: flex;
+    color: #fff;
+    background-color: rgb(236, 236, 236);
+    text-align: center;
+    padding: 15px 40px;
+    font-size: 10px;
+    letter-spacing : 1.5px;
+    user-select: none;
+    cursor: pointer;
+
+    border-radius: 3px;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    transition: 0.5s ease all;
+    color: silver;
+
+}
+label:active
+{
+    transform: scale(0.9);
+}
+.iconImg
+{
+    font-size: 25px;
+    margin-bottom: 5px;
+  
+}

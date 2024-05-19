@@ -7,6 +7,7 @@ import { ClientesProveedoresComponent } from "./components/clientes-proveedores/
 import { CategoriaPComponent } from "./components/categoria-p/categoria-p.component";
 import { AlmacenService } from "../../services/almacen.service";
 import { AlmacenComponent } from "./components/almacen/almacen.component";
+import { ProductoComponent } from "./components/producto/producto.component";
 
 
 
@@ -17,7 +18,8 @@ export const routes : Routes=[
         {path : "empresa", component : EmpresaComponent},
         {path : "clientesproveedores", component : ClientesProveedoresComponent},
         {path : "categoria", component : CategoriaPComponent},
-        {path : 'almacen', component : AlmacenComponent}
+        {path : 'almacen', component : AlmacenComponent},
+        {path : 'productos', component : ProductoComponent}
       
        
     ],    
