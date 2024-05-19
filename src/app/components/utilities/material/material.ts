@@ -1,0 +1,77 @@
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { ReactiveFormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+import {MatSelectModule} from '@angular/material/select';
+import { HttpClientModule } from '@angular/common/http';
+import {MatRadioModule} from '@angular/material/radio';
+import { MatMenuModule } from '@angular/material/menu';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {MatCardModule} from '@angular/material/card';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
+
+
+
+
+
+
+
+
+
+ export const  material : any =[
+  MatFormFieldModule,
+  CommonModule,
+  MatIconModule,
+  MatInputModule,
+  MatFormFieldModule,
+  ReactiveFormsModule,
+  CommonModule,
+  RouterLink,
+  MatFormFieldModule,
+  MatInputModule,
+  MatSelectModule,
+  MatRadioModule,
+  MatMenuModule,
+  MatSlideToggleModule,
+  MatCardModule,
+  MatDatepickerModule,
+  
+
+]
+
+export const  importaciones : any =[
+  RouterLink,
+  ReactiveFormsModule,
+  CommonModule,
+  HttpClientModule,
+  MatFormFieldModule,
+  CommonModule,
+  MatIconModule,
+  MatInputModule,
+  MatFormFieldModule,
+  ReactiveFormsModule,
+  CommonModule,
+  RouterLink,
+  MatFormFieldModule,
+  MatInputModule,
+  MatSelectModule,
+  MatRadioModule,
+  MatMenuModule,
+  MatSlideToggleModule,
+  MatCardModule,
+  MatDatepickerModule,
+  MatTooltipModule,
+  NgxMaskDirective,
+  NgxMaskPipe
+
+  
+]
+
+
+
+

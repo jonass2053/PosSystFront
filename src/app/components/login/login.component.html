@@ -1,0 +1,41 @@
+<div class="wrapper">
+    <div class="container main">
+        <div class="row">
+            <div class="col-md-6 side-image">
+                       
+                <!-------------      image     ------------->
+                
+                <img src="../../../assets/icono.png" alt="">
+                <div class="text">
+                    <p>“No ahorres lo que queda después de gastar, sino gasta lo que queda después de ahorrar.” <i>- Warren Buffett</i></p>
+                </div>
+                
+            </div>
+            <div class="col-md-6 right">
+                
+                <div class="input-box">
+                   
+                   <header>Login</header>
+                   <form  [formGroup]="miFormulario" (ngSubmit)="login()">
+                   <div class="input-field">
+                        <input type="text" formControlName="correo" class="input" id="email" required autocomplete="off">
+                        <label for="email">Email</label> 
+                    </div> 
+                   <div class="input-field">
+                        <input type="password" formControlName="contrasena" class="input" id="pass" required>
+                        <label for="pass">Password</label>  
+                    </div> 
+                   <div class="input-field">
+                        
+                        <input type="submit"  class="submit" value="Sign Up">
+                   </div> 
+                </form>
+                   <div class="signin">
+                    <span *ngIf="alerta" class="text-danger" >{{mensaje}}</span> <br>
+                    <span>Already have an account? <a href="#">Log in here</a></span>
+                   </div>
+                </div>  
+            </div>
+        </div>
+    </div>
+</div>

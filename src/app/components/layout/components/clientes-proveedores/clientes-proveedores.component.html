@@ -1,0 +1,280 @@
+<div class="containerConfiguraciones">
+
+    <div class="containerInter">
+      <div class="titulo">
+        <div class="containerIcoText">
+          <mat-icon>group_add</mat-icon> Mantenimiento de los contactos
+        </div>
+  
+        <a [routerLink]="['/layout/configuraciones']">
+          <div class="containerIcoText"><mat-icon>arrow_back</mat-icon>Retroceder</div>
+        </a>
+      </div>
+  
+      <hr>
+  
+      <div class="formularioCard">
+        <p style="font-size: small;">Crea un contacto de tipo proveedor o clientes a los cuales le puedes asignar las operaciones del sistema. </p>
+       <div>
+        <input type="button" value=" + Nuevo" data-toggle="modal" data-target="#exampleModal" class="btnGuardar">
+        <div style="display: flex; justify-content: space-between;">
+        <mat-radio-group aria-label="Select an option">
+          <mat-radio-button value="0" (click)="filterContact(0)">Todos</mat-radio-button>
+          <mat-radio-button  *ngFor="let tipo of dataListTipoContacto" [value]="tipo.idTipoContacto" (click)="filterContact(tipo.idTipoContacto)" >{{tipo.nombre}}</mat-radio-button>
+        </mat-radio-group> 
+
+        <mat-form-field appearance="outline">
+          <mat-label>Buscar</mat-label>
+          <input matInput (keyup)="getAllFilter($event)" placeholder="buscar">
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+
+        
+        </div>
+         
+
+       </div> 
+
+       
+       
+  
+        <div class="col-md-12 col-sm-12 col-xs-12">
+          <table class="table table-hover control">
+            <thead class="con">
+              <tr>
+                <th scope="col">Nombre/ Razón Social</th>
+                <th scope="col">Identificación</th>
+                <th scope="col">Telefono</th>
+                <th scope="col" class="accionesTitle">Acciones</th>
+                <th class="cargandoTableIcono" *ngIf="cargando"><div class="loaderTable"></div></th> 
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let contacto of dataList">
+                <td>{{contacto.nombreRazonSocial}}</td>
+                <td>{{contacto.rnc}}</td>
+                <td>{{contacto.telefono1}}</td>
+                <td class="acciones">
+                  <button class="btnaccion" (click)="editar(contacto)" data-toggle="modal" data-target="#exampleModal"><mat-icon data-toggle="modal">edit</mat-icon>Editar</button> 
+                  <button class="btnaccion" (click)="delete(contacto.idContacto)" data-target="#exampleModal"><mat-icon data-toggle="modal">delete</mat-icon>Eliminar</button> 
+              </tr>
+              <tr class="sinRegistros" *ngIf="sinRegistros">
+                
+                <td>{{sinRegistrosTxt}}</td>
+              </tr>
+            </tbody>  
+          </table> 
+          <!-- <table class="table table-hover">
+            <thead class="con">
+              <tr>
+                <th scope="col">Nombre</th>
+                <th scope="col">Predeterminada</th>
+                <th scope="col" class="d-sm-none d-md-block d-lg-block d-xl-block">Fecha de vencimiento</th>
+                <th scope="col">Prefijo</th>
+                <th scope="col" class="d-none d-sm-none d-md-block d-lg-block d-xl-block">Numeración siguiente</th>
+                <th scope="col" class="accionesTitle">Acciones</th>
+                <th class="cargandoTableIcono" *ngIf="cargando">
+                  <div class="loaderTable"></div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let nuemracion of dataList">
+                <td>{{nuemracion.nombre}}</td>
+                <td *ngIf="nuemracion.predeterminada">Si</td>
+                <td *ngIf="nuemracion.predeterminada==false">No</td>
+                <td class="d-sm-none d-md-block d-lg-block d-xl-block">{{nuemracion.vigencia | date: 'dd/mm/yyyy'}}</td>
+                <td>{{nuemracion.nombre}}</td>
+                <td class="d-none d-sm-none d-md-block d-lg-block d-xl-block">{{nuemracion.nuemracionSiguiente}}</td>
+                <td class="acciones">
+                  <button class="btnaccion" (click)="editar(nuemracion)" data-toggle="modal"
+                    data-target="#exampleModal"><mat-icon data-toggle="modal">edit</mat-icon>Editar</button>
+                  <button class="btnaccion" (click)="delete(nuemracion.idNumeracion)"
+                    data-target="#exampleModal"><mat-icon data-toggle="modal">delete</mat-icon>Eliminar</button>
+                </td>
+              </tr>
+              <tr class="sinRegistros" *ngIf="sinRegistros">
+                <td>{{sinRegistrosTxt}}</td>
+              </tr>
+            </tbody>
+          </table> -->
+        </div>
+      </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+      aria-hidden="true" data-backdrop="static">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title" id="exampleModalLabel">Contacto</h2>
+            <mat-icon (click)="resetForm()" data-dismiss="modal">close</mat-icon>
+            <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button> -->
+          </div>
+          <div class="modal-body">
+  
+  
+            <div class="control">
+  
+              <form class="formulario" [formGroup]="miFormulario" (ngSubmit)="save()">
+                <div class="container">
+                  <div class="row">
+                    <!-- <mat-slide-toggle 
+                    class="example-margin"
+                    [color]="color"
+                    [checked]="checked">
+                    
+                  Seleccionar como predeterminada
+                </mat-slide-toggle> -->
+                    <div class="col-md-6 col-sm-12 col-xs-12">
+                      <mat-form-field appearance="outline" class="control">
+                        <mat-label>Tipo de contacto</mat-label>
+                        <mat-select formControlName="idTipoContacto">
+                          <mat-option *ngFor="let tipo of dataListTipoContacto"
+                             [value]='tipo.idTipoContacto'>{{tipo.nombre}}</mat-option>
+                        </mat-select>
+                        <mat-hint align="end">Este campo es obligatorio</mat-hint>
+                      </mat-form-field>
+                    </div>
+  
+                    <div class="col-md-6 col-sm-12 col-xs-12">
+                      <mat-form-field appearance="outline" class="control">
+                        <mat-label>Tipo de identificación</mat-label>
+                        <mat-select formControlName="tipoIdentificacion">      
+                           <mat-option  *ngFor="let tipo of tipoIdentificacion" 
+                             [value]="tipo.nombre">{{tipo.nombre}}</mat-option> 
+                        </mat-select>
+                        <mat-hint align="end">Este campo es obligatorio</mat-hint>
+                      </mat-form-field>
+                    </div>
+              
+               
+                    <div>
+  
+                      <div class="row">
+                        <div class="col-md-6 col-sm-12 col-xs-12">
+                          <mat-form-field appearance="outline" class="example-full-width control">
+                            <mat-label>RNC o cedula</mat-label>
+                            <input type="text" matInput #message minlength="3" class="control" formControlName="rnc"
+                              placeholder="Escriba la identificacion del cliente">
+                          </mat-form-field>
+                        </div>
+                      </div>
+
+                      <div class="col-md-12 col-sm-12 col-xs-12">
+                        <mat-form-field appearance="outline" class="example-full-width control">
+                          <mat-label>Nombre/ Razón social</mat-label>
+                          <input type="text" matInput #message minlength="3" class="control" formControlName="nombreRazonSocial"
+                            placeholder="Escriba la identificacion del cliente">
+                        </mat-form-field>
+                      </div>
+                      <div class="col-md-12 col-sm-12 col-xs-12">
+                        <mat-form-field class="example-full-width control" appearance="outline">
+                          <mat-label>Dirección</mat-label>
+                          <textarea matInput placeholder="Escribe la dirección del cliente" formControlName="direccion"></textarea>
+                        </mat-form-field>
+                      </div>
+                     
+                      
+                  
+                      <div class="row">
+                        <div class="col-md-6 col-sm-12 col-xs-12">
+                          <mat-form-field appearance="outline" class="example-full-width control">
+                            <mat-label>correo</mat-label>
+                            <input type="text" matInput #message minlength="3" class="control" formControlName="correo"
+                              placeholder="Escriba el correo del cliente">
+                          </mat-form-field>
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-6">
+                          <mat-form-field appearance="outline" class="example-full-width control">
+                            <mat-label>Celular</mat-label>
+                            <input type="tel" matInput  class="control" formControlName="celular"  mask="(000) 000-0000"
+                              placeholder="(000) 000-0000">
+                          </mat-form-field>
+                        </div>
+
+                        <div class="col-md-6 col-sm-6 col-xs-6">
+                          <mat-form-field appearance="outline" class="example-full-width control">
+                            <mat-label>Telefono 1</mat-label>
+                            <input type="tel" matInput  class="control" formControlName="telefono1"  mask="(000) 000-0000"
+                              placeholder="(000) 000-0000">
+                          </mat-form-field>
+                        </div>
+
+                        <div class="col-md-6 col-sm-6 col-xs-6">
+                          <mat-form-field appearance="outline" class="example-full-width control">
+                            <mat-label>Telefono 2</mat-label>
+                            <input type="tel" matInput  class="control" formControlName="telefono2"  mask="(000) 000-0000"
+                              placeholder="(000) 000-0000">
+                          </mat-form-field>
+                        </div>
+                        <div class="col-md-6 col-sm-12 col-xs-12">
+                          <mat-form-field appearance="outline" class="control">
+                            <mat-label>Tipo de NCF</mat-label>
+                            <mat-select formControlName="idTipoNumeracion">      
+                               <mat-option  *ngFor="let tipo of dataListTipoNumeracion" 
+                                 [value]="tipo.idNumeracion">{{tipo.nombre}}</mat-option> 
+                            </mat-select>
+                            <mat-hint align="end">Este campo es obligatorio</mat-hint>
+                          </mat-form-field>
+                        </div>
+
+                        <div class="col-md-6 col-sm-6 col-xs-6">
+                          <mat-form-field appearance="outline" class="example-full-width control">
+                            <mat-label>Limite de credito</mat-label>
+                            <input type="number" matInput  class="control" formControlName="limiteCredito" 
+                              placeholder="Escriba el limite de credito">
+                          </mat-form-field>
+                        </div>
+                  
+                        <div class="col-md-6 col-sm-12 col-xs-12">
+                          <mat-form-field appearance="outline" class="control">
+                            <mat-label>Plazo de pago</mat-label>
+                            <mat-select formControlName="idTermino">      
+                               <mat-option  *ngFor="let termino of dataListTerminos" 
+                                 [value]="termino.idTermino">{{termino.nombre}}</mat-option> 
+                            </mat-select>
+                            <mat-hint align="end">Este campo es obligatorio</mat-hint>
+                          </mat-form-field>
+                        </div>
+
+                        <div class="col-md-6 col-sm-12 col-xs-12">
+                          <mat-form-field appearance="outline" class="control">
+                            <mat-label>Vendedor</mat-label>
+                            <mat-select formControlName="idVendedor">      
+                               <mat-option  *ngFor="let Vendedor of dataListVendedor" 
+                                 [value]="Vendedor.idVendedor">{{Vendedor.nombre}}</mat-option> 
+                            </mat-select>
+                            <mat-hint align="end">Este campo es obligatorio</mat-hint>
+                          </mat-form-field>
+                        </div>
+
+                     
+                      </div>
+                 
+                      
+                      
+  
+                      <!-- <mat-radio-group aria-label="Select an option">
+                        <mat-radio-button formControlName="estado" value="1">Activo</mat-radio-button>
+                        <mat-radio-button formControlName="estado" value="0">Inactivo</mat-radio-button>
+                      </mat-radio-group> -->
+  
+  
+  
+                    </div>
+  
+                  </div>
+  
+                </div>
+                <div class="modal-footer">
+                  <input type="button" (click)="resetForm()" data-dismiss="modal" class="btnCancelar" value="Cancelar">
+                  <input type="submit" class="btnGuardar" value="Guardar">
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>

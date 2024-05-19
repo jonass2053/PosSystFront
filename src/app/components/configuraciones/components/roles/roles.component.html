@@ -1,0 +1,106 @@
+
+  
+    <div class="containerInter">
+      <div class="titulo">
+        <div class="containerIcoText">
+          <mat-icon>person</mat-icon> Mantenimiento de roles
+        </div>
+        <a [routerLink]="['/layout/configuraciones']">
+          <div class="containerIcoText"><mat-icon>arrow_back</mat-icon>Retroceder</div>
+        </a>
+      </div>
+
+        <hr>
+        <div class="formularioCard">
+            <input type="button" value=" + Nuevo Rol"  data-toggle="modal" data-target="#exampleModal" class="btnGuardar">
+    
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                          <table class="table table-hover control">
+                            <thead class="con">
+                              <tr>
+                                <th scope="col">Cod</th>
+                                <th scope="col">Nombre</th>
+                                <th scope="col" class="accionesTitle">Acciones</th>
+                                <th class="cargandoTableIcono" *ngIf="cargando"><div class="loaderTable"></div></th> 
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let role of dataList">
+                                <th scope="row">{{role.idRol}}</th>
+                                <td>{{role.nombre}}</td>
+                                <td class="acciones">
+                                  <button class="btnaccion" (click)="editar(role)" data-toggle="modal" data-target="#exampleModal"><mat-icon data-toggle="modal">edit</mat-icon>Editar</button> 
+                                  <button class="btnaccion" (click)="delete(role.idRol!)" data-target="#exampleModal"><mat-icon data-toggle="modal">delete</mat-icon>Eliminar</button> 
+                              </tr>
+                              <tr class="sinRegistros" *ngIf="sinRegistros">
+                                <th>No se encontraron registros...</th>
+                                
+                               
+                              </tr>
+
+                          
+                                
+                             
+                            </tbody>  
+                          </table>  
+
+
+
+
+
+
+                          
+                      </div>
+                    </div>
+                </div>
+            
+                
+                <!-- Modal -->
+  <div class="modal fade" id="exampleModal"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="exampleModalLabel">Rol</h2>
+          <mat-icon data-dismiss="modal">close</mat-icon>
+          <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button> -->
+        </div>
+        <div class="modal-body">
+          
+                
+      <div class="control">
+          
+        <form class="formulario" [formGroup]="miFormulario" (ngSubmit)="save()">
+            <div class="container">
+                <div class="row">
+                  
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+
+                            <mat-form-field class="example-full-width control" appearance="outline">
+                              <mat-label>Nombre</mat-label>
+                              <input matInput #message maxlength="256" class="control" placeholder="Escriba nombre" formControlName="nombre">
+                              <!-- <mat-hint align="start"><strong>Don't disclose personal info</strong> </mat-hint>
+                              <mat-hint align="end">{{message.value.length}} / 256</mat-hint> -->
+                            </mat-form-field>
+                          
+                    </div>
+                  
+                </div>
+             
+            </div>
+        <div class="modal-footer">
+          <input type="button"  data-dismiss="Modal" class="btnCancelar" (click)="resetForm()" value="Cancelar">
+          <input type="submit"  class="btnGuardar" value="Guardar">
+        </div>
+      </form>
+      </div>
+    </div>
+  </div>
+
+    
+  
+  
+  
+  
+  

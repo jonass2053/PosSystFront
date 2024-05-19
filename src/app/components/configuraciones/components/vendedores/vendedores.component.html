@@ -1,0 +1,109 @@
+<div class="containerConfiguraciones">
+
+  <div class="containerInter">
+    <div class="titulo">
+      <div class="containerIcoText">
+        <mat-icon>groups</mat-icon> Mantenimiento de vendedores
+      </div>
+
+      <a [routerLink]="['/layout/configuraciones']">
+        <div class="containerIcoText"><mat-icon>arrow_back</mat-icon>Retroceder</div>
+      </a>
+    </div>
+
+
+    <hr>
+    <div class="formularioCard">
+
+      <input type="button" value=" + Agregar" data-toggle="modal" data-target="#exampleModal" class="btnGuardar mb-3">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <table class="table table-hover control">
+          <thead class="con">
+            <tr>
+              <th scope="col">Nombre</th>
+              <th scope="col">Rnc</th>
+              <th scope="col">Observaciones</th>
+              <th scope="col" class="accionesTitle">Acciones</th>
+              <th class="cargandoTableIcono" *ngIf="cargando">
+                <div class="loaderTable"></div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let vendedor of dataList">
+              <th scope="row">{{vendedor.nombre}}</th>
+              <td>{{vendedor.rnc}}</td>
+              <td>{{vendedor.observaciones}}</td>
+              <td class="acciones">
+                <button class="btnaccion" (click)="editar(vendedor)" data-toggle="modal"
+                  data-target="#exampleModal"><mat-icon data-toggle="modal">edit</mat-icon>Editar</button>
+                <button class="btnaccion" (click)="delete(vendedor.idVendedor!)" data-target="#exampleModal"><mat-icon
+                    data-toggle="modal">delete</mat-icon>Eliminar</button>
+            </tr>
+            <tr class="sinRegistros" *ngIf="sinRegistros">
+
+              <td>{{sinRegistrosTxt}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+ 
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="exampleModalLabel">Vendedores</h2>
+          <mat-icon data-dismiss="modal">close</mat-icon>
+          <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button> -->
+        </div>
+        <div class="modal-body">
+
+
+          <div class="control">
+
+            <form class="formulario" [formGroup]="miFormulario" (ngSubmit)="save()">
+              <div class="container">
+                <div class="row">
+                  <div>
+                    <div class="row">
+                      <div class="col-md-12 col-sm-12 col-xs-12">
+                        <mat-form-field appearance="outline" class="example-full-width control">
+                          <mat-label>Nombre</mat-label>
+                          <input type="text" matInput #message minlength="3" class="control"
+                            placeholder="Escriba el nombre del vendedor" formControlName="nombre">
+                        </mat-form-field>
+                      </div>
+                      <div class="col-md-12 col-sm-12 col-xs-12">
+                        <mat-form-field appearance="outline" class="example-full-width control">
+                          <mat-label>Rnc</mat-label>
+                          <input type="text" matInput #message minlength="3" class="control"
+                            placeholder="Escriba el rnc del vendedor" formControlName="rnc">
+                        </mat-form-field>
+                      </div>
+                      <div class="col-md-12 col-sm-12 col-xs-12">
+                        <mat-form-field appearance="outline" class="example-full-width control">
+                          <mat-label>Observaciones</mat-label>
+                          <input type="text" matInput #message minlength="3" class="control"
+                            placeholder="Escriba una nota que quisiera recordar" formControlName="observaciones">
+                        </mat-form-field>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <input type="button" (click)="resetForm()" data-dismiss="modal" class="btnCancelar" value="Cancelar">
+                <input type="submit" class="btnGuardar" value="Guardar">
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>

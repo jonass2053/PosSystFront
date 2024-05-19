@@ -1,0 +1,244 @@
+<div class="containerConfiguraciones">
+
+  <div class="containerInter">
+    <div class="titulo">
+      <div class="containerIcoText">
+        <mat-icon>format_list_numbered_rtl</mat-icon> Mantenimiento de numeraciones
+      </div>
+
+      <a [routerLink]="['/layout/configuraciones']">
+        <div class="containerIcoText"><mat-icon>arrow_back</mat-icon>Retroceder</div>
+      </a>
+    </div>
+
+    <hr>
+
+    <div class="formularioCard">
+      <p style="font-size: small;">Crea una numeración para organizar y tener el control de tus comprobantes</p>
+      <input type="button" value=" + Nuevo" data-toggle="modal" data-target="#exampleModal" class="btnGuardar">
+
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <table class="table table-hover control">
+          <thead class="con">
+            <tr>
+              <th scope="col">Nombre</th>
+              <th scope="col">Prefijo</th>
+              <th scope="col">Num. inicial</th>
+              <th scope="col">Predeterminada</th>
+              <th scope="col">Estado</th>
+              <th scope="col" class="accionesTitle">Acciones</th>
+              <th class="cargandoTableIcono" *ngIf="cargando"><div class="loaderTable"></div></th> 
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let numeracion of dataList">
+              <td>{{numeracion.nombre}}</td>
+              <td>{{numeracion.prefijo}}</td>
+              <td>{{numeracion.numeracionInicial}}</td>
+              <td>
+                <mat-slide-toggle 
+                (click)="setNumberDefault(numeracion.idNumeracion)"
+
+                class="example-margin-details"
+                [color]="color"
+                [checked]="numeracion.predeterminada">
+                
+               </mat-slide-toggle>
+              
+              
+              </td>
+              <td>
+                <mat-slide-toggle 
+                (click)="updateStatus(numeracion.idNumeracion, numeracion.estado==true? false : true)"
+                class="example-margin-details"
+                [color]="color"
+                [checked]="numeracion.estado">
+               </mat-slide-toggle>
+             
+
+
+
+
+              </td>
+              <td class="acciones">
+                <button class="btnaccion" (click)="editar(numeracion)" data-toggle="modal" data-target="#exampleModal"><mat-icon data-toggle="modal">edit</mat-icon>Editar</button> 
+                <button class="btnaccion" (click)="delete(numeracion.idNumeracion)" data-target="#exampleModal"><mat-icon data-toggle="modal">delete</mat-icon>Eliminar</button> 
+            </tr>
+            <tr class="sinRegistros" *ngIf="sinRegistros">
+              
+              <td>{{sinRegistrosTxt}}</td>
+            </tr>
+          </tbody>  
+        </table> 
+        <!-- <table class="table table-hover">
+          <thead class="con">
+            <tr>
+              <th scope="col">Nombre</th>
+              <th scope="col">Predeterminada</th>
+              <th scope="col" class="d-sm-none d-md-block d-lg-block d-xl-block">Fecha de vencimiento</th>
+              <th scope="col">Prefijo</th>
+              <th scope="col" class="d-none d-sm-none d-md-block d-lg-block d-xl-block">Numeración siguiente</th>
+              <th scope="col" class="accionesTitle">Acciones</th>
+              <th class="cargandoTableIcono" *ngIf="cargando">
+                <div class="loaderTable"></div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let nuemracion of dataList">
+              <td>{{nuemracion.nombre}}</td>
+              <td *ngIf="nuemracion.predeterminada">Si</td>
+              <td *ngIf="nuemracion.predeterminada==false">No</td>
+              <td class="d-sm-none d-md-block d-lg-block d-xl-block">{{nuemracion.vigencia | date: 'dd/mm/yyyy'}}</td>
+              <td>{{nuemracion.nombre}}</td>
+              <td class="d-none d-sm-none d-md-block d-lg-block d-xl-block">{{nuemracion.nuemracionSiguiente}}</td>
+              <td class="acciones">
+                <button class="btnaccion" (click)="editar(nuemracion)" data-toggle="modal"
+                  data-target="#exampleModal"><mat-icon data-toggle="modal">edit</mat-icon>Editar</button>
+                <button class="btnaccion" (click)="delete(nuemracion.idNumeracion)"
+                  data-target="#exampleModal"><mat-icon data-toggle="modal">delete</mat-icon>Eliminar</button>
+              </td>
+            </tr>
+            <tr class="sinRegistros" *ngIf="sinRegistros">
+              <td>{{sinRegistrosTxt}}</td>
+            </tr>
+          </tbody>
+        </table> -->
+      </div>
+    </div>
+  </div>
+  <!-- Modal -->
+  <div class="modal fade fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="exampleModalLabel">Numeraciones</h2>
+          <mat-icon (click)="resetForm()" data-dismiss="modal">close</mat-icon>
+          <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button> -->
+        </div>
+        <div class="modal-body">
+
+
+          <div class="control">
+
+            <form class="formulario" [formGroup]="miFormulario" (ngSubmit)="save()">
+              <div class="container">
+                <div class="row">
+                  <mat-slide-toggle formControlName="predeterminada"
+                  class="example-margin"
+                  [color]="color"
+                  [checked]="checked">
+                  
+                Seleccionar como predeterminada
+              </mat-slide-toggle>
+                  <div class="col-md-6 col-sm-12 col-xs-12">
+                    <mat-form-field appearance="outline" class="control">
+                      <mat-label>Tipo de documento</mat-label>
+                      <mat-select formControlName="idTipoDocumento">
+                        <!-- <mat-option>Clear</mat-option> -->
+                        <mat-option (click)="cargarTipoNumeracion(tipo.idTipoDocumento)" *ngFor="let tipo of dataListTipoDocumentos"
+                          [value]='tipo.idTipoDocumento'>{{tipo.nombre}}</mat-option>
+                      </mat-select>
+                      <mat-hint align="end">Este campo es obligatorio</mat-hint>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="col-md-6 col-sm-12 col-xs-12">
+                    <mat-form-field appearance="outline" class="control">
+                      <mat-label>Tipo de numeración</mat-label>
+                      <mat-select formControlName="idTipoNumeracion">
+                        <!-- <mat-option>Clear</mat-option> -->
+                        <mat-option (click)="seleccionarTipoNumeracion(tipo)"  *ngFor="let tipo of dataListTipoNumeracion"
+                          [value]="tipo.idTipoNumeracion">{{tipo.nombre}}</mat-option>
+                      </mat-select>
+                      <mat-hint align="end">Este campo es obligatorio</mat-hint>
+                    </mat-form-field>
+                  </div>
+            
+             
+                  <div>
+
+
+
+                    <div class="row">
+                      <div class="col-md-6 col-sm-12 col-xs-12">
+                        <mat-form-field appearance="outline" class="example-full-width control">
+                          <mat-label>Nombre</mat-label>
+                          <input type="text" matInput #message minlength="3" class="control"
+                            placeholder="Escriba el nombre de la numeración" formControlName="nombre">
+                        </mat-form-field>
+                      </div>
+
+                    
+
+                      <div class="col-md-6 col-sm-6 col-xs-6">
+                        <mat-form-field class="example-full-width" appearance="outline" class="control">
+                          <mat-label>Vigencia</mat-label>
+                          <input matInput [matDatepicker]="picker" formControlName="vigencia">
+                          <mat-hint>MM/DD/YYYY</mat-hint>
+                          <mat-datepicker-toggle matIconSuffix [for]="picker">
+                            <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+                          </mat-datepicker-toggle>
+                          <mat-datepicker #picker></mat-datepicker>
+                        </mat-form-field>
+                      </div>
+                      <div class="col-md-6 col-sm-6 col-xs-6">
+                        <mat-form-field appearance="outline" class="example-full-width control">
+                          <mat-label>Prefijo</mat-label>
+                          <input type="text" matInput class="control"
+                            placeholder="Escriba el prefijo de la numeracion" formControlName="prefijo">
+                        </mat-form-field>
+                      </div>
+                      <div class="col-md-6 col-sm-6 col-xs-6">
+                        <mat-form-field appearance="outline" class="example-full-width control">
+                          <mat-label>Numeración inicial</mat-label>
+                          <input type="text" matInput  class="control"
+                            placeholder="Escriba la numeracion inicial" formControlName="numeracionInicial">
+                        </mat-form-field>
+                      </div>
+                      <div class="col-md-6 col-sm-6 col-xs-6">
+                        <mat-form-field appearance="outline" class="example-full-width control">
+                          <mat-label>Numeración siguiente</mat-label>
+                          <input type="text" matInput class="control"
+                            placeholder="Escriba la numeracion donde inicial" formControlName="nuemracionSiguiente">
+                        </mat-form-field>
+                      </div>
+
+                      <div class="col-md-6 col-sm-6 col-xs-6">
+                        <mat-form-field appearance="outline" class="example-full-width control">
+                          <mat-label>Numeración final</mat-label>
+                          <input type="text" matInput class="control"
+                            placeholder="Escriba la numeración final" formControlName="numeracionFinal">
+                        </mat-form-field>
+                      </div>
+
+                   
+                    </div>
+               
+                    
+                    
+
+                    <!-- <mat-radio-group aria-label="Select an option">
+                      <mat-radio-button formControlName="estado" value="1">Activo</mat-radio-button>
+                      <mat-radio-button formControlName="estado" value="0">Inactivo</mat-radio-button>
+                    </mat-radio-group> -->
+
+
+
+                  </div>
+
+                </div>
+
+              </div>
+              <div class="modal-footer">
+                <input type="button" (click)="resetForm()" data-dismiss="modal" class="btnCancelar" value="Cancelar">
+                <input type="submit" class="btnGuardar" value="Guardar">
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
