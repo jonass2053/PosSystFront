@@ -1,15 +1,16 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { baseUrl } from '../../enviroment/enviroment.';
-import { HttpClient } from '@angular/common/http';
 import { AlertServiceService } from '../components/utilities/alert-service.service';
-import { ServiceResponse } from '../interfaces/service-response-login';
 import { Observable, catchError } from 'rxjs';
+import { ServiceResponse } from '../interfaces/service-response-login';
 
 @Injectable({
   providedIn: 'root'
 })
-export class EmpresaService {
-  url : string = `${baseUrl}/Empresa`;
+export class ModelosService {
+
+  url : string = `${baseUrl}/Modelo`;
   constructor(
       private http : HttpClient,
       private alertas : AlertServiceService
@@ -38,20 +39,16 @@ export class EmpresaService {
      {
       return this.http.get<ServiceResponse>(`${this.url}/${id}`)
      }
+     getByIdMarca(idMarca : number) : Observable<ServiceResponse>
+     {
+      return this.http.get<ServiceResponse>(`${this.url}/getallbyidmarca/${idMarca}`)
+     }
      getAll() : Observable<ServiceResponse>
      {
       return this.http.get<ServiceResponse>(`${this.url}`)
      }
-     getAllRegimen() : Observable<ServiceResponse>
+     getAllFilter(filter : string) : Observable<ServiceResponse>
      {
-      return this.http.get<ServiceResponse>(`${this.url}/getall-regimen`)
-     }
-     getAllSectores() : Observable<ServiceResponse>
-     {
-      return this.http.get<ServiceResponse>(`${this.url}/getall-sectores`)
-     }
-     getAllMonedas() : Observable<ServiceResponse>
-     {
-      return this.http.get<ServiceResponse>(`${this.url}/getall-monedas`)
+      return this.http.get<ServiceResponse>(`${this.url}/getallfilter/${filter}`)
      }
 }

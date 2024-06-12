@@ -4,6 +4,7 @@ import { baseUrl } from '../../enviroment/enviroment.';
 import { AlertServiceService } from '../components/utilities/alert-service.service';
 import { ServiceResponse } from '../interfaces/service-response-login';
 import { Observable, catchError } from 'rxjs';
+import { iImpuestoProductoCodigo } from '../interfaces/iTermino';
 
 @Injectable({
   providedIn: 'root'
@@ -42,12 +43,39 @@ export class ProductoService {
      {
       return this.http.get<ServiceResponse>(`${this.url}`)
      }
-     getAllRegimen() : Observable<ServiceResponse>
+     getAllUnidades() : Observable<ServiceResponse>
      {
-      return this.http.get<ServiceResponse>(`${this.url}/getall-regimen`)
+      return this.http.get<ServiceResponse>(`${this.url}/getunidades`)
      }
-     getAllSectores() : Observable<ServiceResponse>
+     getAllUnidadesFilter(filter : string) : Observable<ServiceResponse>
      {
-      return this.http.get<ServiceResponse>(`${this.url}/getall-sectores`)
+      return this.http.get<ServiceResponse>(`${this.url}/getunidades/${filter}`)
      }
+     getAllCuentas() : Observable<ServiceResponse>
+     {
+      return this.http.get<ServiceResponse>(`${this.url}/getcuentas`)
+     }
+     getAllCategorias() : Observable<ServiceResponse>
+     {
+      return this.http.get<ServiceResponse>(`${baseUrl}/Categoria`)
+     }
+     getAllMarcas(idCategoria : number) : Observable<ServiceResponse>
+     {
+      return this.http.get<ServiceResponse>(`${baseUrl}/Categoria`)
+     }
+
+     getAllModelos(idMarca : number) : Observable<ServiceResponse>
+     {
+      return this.http.get<ServiceResponse>(`${baseUrl}/Categoria`)
+     }
+     
+     insertImpuestos(impuestos : iImpuestoProductoCodigo[]) : Observable<ServiceResponse>
+     {
+      return this.http.post<ServiceResponse>(`${this.url}/addimpuestos`, impuestos)
+     }
+     getAllFilter(valor : string) : Observable<ServiceResponse>
+     {
+      return this.http.get<ServiceResponse>(`${this.url}/filter/${valor}`)
+     }
+   
 }

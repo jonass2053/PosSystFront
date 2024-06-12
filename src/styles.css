@@ -25,11 +25,13 @@ hamBurger.addEventListener("click", function () {
   #containerComponents
   {
     background-color: var(--color-primario);
-    border: 1px solid var(--borde-siave);
+    border: 8px solid var(--borde-siave);
     border-radius: 8px; 
     margin: 5px;
     height: 625px;
     overflow: auto;
+
+   
  
   }
   
@@ -72,17 +74,33 @@ body {
     font-family: 'Poppins', sans-serif;
     
 }
-/* 
+.dropdown-menu
+{
+  background-color: var(--fondo-suave-color-secundario); 
+
+
+}
+
+.navbar-brand
+{
+  color:var(--color-texto-interno)
+}
+.navbar-toggler{
+  color: var(--color-texto-interno)
+}
+.navbar-toggler-icon{
+  color:var(--color-texto-interno)
+}
 .navbar
 {
-  color: white;
-  background-color: var(--color-secundario);
+  color: rgb(31, 34, 115);
+  background-color: var(--fondo-suave-color-secundario); 
+
 }
 .navbar ul li a
 {
-  color: white;
-
-} */
+  color:var(--color-texto-interno)
+}
 
 
 .wrapper {
@@ -475,6 +493,14 @@ nav{
     color: var(--color-texto-interno);
 
   }
+  tr td{
+    height: 100%;
+
+
+  }
+  
+
+
 
   .colorPrimario
   {
@@ -493,16 +519,9 @@ nav{
     font-size: 12px;
 }
 
-.formularioCard
-{
-  background-color: white;
-  width: 90%;
-  height: auto;
-  border-radius: 5px;
-  box-shadow: 1px 3px 5px silver;
-  display: flex;
- 
-}
+
+
+
 .headRow
 {
   margin-top: -18px;
@@ -556,6 +575,8 @@ nav{
   width:100%;
   background-color: white;
   overflow-y: auto;
+  display: grid;
+  place-items: center;
 }
 
 .containerInter
@@ -704,11 +725,11 @@ hr
  display: flex;
  flex-wrap: wrap;
  flex-direction: column;
- min-height: 450px;
- height: auto;
+ min-height: 454px !important;
  width: 100%;
  box-shadow: none;
  background-color: transparent;
+
 }
 .logoempresa
 {
@@ -961,7 +982,8 @@ input:-webkit-autofill:focus {
 /* HTML: <div class="loader"></div> */
 /* HTML: <div class="loader"></div> */
 .loaderTable {
-  width: 20px;
+  width: 17px;
+  height: 17px;
   aspect-ratio: 1;
   --c: no-repeat linear-gradient(#000 0 0);
   background: 
@@ -980,9 +1002,11 @@ input:-webkit-autofill:focus {
 }
 .cargandoTableIcono
 {
-  display: flex;
-  justify-content: right;
-
+  /* display: flex;
+  justify-content: right; */
+  width: 41px;
+  height: 20px; 
+  position: relative;
 }
 .sinRegistros
 {
@@ -1029,3 +1053,14 @@ input:-webkit-autofill:focus {
 }
 
 /* HTML: <div class="loader"></div> */
+table
+
+{
+  overflow: auto;
+  height: 50px;
+}
+
+.containerfuncionesheader
+{
+  display: flex; justify-content: space-between; align-items: center; width: 100%;
+}

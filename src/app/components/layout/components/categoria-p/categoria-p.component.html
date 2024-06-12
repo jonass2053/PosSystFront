@@ -14,7 +14,7 @@
           <input type="button" value=" + Nuevo"  data-toggle="modal" data-target="#exampleModal" class="btnGuardar">
   
                       <div class="col-md-12 col-sm-12 col-xs-12">
-                        <table class="table table-hover control">
+                        <table class="table table-hover table-striped control">
                           <thead class="con">
                             <tr>
                               <th scope="col">Cod</th>
@@ -30,7 +30,9 @@
                               <td class="acciones">
                                 <button class="btnaccion" (click)="editar(categoria)" data-toggle="modal" data-target="#exampleModal"><mat-icon data-toggle="modal">edit</mat-icon>Editar</button> 
                                 <button class="btnaccion" (click)="delete(categoria.idCategoria)" data-target="#exampleModal"><mat-icon data-toggle="modal">delete</mat-icon>Eliminar</button> 
-                            </tr>
+                              </td>
+                              <td></td>
+                              </tr>
                             <tr class="sinRegistros" *ngIf="sinRegistros">
                               <th>No se encontraron registros...</th>
                               

@@ -8,6 +8,8 @@ import { CategoriaPComponent } from "./components/categoria-p/categoria-p.compon
 import { AlmacenService } from "../../services/almacen.service";
 import { AlmacenComponent } from "./components/almacen/almacen.component";
 import { ProductoComponent } from "./components/producto/producto.component";
+import { ModelosComponent } from "./components/modelos/modelos.component";
+import { MarcasComponent } from "./components/marcas/marcas.component";
 
 
 
@@ -19,7 +21,9 @@ export const routes : Routes=[
         {path : "clientesproveedores", component : ClientesProveedoresComponent},
         {path : "categoria", component : CategoriaPComponent},
         {path : 'almacen', component : AlmacenComponent},
-        {path : 'productos', component : ProductoComponent}
+        {path : 'productos', component : ProductoComponent},
+        {path : 'marcas', component : MarcasComponent},
+        {path : 'modelos', component : ModelosComponent}
       
        
     ],    

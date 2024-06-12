@@ -60,14 +60,15 @@ export class EmpresaComponent {
       razonSocial : this.fb.control("", Validators.required),
       nombreComercial : this.fb.control("", Validators.required),
       rnc : this.fb.control("", Validators.required),
-      telefono : this.fb.control(""),
+      telefono1 : this.fb.control(""),
+      telefono2 : this.fb.control(""),
       direccion : this.fb.control(""),
       correo : this.fb.control(""),
       web : this.fb.control("",),
-      idRegimen : this.fb.control(""),
-      idSector :  this.fb.control(""),
+      idRegimen : this.fb.control(null),
+      idSector :  this.fb.control(null),
       facturacionElectronica : this.fb.control(false),
-      numEmpleados : this.fb.control("")
+      cantEmpleados : this.fb.control("")
 
     }
   )
@@ -100,14 +101,15 @@ export class EmpresaComponent {
      this.formData.append('razonSocial', this.miFormulario.get('razonSocial')?.value);
      this.formData.append('nombreComercial', this.miFormulario.get('nombreComercial')?.value);
      this.formData.append('direccion', this.miFormulario.get('direccion')?.value);
-     this.formData.append('telefono', this.miFormulario.get('telefono')?.value);
+     this.formData.append('telefono1', this.miFormulario.get('telefono1')?.value);
+     this.formData.append('telefono2', this.miFormulario.get('telefono2')?.value);
      this.formData.append('correo', this.miFormulario.get('correo')?.value);
      this.formData.append('rnc', this.miFormulario.get('rnc')?.value);
      this.formData.append('web', this.miFormulario.get('web')?.value);
      this.formData.append('idRegimen', this.miFormulario.get('idRegimen')?.value);
      this.formData.append('idSector', this.miFormulario.get('idSector')?.value);
-     this.formData.append('numEmpleados', this.miFormulario.get('numEmpleados')?.value);
-      // this.formData.forEach(c=>{console.log(c)});
+     this.formData.append('cantEmpleados', this.miFormulario.get('cantEmpleados')?.value);
+     this.formData.forEach(c=>{console.log(c)});
     
      this.alertasService.ShowLoading();
      this.empresaService.update(this.formData).subscribe((response: ServiceResponse)=>{
@@ -133,16 +135,34 @@ export class EmpresaComponent {
       response.data!=null? this.dataListSector = response.data : ""
     })
   }
+  cargarMonedas()
+  {
+    this.empresaService.getAllMonedas().subscribe((response : ServiceResponse)=>
+    {
+      response.data!=null? this.dataListSector = response.data : ""
+    })
+  }
 
   cargarEmpresaById()
   {
     if(this.usuariosService.usuarioLogueado!=undefined)
       {
-        this.empresaService.getById(this.usuariosService.usuarioLogueado.data.idEmpresa).subscribe((response: ServiceResponse)=>
+        this.empresaService.getById(this.usuariosService.usuarioLogueado.data.sucursal.idEmpresa).subscribe((response: ServiceResponse)=>
           {
+            console.log(response)
             this.miFormulario.reset(response.data)
             this.imageUrl = response.data.logo;
-            console.log(this.imageUrl)
+            this.miFormulario.patchValue(
+              {
+                'telefono1' : response.data.sucursalPrincipal.telefono1,
+                'telefono2' : response.data.sucursalPrincipal.telefono2,
+                'direccion' : response.data.sucursalPrincipal.direccion,
+
+              },
+             
+            
+            )
+       
           })
       }
    

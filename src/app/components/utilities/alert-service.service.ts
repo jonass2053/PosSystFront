@@ -23,7 +23,7 @@ ShowLoading()
 hideLoading = ()=>{
   setTimeout(() => {
     Swal.close();
-  }, 1500);
+  }, 0);
 
 } 
   

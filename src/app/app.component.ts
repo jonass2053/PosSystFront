@@ -9,22 +9,22 @@ import { UsuarioService } from './services/usuario.service';
 import { json } from 'stream/consumers';
 import { log } from 'console';
 
+
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
-    RouterOutlet,
-    MatFormFieldModule,
+
+  RouterOutlet,
+  MatFormFieldModule,
   CommonModule,
   MatIconModule,
   MatInputModule,
   MatFormFieldModule,
   ReactiveFormsModule,
-  CommonModule,
   RouterLink,
   MatFormFieldModule,
-  MatInputModule
-  
+  MatInputModule,
   
   ],
   templateUrl: './app.component.html',

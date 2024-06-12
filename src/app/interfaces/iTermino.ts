@@ -66,7 +66,9 @@ export interface iEmpresa
     idSector : number,
     facturacionElectronica : boolean,
     numEmpleados : string,
-    logo : string
+    logo : string,
+    idMoneda : number
+    
 
 }
 export interface iRegimen
@@ -124,3 +126,89 @@ export interface iContactoPos {
     nombre : string,
     observaciones : string
   }
+
+export interface iProducto
+{
+    idProducto?  :  number,
+    isProduct : boolean,
+    nombre : string,
+    idUnidad : number,
+    costoInicial : number,
+    precioBase : number,
+    precioFinal : number,
+    descripcion : string,
+    idAlmacen : number,
+    cantInicial : number,
+    cantMinima : number,
+    cantMaxima : number,
+    idCuentaContableParaVenta : number,
+    imagen : string,
+    venderSinUnidades : boolean,
+    idCategoria : number,
+    idEmpresa : number
+    impuestos : iiMpuesto[]
+
+}
+
+export interface iCuentas
+{
+    idCuentaContableParaVenta : number,
+    nombre : string
+}
+export interface iUnidades
+{
+    idUnidad : number,
+    nombre : string
+}
+
+export interface iiMpuesto
+{
+    idImpuesto?:number
+    nombre : string,
+    porcentaje : number,
+    impuestoAcreditable : boolean,
+    descripcion : string,
+}
+
+export interface iCategoria
+{
+    idCategoria? : number,
+    nombre : string
+}
+export interface iMarca
+{
+    idMarca? : number,
+    idCategoria : number,
+    nombre : string
+}
+export interface iMarcaget
+{
+    idMarca? : number,
+    categoria : iCategoria
+    nombre : string
+}
+export interface iModelo
+{
+    idModelo? : number,
+    idMarca : number,
+    nombre : string
+}
+export interface iModeloGet
+{
+    idModelo? : number,
+    marca : iMarcaget
+    nombre : string
+}
+export class iImpuestoProductoCodigo
+{
+    // id ?: number;
+    idProducto? :  number;
+    idImpuesto? : number;
+}
+
+export interface iMoneda
+{
+    idMoneda : number,
+    nombre : string,
+    
+}

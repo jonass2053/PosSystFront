@@ -1,58 +1,328 @@
-
 <div class="containerConfiguraciones">
 
-    <div class="containerInter">
-      <div class="titulo">
-        <div class="containerIcoText">
-          <mat-icon>group_add</mat-icon> Mantenimiento de los prodcutos
-        </div>
-  
-        <a [routerLink]="['/layout/configuraciones']">
-          <div class="containerIcoText"><mat-icon>arrow_back</mat-icon>Retroceder</div>
-        </a>
+  <div class="containerInter">
+    <div class="titulo">
+      <div class="containerIcoText">
+        <mat-icon>inventory</mat-icon> Mantenimiento de productos
+      </div>
+
+      <a [routerLink]="['/layout/configuraciones']">
+        <div class="containerIcoText"><mat-icon>arrow_back</mat-icon>Retroceder</div>
+      </a>
+    </div>
+
+    <hr>
+
+    <div class="formularioCard">
+      <!-- <p style="font-size: small;">Crea una numeración para organizar y tener el control de tus comprobantes</p> -->
+    
+      <div class="containerfuncionesheader">
+        <input type="button" value=" +  Agregar" data-toggle="modal" data-target="#exampleModal" class="btnGuardar">
+        <mat-form-field appearance="outline">
+            <mat-label>Buscar</mat-label>
+            <input matInput (keyup)="getAllFilter($event)" placeholder="buscar">
+            <mat-icon matSuffix>search</mat-icon>
+          </mat-form-field>
       </div>
 
 
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <table class="table table-hover table-striped control">
+          <thead class="con"> 
+            <tr>
+              <th style="text-align: center;"></th>
+           
+              <th scope="col">Nombre</th>
+              <th scope="col">Descripción</th>
+              <th scope="col">Precio</th>
+              <th scope="col">Cantidad en almacen</th>
+              
+              <th scope="col" class="accionesTitle">Acciones</th>
+              <th class="cargandoTableIcono">
+                <div *ngIf="cargando" class="loaderTable"></div>
+              </th>
+            </tr>
+          </thead>
+          <tbody >
+            <tr *ngFor="let producto of dataList" class="filaBody"> 
+              <td><div style="display: flex; justify-content: center; align-items: center; width: 100%; box-sizing: border-box; border-radius: 50px;"><img class="d-sm-block" src="{{producto.imagen}}" alt="" style="width: 25px; height: 25px; border-radius: 50%;"></div>  </td>
+              <td><div>{{producto.nombre}}</div></td>
+              <td><div>{{producto.descripcion}}</div></td>
+              <td><div>{{producto.precioFinal | currency : "RD$ "}}</div> </td>
+              <td><div> {{producto.cantInicial}}</div></td>
+              <td class="acciones">
+                <button class="btnaccion" (click)="editar(producto)" data-toggle="modal"
+                  data-target="#exampleModal"><mat-icon data-toggle="modal">edit</mat-icon>Editar</button>
+                <button class="btnaccion" (click)="delete(producto.idProducto)" data-target="#exampleModal"><mat-icon
+                    data-toggle="modal">delete</mat-icon>Eliminar</button>
+              </td>
+              <td></td>
+            </tr>
+            <tr class="sinRegistros" *ngIf="sinRegistros">
 
+              <td>{{sinRegistrosTxt}}</td>
+            </tr>
+          </tbody>
+        </table>
 
-      
+      </div>
+      <div style="display: flex; width: 100%;">
+        <p style="font-size: 12px;"> Total de registros encontrados : {{dataList.length}} </p>
     </div>
+    </div>
+  </div>
+  <!-- Modal -->
+  <div class="modal fade fade bd-example-modal-smq" id="exampleModal" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="exampleModalLabel">Producto</h2>
 
-    <div class="container-fluid" >
-
-      <div class="row">
-        <div class="col-lg-8 col-md-6 col-sm-12 cardProduct">
-          <div class="cardProductItem"></div>
+          <mat-icon (click)="resetForm()" data-dismiss="modal">close</mat-icon>
+          <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button> -->
         </div>
-  
-        <div class="col-lg-4 col-md-6 col-sm-12 cardProduct">
-          <div class="cardProductItem">
-         
-            <input type="file" class="file" id="uploadBtn">
-            <label for="uploadBtn" class="file"><i class="bi bi-card-image iconImg"></i> <section> Seleccionar imagen del producto</section></label>
-            <div class="file">
-             <h3 style="text-align: center;">Nombre del producto <br>RD$50.00</h3>
-          
-              <mat-form-field appearance="outline" class="">
-                <mat-label>Categoria</mat-label>
-                <mat-select formControlName="tipoIdentificacion">      
-                   <mat-option  *ngFor="let tipo of tipoIdentificacion" 
-                     [value]="tipo.nombre">{{tipo.nombre}}</mat-option> 
-                </mat-select>
-  
-              </mat-form-field>
-            
-            </div>
+        <div class="modal-body">
+
+
+          <div class="control">
+
+            <form class="formulario" [formGroup]="miFormulario" (ngSubmit)="save()">
+              <div class="container">
+                <div class="row">
+
+                  <!-- <mat-slide-toggle formControlName="predeterminada"
+                  class="example-margin"
+                  [color]="color"
+                  [checked]="checked">
+                  
+                Seleccionar como predeterminada
+              </mat-slide-toggle> -->
+                  <!-- <div class="col-md-6 col-sm-12 col-xs-12">
+                    <mat-form-field appearance="outline" class="control">
+                      <mat-label>Tipo de documento</mat-label>
+                      <mat-select formControlName="idTipoDocumento">
+                        <mat-option>Clear</mat-option>
+                        <mat-option (click)="cargarTipoNumeracion(tipo.idTipoDocumento)" *ngFor="let tipo of dataListTipoDocumentos"
+                          [value]='tipo.idTipoDocumento'>{{tipo.nombre}}</mat-option>
+                      </mat-select>
+                      <mat-hint align="end">Este campo es obligatorio</mat-hint>
+                    </mat-form-field>
+                  </div> -->
+
+                  <!-- <div class="col-md-6 col-sm-12 col-xs-12">
+                    <mat-form-field appearance="outline" class="control">
+                      <mat-label>Tipo de numeración</mat-label>
+                      <mat-select formControlName="idTipoNumeracion">
+                        <mat-option>Clear</mat-option>
+                        <mat-option (click)="seleccionarTipoNumeracion(tipo)"  *ngFor="let tipo of dataListTipoNumeracion"
+                          [value]="tipo.idTipoNumeracion">{{tipo.nombre}}</mat-option>
+                      </mat-select>
+                      <mat-hint align="end">Este campo es obligatorio</mat-hint>
+                    </mat-form-field>
+                  </div> -->
+
+
+                  <div>
+                    <div class="row">
+
+                      <div class="col-md-6  col-sm-12 col-xs-12 mb-3">
+                       
+                        <mat-radio-group aria-label="Select an option" formControlName="isProduct" >
+                          <!-- <div style="display: flex;">
+                            <div class="option"><mat-radio-button (click)="isProductView(1)" value='true'>Producto</mat-radio-button></div>
+                            <div class="option"><mat-radio-button (click)="isProductView(0)"  value='false' >Servicio</mat-radio-button></div>
+                          </div> -->
+                          <mat-radio-button (click)="isProductView(1)" [value]='true'>Producto</mat-radio-button>
+                          <mat-radio-button (click)="isProductView(0)"  [value]='false' >Servicio</mat-radio-button>
+                        </mat-radio-group>
+                      </div>
+                      <div class="col-md-6 col-sm-6 col-xs-6" *ngIf="isProduct">
+                        <mat-form-field appearance="outline" class="control">
+                          <mat-label>Categoria</mat-label>
+                          <mat-select disableRipple formControlName="idCategoria"> 
+                            <mat-option [value]="categoria.idCategoria" *ngFor="let categoria of dataListCategoria" (click)="getMarcas(categoria.idCategoria!)">
+                              {{categoria.nombre}}
+                            </mat-option>
+                         
+                            <mat-option *ngIf="dataListCategoria.length<1">No hay campos disponibles</mat-option> 
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+
+                      <div class="col-md-6 col-sm-6 col-xs-6" *ngIf="isProduct">
+                        <mat-form-field appearance="outline" class="control">
+                          <mat-label>Marca</mat-label>
+                          <mat-select disableRipple formControlName="idMarca">
+                            <mat-option [value]="marca.idMarca" *ngFor="let marca of dataListMarcas" (click)="getModelos(marca.idMarca!)">
+                              {{marca.nombre}}
+                            </mat-option>
+                            <mat-option *ngIf="dataListMarcas.length<1">No hay campos disponibles</mat-option> 
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+
+                      <div class="col-md-6 col-sm-6 col-xs-6" *ngIf="isProduct">
+                        <mat-form-field appearance="outline" class="control">
+                          <mat-label>Modelo</mat-label>
+                          <mat-select disableRipple formControlName="idModelo">
+                            <mat-option [value]="modelo.idModelo" *ngFor="let modelo of dataListModelos">
+                              {{modelo.nombre}}
+                            </mat-option>
+                             <mat-option *ngIf="dataListModelos.length<1">No hay campos disponibles</mat-option> 
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+
+
+                      <div class="col-md-12 col-sm-12 col-xs-12 mb-3 imagen">
+                        <label for="imagen"></label>
+                        <input type="file" (change)="onFileSelected($event)">
+                        
+                      </div>
+
+
+                      <div class="col-md-12 col-sm-12 col-xs-12">
+                        <mat-form-field appearance="outline" class="example-full-width control">
+                          <mat-label>Nombre</mat-label>
+                          <input type="text" matInput #message minlength="3" class="control"
+                            placeholder="Escriba el nombre de la numeración" formControlName="nombre">
+                        </mat-form-field>
+                      </div>
+                      <div class="col-md-12 col-sm-12 col-xs-12">
+                        <mat-form-field appearance="outline" class="example-full-width control">
+                          <mat-label>Descripción</mat-label>
+                          <input type="text" matInput #message minlength="3" class="control"
+                            placeholder="Escriba una descripcion del producto o servicio" formControlName="descripcion">
+                        </mat-form-field>
+                      </div>
+
+
+                      <div class="col-md-6 col-sm-12 col-xs-12">
+                        <mat-form-field appearance="outline" class="control">
+                          <mat-label>Unidad</mat-label>
+                          <input type="text" matInput [matAutocomplete]="auto" formControlName="filterUnidades"
+                            (input)="getAllUnidadesFilter(miFormulario.get('filterUnidades')?.value)">
+                          <mat-autocomplete  #auto="matAutocomplete"
+                            (optionSelected)="setUnidad($event)" [displayWith]="displayFn">
+                            <mat-option *ngFor="let unidad of dataListUnidades" [value]="unidad">
+                              {{ unidad.nombre }}
+                            </mat-option>
+                          </mat-autocomplete>
+                        </mat-form-field>
+                      </div>
+
+                      <div class="col-md-6 col-sm-6 col-xs-6">
+                        <mat-form-field appearance="outline" class="example-full-width control">
+                          <mat-label>Costo</mat-label>
+                          <input type="number" matInput class="control" formControlName="costoInicial"
+                            placeholder="Escriba el costo de la unidad adquirida">
+                        </mat-form-field>
+                      </div>
+                      <div class="col-md-6 col-sm-6 col-xs-6">
+                        <mat-form-field appearance="outline" class="example-full-width control">
+                          <mat-label>Precio base</mat-label>
+                          <input type="number" matInput class="control" (keyup)="setPrecioTotal(0)"
+                            formControlName="precioBase" placeholder="Precio de venta sin impuesto">
+                        </mat-form-field>
+                      </div>
+                      <div class="col-md-6 col-sm-6 col-xs-6">
+                        <mat-form-field appearance="outline" class="control">
+                          <mat-label>Impuestos</mat-label>
+                          <mat-select disableRipple multiple formControlName="impuestos">
+                            <ng-container *ngIf="dataListImpuesto.length> 0; else noInvol">
+                              <mat-option [value]="impuesto.idImpuesto" *ngFor="let impuesto of dataListImpuesto"
+                                (click)="setPrecioTotal(1)">
+                                {{impuesto.nombre}}
+                              </mat-option>
+                            </ng-container>
+                            <ng-template #noInvol> <mat-option>No hay campos disponibles</mat-option> </ng-template>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+
+
+
+                      <div class="col-md-6 col-sm-6 col-xs-6">
+                        <mat-form-field appearance="outline" class="example-full-width control">
+                          <mat-label>Precio Total </mat-label>
+                          <input type="text" readonly="true" matInput class="control" formControlName="precioFinal"
+                            placeholder="Escriba la numeración final">
+                        </mat-form-field>
+                      </div>
+
+
+
+                      <div class="col-md-6 col-sm-6 col-xs-6">
+                        <mat-form-field appearance="outline" class="control">
+                          <mat-label>Almacen</mat-label>
+                          <mat-select disableRipple formControlName="idAlmacen">
+                            <mat-option [value]="almacen.idAlmacen" *ngFor="let almacen of dataListAlmacenes">
+                              {{almacen.nombre}}
+                            </mat-option>
+                            <ng-template #noInvol> <mat-option>No hay campos disponibles</mat-option> </ng-template>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+
+                      
+
+                      <div class="col-md-4 col-sm-4 col-xs-4">
+                        <mat-form-field appearance="outline" class="example-full-width control">
+                          <mat-label>Cantidad inicial</mat-label>
+                          <input type="number" matInput class="control" formControlName="cantInicial"
+                            placeholder="Escriba el costo de la unidad adquirida">
+                        </mat-form-field>
+                      </div>
+
+
+                      <div class="col-md-4 col-sm-4 col-xs-4">
+                        <mat-form-field appearance="outline" class="example-full-width control">
+                          <mat-label>Cantidad minima</mat-label>
+                          <input type="number" matInput class="control" formControlName="cantMinima"
+                            placeholder="Escriba la cantidad minima para recibir alertas">
+                        </mat-form-field>
+                      </div>
+
+
+                      <div class="col-md-4 col-sm-4 col-xs-4">
+                        <mat-form-field appearance="outline" class="example-full-width control">
+                          <mat-label>Cantidad maxima</mat-label>
+                          <input type="number" matInput class="control" formControlName="cantMaxima"
+                            placeholder="Escriba la cantidad maxima para recibir alertas">
+                        </mat-form-field>
+                      </div>
+                    </div>
+                    <mat-slide-toggle formControlName="venderSinInidades" class="example-margin" [color]="color"
+                      [checked]="checked" class="mb-3" formControlName="venderSinUnidades">
+                     Vender sin existencia
+                    </mat-slide-toggle>
+
+
+
+
+                    <!-- <mat-radio-group aria-label="Select an option">
+                      <mat-radio-button formControlName="estado" value="1">Activo</mat-radio-button>
+                      <mat-radio-button formControlName="estado" value="0">Inactivo</mat-radio-button>
+                    </mat-radio-group> -->
+
+
+
+                  </div>
+
+                </div>
+
+              </div>
+              <div class="modal-footer">
+                <input type="button" (click)="resetForm()" data-dismiss="modal" class="btnCancelar" value="Cancelar">
+                <input type="submit" class="btnGuardar" value="Guardar">
+              </div>
+            </form>
           </div>
         </div>
-  
       </div>
-  
-
-  
-
-
-
     </div>
 
 
@@ -65,6 +335,41 @@
 
 
 
+    <!-- CarProductos -->
+    <!-- <div class="card mb-3" style="max-width: 540px;">
+      <div class="row no-gutters">
+        <div class="col-md-4 align-middle" style="display: flex; justify-content: center; align-items: center;">
+          <img src="https://a3.espncdn.com/combiner/i?img=%2Fphoto%2F2020%2F0424%2Fr692269_800x450_16%2D9.jpg"
+            class="card-img" alt="...">
+        </div>
+        <div class="col-md-8">
+          <div class="card-body">
+            <h5 class="card-title">Card title</h5>
+            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional
+              content. This content is a little bit longer.</p>
+            <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+          </div>
+        </div>
+      </div>
+    </div> -->
+<div style="position: relative;">
+  <div class="card" style="max-width: 50; width: 250px; min-height: 500px; position: absolute; bottom:200px; left: 1200px; position: fixed;">
+    <br>
+    <p style="text-align: center;">Imagen del producto / servicio</p>
+    <div class="row no-gutters">
+      <div class="col-md-4 align-middle" style="display: flex; justify-content: center; align-items: center;">
+        
+        <div *ngIf="selectedFile || imageUrl!=null">
+          <img [src]="imageUrl" class="img-thumbnail" alt="Selected Image"  style="max-width:  225px; max-height: 300px; border: 1px; margin-left: 180px;">
+        </div>
+        
+        
+        <!-- <img src="https://a3.espncdn.com/combiner/i?img=%2Fphoto%2F2020%2F0424%2Fr692269_800x450_16%2D9.jpg"
+          class="card-img" alt="..." style="max-width: 225px; height: auto; border: 1px solid red; margin-left: 180px;"> -->
+      </div>
+      </div>
+    </div>
+  </div>
 
 </div>
-
+  

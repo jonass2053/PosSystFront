@@ -1,15 +1,17 @@
 import { Injectable } from '@angular/core';
-import { baseUrl } from '../../enviroment/enviroment.';
-import { HttpClient } from '@angular/common/http';
-import { AlertServiceService } from '../components/utilities/alert-service.service';
 import { ServiceResponse } from '../interfaces/service-response-login';
+import { HttpClient } from '@angular/common/http';
+import { baseUrl } from '../../enviroment/enviroment.';
+import { AlertServiceService } from '../components/utilities/alert-service.service';
 import { Observable, catchError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class EmpresaService {
-  url : string = `${baseUrl}/Empresa`;
+export class MarcasService {
+
+  
+  url : string = `${baseUrl}/Marca`;
   constructor(
       private http : HttpClient,
       private alertas : AlertServiceService
@@ -38,20 +40,16 @@ export class EmpresaService {
      {
       return this.http.get<ServiceResponse>(`${this.url}/${id}`)
      }
+     getByIdCategoria(idCaregoria : number) : Observable<ServiceResponse>
+     {
+      return this.http.get<ServiceResponse>(`${this.url}/getallbyidcategoria/${idCaregoria}`)
+     }
      getAll() : Observable<ServiceResponse>
      {
       return this.http.get<ServiceResponse>(`${this.url}`)
      }
-     getAllRegimen() : Observable<ServiceResponse>
+     getAllFilter(filter : string) : Observable<ServiceResponse>
      {
-      return this.http.get<ServiceResponse>(`${this.url}/getall-regimen`)
-     }
-     getAllSectores() : Observable<ServiceResponse>
-     {
-      return this.http.get<ServiceResponse>(`${this.url}/getall-sectores`)
-     }
-     getAllMonedas() : Observable<ServiceResponse>
-     {
-      return this.http.get<ServiceResponse>(`${this.url}/getall-monedas`)
+      return this.http.get<ServiceResponse>(`${this.url}/getallfilter/${filter}`)
      }
 }

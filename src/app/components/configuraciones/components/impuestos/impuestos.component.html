@@ -1,145 +1,121 @@
-<div class="containerConfiguraciones">
-
-  <div class="containerInter">
-    <div class="titulo">
-      <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="settings"></mat-icon>
-      <h1> Impuestos</h1>
-
-      <a [routerLink]="['/layout/configuraciones']"><mat-icon>arrow_back</mat-icon></a>
-
+<div class="containerInter">
+  <div class="titulo">
+    <div class="containerIcoText">
+      <mat-icon>summarize</mat-icon> Mantenimiento de impuestos
     </div>
-    <div style="width: 90%; color: silver;" class="descripcion">
-
-      <hr>
-    </div>
-
-    <hr>
-    <div class="formularioCard">
-
-      <input type="button" value=" + Agregar" data-toggle="modal" data-target="#exampleModal" class="btnGuardar mb-3">
-      <div class="col-md-12 col-sm-12 col-xs-12">
-        <table class="table table-hover control">
-          <thead class="con">
-            <tr>
-              <th scope="col">Nombre</th>
-              <th scope="col">Porcentaje(%)</th>
-              <th scope="col">Tipo</th>
-              <th scope="col">Impuesto acreditable</th>
-              <th scope="col">Descripcion</th>
-              <th scope="col" class="accionesTitle">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>ITBIS</td>
-              <td>18</td>
-              <td>ITBIS</td>
-              <td>Si</td>
-              <td>...</td>
-              <td class="acciones">
-                <button class="btnaccion" data-toggle="modal" data-target="#exampleModal"><mat-icon
-                    data-toggle="modal">edit</mat-icon></button>
-                <button class="btnaccion" data-toggle="modal" data-target="#exampleModal"><mat-icon
-                    data-toggle="modal">delete</mat-icon></button>
-            </tr>
-
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <a [routerLink]="['/layout/configuraciones']">
+      <div class="containerIcoText"><mat-icon>arrow_back</mat-icon>Retroceder</div>
+    </a>
   </div>
 
+  <hr>
+  <div class="formularioCard">
+    <input type="button" value=" + Nuevo Impuesto" data-toggle="modal" data-target="#exampleModal" class="btnGuardar">
 
-  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-    Launch demo modal
-  </button>
-  <!-- Modal -->
-  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true" data-backdrop="static">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h2 class="modal-title" id="exampleModalLabel">Configuración general</h2>
-          <mat-icon data-dismiss="modal">close</mat-icon>
-          <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button> -->
-        </div>
-        <div class="modal-body">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+      <table class="table table-hover table-striped control">
+        <thead class="con">
+          <tr>
+            <th scope="col">Cod</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Porcentaje %</th>
+            <th scope="col">Descripcón</th>
+            <th scope="col" class="accionesTitle">Acciones</th>
+            <th class="cargandoTableIcono">
+              <div *ngIf="cargando" class="loaderTable"></div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let impuesto of dataList">
+            <th scope="row">{{impuesto.idImpuesto}}</th>
+            <td>{{impuesto.nombre}}</td>
+            <td>{{impuesto.porcentaje}}</td>
+            <td>{{impuesto.descripcion}}</td>
+            <td class="acciones">
+              <button class="btnaccion" (click)="editar(impuesto)" data-toggle="modal"
+                data-target="#exampleModal"><mat-icon data-toggle="modal">edit</mat-icon>Editar</button>
+              <button class="btnaccion" (click)="delete(impuesto.idImpuesto)" data-target="#exampleModal"><mat-icon
+                  data-toggle="modal">delete</mat-icon>Eliminar</button>
+            </td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr class="sinRegistros" *ngIf="sinRegistros">
+            <th>No se encontraron registros...</th>
 
 
-          <div class="control">
+          </tr>
 
-            <form class="formulario" [formGroup]="miFormulario">
-              <div class="container">
-                <div class="row">
-                  <div class="col-md-6 col-sm-12 col-xs-12">
-                    <div class="mb-3">
-                    <label for="exampleFormControlInput1" class="form-label">Tipo de impuesto</label>
-                    <select class="form-select  form-control form-control-sm" aria-label="Default select example">
-                      <option value="1">One</option>
-                      <option value="2">Two</option>
-                      <option value="3">Three</option>
-                    </select >
-                  </div>
-                
-                    <div class="mb-3">
-                      <label for="exampleFormControlInput1" class="form-label">Nombre</label>
-                      <input type="email" class="form-control form-control-sm" id="exampleFormControlInput1">
-                    </div>
-                    <div class="mb-3">
-                      <label for="exampleFormControlInput1" class="form-label">Porcentaje(%)</label>
-                      <input type="text" class="form-control form-control-sm" id="exampleFormControlInput1">
-                    </div>
-                  </div>
-                  <div class="col-md-6 col-sm-12 col-xs-12">
-                  
-                    <div class="form-check mb-3">
-                      <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                      <label class="form-check-label" for="flexCheckDefault">
-                        Impueto acreditable 
-                      </label>
-                    </div>
-                    <div class="mb-3">
-                      <label for="exampleFormControlInput1" class="form-label">Observaciones</label>
-                      <textarea class="form-control form-control-sm" id="exampleFormControlInput1" rows="5"></textarea>
-                    </div>
-                  </div>
+
+
+
+        </tbody>
+      </table>
+
+
+
+
+
+
+
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true" data-backdrop="static">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="exampleModalLabel">Impuesto</h2>
+        <mat-icon data-dismiss="modal">close</mat-icon>
+        <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button> -->
+      </div>
+      <div class="modal-body">
+
+
+        <div class="control">
+
+          <form class="formulario" [formGroup]="miFormulario" (ngSubmit)="save()">
+            <div class="container">
+              <div class="row">
+
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                  <mat-form-field class="example-full-width control" appearance="outline">
+                    <mat-label>Nombre</mat-label>
+                    <input matInput #message maxlength="256" class="control" placeholder="Escriba nombre"
+                      formControlName="nombre">
+                  </mat-form-field>
                 </div>
-                <div class="row">
-                  <div class="col">
-                    <h2>Configuración de contabilidad</h2>
-                    <hr>
-                    <div class="mb-3">
-                      <label for="exampleFormControlInput1" class="form-label">Cuenta contable para ventas</label>
-                      <select class="form-select  form-control form-control-sm" aria-label="Default select example">
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
-                      </select >
-                    </div>
-
-                    <div class="mb-3">
-                      <label for="exampleFormControlInput1" class="form-label">Cuenta contable para compras</label>
-                      <select class="form-select  form-control form-control-sm" aria-label="Default select example">
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
-                      </select >
-                    </div>
-  
-                    
-                  </div>
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                  <mat-form-field class="example-full-width control" appearance="outline">
+                    <mat-label>Porcentaje %</mat-label>
+                    <input matInput #message maxlength="256" type="number" class="control" placeholder="Escriba el porcentaje"
+                      formControlName="porcentaje">
+                  </mat-form-field>
                 </div>
-              </div>
-             
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                  <mat-form-field class="example-full-width control" appearance="outline">
+                    <mat-label>Descripcion</mat-label>
+                    <input matInput #message maxlength="256" class="control" placeholder="Escriba el porcentaje"
+                      formControlName="descripcion">
+                  </mat-form-field>
+                </div>
 
-              <div class="modal-footer">
-                <input type="button" data-dismiss="modal" class="btnCancelar" value="Cancelar">
-                <input type="submit" class="btnGuardar" value="Guardar">
+
               </div>
-            </form>
-          </div>
+
+            </div>
+            <div class="modal-footer">
+              <input type="button" data-dismiss="Modal" class="btnCancelar" (click)="resetForm()" value="Cancelar">
+              <input type="submit" class="btnGuardar" value="Guardar">
+            </div>
+          </form>
         </div>
       </div>
     </div>

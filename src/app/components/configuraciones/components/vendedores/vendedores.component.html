@@ -17,15 +17,16 @@
 
       <input type="button" value=" + Agregar" data-toggle="modal" data-target="#exampleModal" class="btnGuardar mb-3">
       <div class="col-md-12 col-sm-12 col-xs-12">
-        <table class="table table-hover control">
+        <table class="table table-hover table-striped control">
+          <caption>List of users</caption>
           <thead class="con">
             <tr>
               <th scope="col">Nombre</th>
               <th scope="col">Rnc</th>
               <th scope="col">Observaciones</th>
               <th scope="col" class="accionesTitle">Acciones</th>
-              <th class="cargandoTableIcono" *ngIf="cargando">
-                <div class="loaderTable"></div>
+              <th class="cargandoTableIcono">
+                <div *ngIf="cargando" class="loaderTable"></div>
               </th>
             </tr>
           </thead>
@@ -34,15 +35,18 @@
               <th scope="row">{{vendedor.nombre}}</th>
               <td>{{vendedor.rnc}}</td>
               <td>{{vendedor.observaciones}}</td>
+           
               <td class="acciones">
                 <button class="btnaccion" (click)="editar(vendedor)" data-toggle="modal"
                   data-target="#exampleModal"><mat-icon data-toggle="modal">edit</mat-icon>Editar</button>
                 <button class="btnaccion" (click)="delete(vendedor.idVendedor!)" data-target="#exampleModal"><mat-icon
                     data-toggle="modal">delete</mat-icon>Eliminar</button>
+              </td>
+              <td></td>
             </tr>
-            <tr class="sinRegistros" *ngIf="sinRegistros">
-
-              <td>{{sinRegistrosTxt}}</td>
+               
+            <tr class="sinRegistros">
+              <td *ngIf="sinRegistros">{{sinRegistrosTxt}}</td>
             </tr>
           </tbody>
         </table>

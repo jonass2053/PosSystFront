@@ -15,13 +15,13 @@
             <input type="button" value=" + Nuevo Rol"  data-toggle="modal" data-target="#exampleModal" class="btnGuardar">
     
                         <div class="col-md-12 col-sm-12 col-xs-12">
-                          <table class="table table-hover control">
+                          <table class="table table-hover table-striped control">
                             <thead class="con">
                               <tr>
                                 <th scope="col">Cod</th>
                                 <th scope="col">Nombre</th>
                                 <th scope="col" class="accionesTitle">Acciones</th>
-                                <th class="cargandoTableIcono" *ngIf="cargando"><div class="loaderTable"></div></th> 
+                                <th class="cargandoTableIcono" ><div *ngIf="cargando" class="loaderTable"></div></th> 
                               </tr>
                             </thead>
                             <tbody>
@@ -31,7 +31,9 @@
                                 <td class="acciones">
                                   <button class="btnaccion" (click)="editar(role)" data-toggle="modal" data-target="#exampleModal"><mat-icon data-toggle="modal">edit</mat-icon>Editar</button> 
                                   <button class="btnaccion" (click)="delete(role.idRol!)" data-target="#exampleModal"><mat-icon data-toggle="modal">delete</mat-icon>Eliminar</button> 
-                              </tr>
+                                </td>
+                             <td></td>
+                                </tr>
                               <tr class="sinRegistros" *ngIf="sinRegistros">
                                 <th>No se encontraron registros...</th>
                                 

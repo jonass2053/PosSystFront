@@ -123,8 +123,8 @@
 
     </div> -->
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm p-3  bg-white rounded">
-        <a class="navbar-brand" href="#">Navbar</a>
+    <nav class="navbar navbar-expand-lg  shadow-sm p-3 ">
+        <a class="navbar-brand" href="#">{{"[{SysPost}]"}}</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -134,9 +134,19 @@
             <li class="nav-item active">
               <a class="nav-link" href="#"> <span class="sr-only"><i class="bi bi-house"></i>  Inicio</span></a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#"><i class="bi bi-receipt"></i> Ingresos</a>
-            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <i class="bi bi-file-earmark-spreadsheet"></i> Ingresos
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" [routerLink]="['productos']">Facturas</a>
+                  <a class="dropdown-item" href="#">Pagos recibidos</a>
+                  <a class="dropdown-item" href="#">Cotizaciones</a>
+                  <a class="dropdown-item" href="#">Conduce</a>
+                  <a class="dropdown-item" [routerLink]="['almacen']">Nota de credito</a>
+
+                </div>
+              </li>
             <li class="nav-item">
                 <a class="nav-link" href="#"><i class="bi bi-basket"></i> Compras</a>
             </li>
@@ -154,6 +164,8 @@
                 <a class="dropdown-item" href="#">Gestión de productos</a>
                 <a class="dropdown-item" [routerLink]="['almacen']">Almacenes</a>
                 <a class="dropdown-item" [routerLink]="['categoria']">Categorias</a>
+                <a class="dropdown-item" [routerLink]="['marcas']">Marcas</a>
+                <a class="dropdown-item" [routerLink]="['modelos']">Modelos</a>
               </div>
             </li>
           
@@ -178,7 +190,8 @@
          
         </div>
       </nav>
+
    
-        <router-outlet></router-outlet>
+        <router-outlet class="oulet"></router-outlet>
 
     

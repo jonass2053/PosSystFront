@@ -65,16 +65,23 @@
               <div class="form-group">
                 <mat-form-field class="example-full-width control" appearance="outline">
                   <mat-label>Cedula o rnc</mat-label>
-                  <input matInput #message maxlength="256" class="control" placeholder="example@gmail.com"
+                  <input matInput #message maxlength="256" class="control" 
                     formControlName="rnc">
                   <mat-icon matSuffix>id_card</mat-icon>
                 </mat-form-field>
               </div>
               <div class="form-group">
                 <mat-form-field class="example-full-width control" appearance="outline">
-                  <mat-label>Telefono</mat-label>
-                  <input matInput #message maxlength="256" class="control" placeholder="example@gmail.com"
-                    formControlName="telefono">
+                  <mat-label>Telefono 1</mat-label>
+                  <input matInput #message maxlength="256" class="control" 
+                    formControlName="telefono1">
+                </mat-form-field>
+              </div>
+              <div class="form-group">
+                <mat-form-field class="example-full-width control" appearance="outline">
+                  <mat-label>Telefono 2</mat-label>
+                  <input matInput #message maxlength="256" class="control" 
+                    formControlName="telefono2">
                 </mat-form-field>
               </div>
               <div class="form-group">
@@ -121,7 +128,7 @@
               <div class="form-group">
                 <mat-form-field appearance="outline" class="select control">
                   <mat-label>Numero de empleados</mat-label>
-                  <mat-select formControlName="numEmpleados">
+                  <mat-select formControlName="cantEmpleados">
                     <mat-option  *ngFor="let num of numEmpleadosData"
                       [value]="num.value">{{num.name}}</mat-option>
                   </mat-select>

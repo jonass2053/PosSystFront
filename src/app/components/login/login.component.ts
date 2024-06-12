@@ -3,16 +3,16 @@ import { importaciones } from '../utilities/material/material';
 
 import { Router } from '@angular/router';
 import { UsuarioService } from '../../services/usuario.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ServiceResponseLogin } from '../../interfaces/service-response-login';
-import { error } from 'console';
+
 import { AlertServiceService } from '../utilities/alert-service.service';
 
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [
+  imports : [
     importaciones
   ],
   templateUrl: './login.component.html',
@@ -30,8 +30,8 @@ export class LoginComponent {
 
   miFormulario: FormGroup = this.fb.group(
     {
-      correo: this.fb.control("jonass2053@gmail.com", Validators.required),
-      contrasena: this.fb.control("123456", Validators.required),
+      correo: this.fb.control("admin@gmail.com", Validators.required),
+      contrasena: this.fb.control("admin", Validators.required),
     },
 
   )
@@ -40,24 +40,24 @@ export class LoginComponent {
     if (this.miFormulario.valid) {
       this.alertasService.ShowLoading();
       this.usuario.login(this.miFormulario.value).subscribe((data: ServiceResponseLogin) => {
+        
         if(data.status == true)
           {    
-          
-     console.log(data.status  )
             this.alerta = false;
-            console.log(data);
             this.usuario.usuarioLogueado = data;  
             localStorage.setItem('user', JSON.stringify(data))
-            console.log(localStorage.getItem('user'))
             document.defaultView?.localStorage.setItem('token', JSON.stringify(data.token))
             this.routess.navigate(['/layout'])
             this.alertasService.successAlert(`Bienvenido ${data.data.nombre} ${data.data.apellidos}`);
           }  
           else
           {
-            this.mensaje = data.message;
+            this.alertasService.hideLoading();
+            this.mensaje = data.message; 
             this.alerta = true;
+           console.log("en el else")
           }
+        
       })
     } 
     else {

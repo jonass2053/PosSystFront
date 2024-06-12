@@ -14,11 +14,11 @@
     <hr>
 
     <div class="formularioCard">
-      <p style="font-size: small;">Crea una numeración para organizar y tener el control de tus comprobantes</p>
+      <p style="font-size: small;">Crea, edita y administra cada detalle de los productos o servicios que vendes</p>
       <input type="button" value=" + Nuevo" data-toggle="modal" data-target="#exampleModal" class="btnGuardar">
 
       <div class="col-md-12 col-sm-12 col-xs-12">
-        <table class="table table-hover control">
+        <table class="table table-hover table-striped control">
           <thead class="con">
             <tr>
               <th scope="col">Nombre</th>
@@ -27,7 +27,7 @@
               <th scope="col">Predeterminada</th>
               <th scope="col">Estado</th>
               <th scope="col" class="accionesTitle">Acciones</th>
-              <th class="cargandoTableIcono" *ngIf="cargando"><div class="loaderTable"></div></th> 
+              <th class="cargandoTableIcono"><div *ngIf="cargando" class="loaderTable"></div></th> 
             </tr>
           </thead>
           <tbody>
@@ -38,14 +38,10 @@
               <td>
                 <mat-slide-toggle 
                 (click)="setNumberDefault(numeracion.idNumeracion)"
-
                 class="example-margin-details"
                 [color]="color"
                 [checked]="numeracion.predeterminada">
-                
                </mat-slide-toggle>
-              
-              
               </td>
               <td>
                 <mat-slide-toggle 
@@ -54,15 +50,13 @@
                 [color]="color"
                 [checked]="numeracion.estado">
                </mat-slide-toggle>
-             
-
-
-
-
+            
               </td>
               <td class="acciones">
                 <button class="btnaccion" (click)="editar(numeracion)" data-toggle="modal" data-target="#exampleModal"><mat-icon data-toggle="modal">edit</mat-icon>Editar</button> 
                 <button class="btnaccion" (click)="delete(numeracion.idNumeracion)" data-target="#exampleModal"><mat-icon data-toggle="modal">delete</mat-icon>Eliminar</button> 
+              </td>
+              <td></td>
             </tr>
             <tr class="sinRegistros" *ngIf="sinRegistros">
               
@@ -131,12 +125,11 @@
                   class="example-margin"
                   [color]="color"
                   [checked]="checked">
-                  
                 Seleccionar como predeterminada
               </mat-slide-toggle>
                   <div class="col-md-6 col-sm-12 col-xs-12">
                     <mat-form-field appearance="outline" class="control">
-                      <mat-label>Tipo de documento</mat-label>
+                      <mat-label>Tipo de documento</mat-label>  
                       <mat-select formControlName="idTipoDocumento">
                         <!-- <mat-option>Clear</mat-option> -->
                         <mat-option (click)="cargarTipoNumeracion(tipo.idTipoDocumento)" *ngFor="let tipo of dataListTipoDocumentos"

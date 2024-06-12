@@ -1,14 +1,10 @@
-import { CommonModule } from '@angular/common';
+
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon';
-import { RouterLink } from '@angular/router';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatInputModule} from '@angular/material/input';
 import { material } from '../../../utilities/material/material';
 import { ValidatorFormService } from '../../../utilities/validator-form.service';
 import { AlertServiceService } from '../../../utilities/alert-service.service';
-import { Console, log } from 'console';
+
 import { UsuarioService } from '../../../../services/usuario.service';
 import { IUsuario } from '../../../../interfaces/i-usuario';
 import { ServiceResponse, iRol } from '../../../../interfaces/service-response-login';

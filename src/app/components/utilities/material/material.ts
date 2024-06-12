@@ -14,6 +14,7 @@ import {MatCardModule} from '@angular/material/card';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
 
 
 
@@ -67,7 +68,9 @@ export const  importaciones : any =[
   MatDatepickerModule,
   MatTooltipModule,
   NgxMaskDirective,
-  NgxMaskPipe
+  NgxMaskPipe,
+  MatAutocompleteModule,
+  MatFormFieldModule
 
   
 ]

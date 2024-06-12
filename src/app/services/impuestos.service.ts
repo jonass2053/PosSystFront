@@ -1,6 +1,6 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { baseUrl } from '../../enviroment/enviroment.';
-import { HttpClient } from '@angular/common/http';
 import { AlertServiceService } from '../components/utilities/alert-service.service';
 import { ServiceResponse } from '../interfaces/service-response-login';
 import { Observable, catchError } from 'rxjs';
@@ -8,8 +8,9 @@ import { Observable, catchError } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class EmpresaService {
-  url : string = `${baseUrl}/Empresa`;
+export class ImpuestosService {
+
+  url : string = `${baseUrl}/Impuesto`;
   constructor(
       private http : HttpClient,
       private alertas : AlertServiceService
@@ -38,20 +39,10 @@ export class EmpresaService {
      {
       return this.http.get<ServiceResponse>(`${this.url}/${id}`)
      }
+    
      getAll() : Observable<ServiceResponse>
      {
       return this.http.get<ServiceResponse>(`${this.url}`)
      }
-     getAllRegimen() : Observable<ServiceResponse>
-     {
-      return this.http.get<ServiceResponse>(`${this.url}/getall-regimen`)
-     }
-     getAllSectores() : Observable<ServiceResponse>
-     {
-      return this.http.get<ServiceResponse>(`${this.url}/getall-sectores`)
-     }
-     getAllMonedas() : Observable<ServiceResponse>
-     {
-      return this.http.get<ServiceResponse>(`${this.url}/getall-monedas`)
-     }
+  
 }

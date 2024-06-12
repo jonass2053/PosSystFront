@@ -39,7 +39,7 @@
        
   
         <div class="col-md-12 col-sm-12 col-xs-12">
-          <table class="table table-hover control">
+          <table class="table table-hover table-striped control">
             <thead class="con">
               <tr>
                 <th scope="col">Nombre/ Razón Social</th>
@@ -57,7 +57,9 @@
                 <td class="acciones">
                   <button class="btnaccion" (click)="editar(contacto)" data-toggle="modal" data-target="#exampleModal"><mat-icon data-toggle="modal">edit</mat-icon>Editar</button> 
                   <button class="btnaccion" (click)="delete(contacto.idContacto)" data-target="#exampleModal"><mat-icon data-toggle="modal">delete</mat-icon>Eliminar</button> 
-              </tr>
+                </td>
+                <td></td>
+                </tr>
               <tr class="sinRegistros" *ngIf="sinRegistros">
                 
                 <td>{{sinRegistrosTxt}}</td>
