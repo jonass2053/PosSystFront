@@ -10,7 +10,7 @@ import { ValidatorFormService } from '../../../utilities/validator-form.service'
 import { AlertServiceService } from '../../../utilities/alert-service.service';
 import { timeout } from 'rxjs';
 import { importaciones, material } from '../../../utilities/material/material';
-import { iNumEmpleados, iRegimen, iSector } from '../../../../interfaces/iTermino';
+import { iMoneda, iNumEmpleados, iRegimen, iSector } from '../../../../interfaces/iTermino';
 import { EmpresaService } from '../../../../services/empresa.service';
 import { ServiceResponse } from '../../../../interfaces/service-response-login';
 import { MAT_SELECT_SCROLL_STRATEGY_PROVIDER_FACTORY } from '@angular/material/select';
@@ -39,6 +39,7 @@ export class EmpresaComponent {
       this.cargarSector();
       this.cargarRegimen();
       this.cargarEmpresaById();
+      this.cargarMonedas();
     }
     numEmpleadosData : iNumEmpleados[]=[
       {value : '1 a 10', name: '1 a 10'},
@@ -52,6 +53,7 @@ export class EmpresaComponent {
 
     dataListSector : iSector[]=[];
     dataLisRegimen : iRegimen[]=[];
+    dataListMonedas : iMoneda[]=[];
 
     
   miFormulario : FormGroup = this.fb.group(
@@ -67,6 +69,7 @@ export class EmpresaComponent {
       web : this.fb.control("",),
       idRegimen : this.fb.control(null),
       idSector :  this.fb.control(null),
+      idMoneda :  this.fb.control("", Validators.required),
       facturacionElectronica : this.fb.control(false),
       cantEmpleados : this.fb.control("")
 
@@ -76,6 +79,7 @@ export class EmpresaComponent {
   selectedFile: File | undefined;
   imageUrl: string | ArrayBuffer | null = null;
   formData =  new FormData();
+  moneda! : iMoneda;
   uploadFile(file : File)
   {
     this.formData.append('file',file);
@@ -108,6 +112,7 @@ export class EmpresaComponent {
      this.formData.append('web', this.miFormulario.get('web')?.value);
      this.formData.append('idRegimen', this.miFormulario.get('idRegimen')?.value);
      this.formData.append('idSector', this.miFormulario.get('idSector')?.value);
+     this.formData.append('idMoneda', this.miFormulario.get('idMoneda')?.value);
      this.formData.append('cantEmpleados', this.miFormulario.get('cantEmpleados')?.value);
      this.formData.forEach(c=>{console.log(c)});
     
@@ -139,7 +144,7 @@ export class EmpresaComponent {
   {
     this.empresaService.getAllMonedas().subscribe((response : ServiceResponse)=>
     {
-      response.data!=null? this.dataListSector = response.data : ""
+      response.data!=null? this.dataListMonedas = response.data : ""
     })
   }
 

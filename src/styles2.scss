@@ -1,0 +1,6 @@
+@use '@angular/material' as mat;
+.input-parent {
+    @include mat.form-field-density(-3);
+    display: flex;
+    justify-content: space-between;
+} 

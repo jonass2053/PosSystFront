@@ -16,7 +16,7 @@
     <div class="formularioCard">
       <!-- <p style="font-size: small;">Crea una numeración para organizar y tener el control de tus comprobantes</p> -->
     
-      <div class="containerfuncionesheader">
+      <div class="containerfuncionesheader input-parent">
         <input type="button" value=" +  Agregar" data-toggle="modal" data-target="#exampleModal" class="btnGuardar">
         <mat-form-field appearance="outline">
             <mat-label>Buscar</mat-label>
@@ -33,7 +33,7 @@
               <th style="text-align: center;"></th>
            
               <th scope="col">Nombre</th>
-              <th scope="col">Descripción</th>
+              <th scope="col" class="d-lg-block d-md-block d-sm-none d-xs-none">Descripción</th>
               <th scope="col">Precio</th>
               <th scope="col">Cantidad en almacen</th>
               
@@ -48,7 +48,7 @@
               <td><div style="display: flex; justify-content: center; align-items: center; width: 100%; box-sizing: border-box; border-radius: 50px;"><img class="d-sm-block" src="{{producto.imagen}}" alt="" style="width: 25px; height: 25px; border-radius: 50%;"></div>  </td>
               <td><div>{{producto.nombre}}</div></td>
               <td><div>{{producto.descripcion}}</div></td>
-              <td><div>{{producto.precioFinal | currency : "RD$ "}}</div> </td>
+              <td><div>{{moneda.simbolo }} {{producto.precioFinal}}</div> </td>
               <td><div> {{producto.cantInicial}}</div></td>
               <td class="acciones">
                 <button class="btnaccion" (click)="editar(producto)" data-toggle="modal"
@@ -75,7 +75,7 @@
   <div class="modal fade fade bd-example-modal-smq" id="exampleModal" tabindex="-1" role="dialog"
     aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
+      <div class="modal-content" >
         <div class="modal-header">
           <h2 class="modal-title" id="exampleModalLabel">Producto</h2>
 
@@ -84,57 +84,17 @@
           <span aria-hidden="true">&times;</span>
         </button> -->
         </div>
-        <div class="modal-body">
-
-
+        <div class="modal-body" >
           <div class="control">
-
             <form class="formulario" [formGroup]="miFormulario" (ngSubmit)="save()">
               <div class="container">
                 <div class="row">
-
-                  <!-- <mat-slide-toggle formControlName="predeterminada"
-                  class="example-margin"
-                  [color]="color"
-                  [checked]="checked">
-                  
-                Seleccionar como predeterminada
-              </mat-slide-toggle> -->
-                  <!-- <div class="col-md-6 col-sm-12 col-xs-12">
-                    <mat-form-field appearance="outline" class="control">
-                      <mat-label>Tipo de documento</mat-label>
-                      <mat-select formControlName="idTipoDocumento">
-                        <mat-option>Clear</mat-option>
-                        <mat-option (click)="cargarTipoNumeracion(tipo.idTipoDocumento)" *ngFor="let tipo of dataListTipoDocumentos"
-                          [value]='tipo.idTipoDocumento'>{{tipo.nombre}}</mat-option>
-                      </mat-select>
-                      <mat-hint align="end">Este campo es obligatorio</mat-hint>
-                    </mat-form-field>
-                  </div> -->
-
-                  <!-- <div class="col-md-6 col-sm-12 col-xs-12">
-                    <mat-form-field appearance="outline" class="control">
-                      <mat-label>Tipo de numeración</mat-label>
-                      <mat-select formControlName="idTipoNumeracion">
-                        <mat-option>Clear</mat-option>
-                        <mat-option (click)="seleccionarTipoNumeracion(tipo)"  *ngFor="let tipo of dataListTipoNumeracion"
-                          [value]="tipo.idTipoNumeracion">{{tipo.nombre}}</mat-option>
-                      </mat-select>
-                      <mat-hint align="end">Este campo es obligatorio</mat-hint>
-                    </mat-form-field>
-                  </div> -->
-
-
                   <div>
                     <div class="row">
 
                       <div class="col-md-6  col-sm-12 col-xs-12 mb-3">
                        
                         <mat-radio-group aria-label="Select an option" formControlName="isProduct" >
-                          <!-- <div style="display: flex;">
-                            <div class="option"><mat-radio-button (click)="isProductView(1)" value='true'>Producto</mat-radio-button></div>
-                            <div class="option"><mat-radio-button (click)="isProductView(0)"  value='false' >Servicio</mat-radio-button></div>
-                          </div> -->
                           <mat-radio-button (click)="isProductView(1)" [value]='true'>Producto</mat-radio-button>
                           <mat-radio-button (click)="isProductView(0)"  [value]='false' >Servicio</mat-radio-button>
                         </mat-radio-group>

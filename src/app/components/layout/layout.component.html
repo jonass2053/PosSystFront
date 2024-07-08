@@ -6,20 +6,20 @@
                     <i class="lni lni-grid-alt"></i>
                 </button>
                 <div class="sidebar-logo">
-                    <a [routerLink]="['layout']">CodzSword</a>
+                    <a [routerLink]="['layout']">SystPost</a>
                 </div>
             </div>
             <ul class="sidebar-nav">
                 <li class="sidebar-item">
                     <a [routerLink]="['layout']" class="sidebar-link">
                         <i class="lni lni-stats-up"></i>
-                        <span>Movimiento </span>
+                        <span>Inicio</span>
                     </a>
                 </li>
                 <li class="sidebar-item">
                     <a [routerLink]="['layout']" class="sidebar-link">
                         <i class="lni lni-cart-full"></i>
-                        <span>Nueva Venta </span>
+                        <span>Ingresos </span>
                     </a>
                 </li>
                 <li class="sidebar-item">
@@ -28,21 +28,7 @@
                         <span>Nuevo Gasto</span>
                     </a>
                 </li>
-                <li class="sidebar-item">
-                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                        data-bs-target="#auth" aria-expanded="false" aria-controls="auth">
-                        <i class="lni lni-protection"></i>
-                        <span>Auth</span>
-                    </a>
-                    <ul id="auth" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                        <li class="sidebar-item">
-                            <a href="#" class="sidebar-link">Login</a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a href="#" class="sidebar-link">Register</a>
-                        </li>
-                    </ul>
-                </li>
+                
                 
                 <li class="sidebar-item">
                     <a  class="sidebar-link">
@@ -123,7 +109,7 @@
 
     </div> -->
 
-    <nav class="navbar navbar-expand-lg  shadow-sm p-3 ">
+  <!-- <nav class="navbar navbar-expand-lg  shadow-sm p-3 ">
         <a class="navbar-brand" href="#">{{"[{SysPost}]"}}</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -189,9 +175,170 @@
           </ul>
          
         </div>
-      </nav>
+      </nav>   -->
 
-   
-        <router-outlet class="oulet"></router-outlet>
-
+<!-- menu de navegacion en modal -->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-2 col-md-2 d-lg-block d-md-block d-sm-none d-xs-none    modalNav">
     
+            <div class="nav">
+                <ul>
+                    <li class="item"><a [routerLink]="['inicio']" [routerLinkActive]="['itemActivo']"><i class="bi bi-house"></i> <div>Inicio</div> </a> </li>
+                    <li class="item " (click)="showListVentas()"><i class="lni lni-cart-full"></i>Ingresos  
+                        <div *ngIf="listIngresos==false"><i class="bi bi-caret-down-fill"></i></div>  
+                        <div *ngIf="listIngresos==true" ><i class="bi bi-caret-up-fill"></i></div>    
+                    </li>
+                    <li class="contItem" [class.show]="listIngresos"> 
+                            <a [routerLink]="['factura']">Facturas</a>
+                            <a href="#">Pagos recibidos</a>
+                            <a href="#">Cotizaciones</a>
+                            <a href="#">Conduce</a>
+                            <a href="#">Nota de credito</a>
+                    </li>
+                    <li class="item"><a href=""><i class="bi bi-basket"></i> Compras</a></li>
+                    <li class="item"><a [routerLink]="['contactos']"><i class="bi bi-person-add"></i>Contactos</a></li>
+                    <li class="item " (click)="showListInventario()"><i class="lni lni-cart-full"></i>Inventario  
+                        <div *ngIf="listInventario==false"><i class="bi bi-arrow-bar-down"></i></div>  
+                        <div *ngIf="listInventario==true" ><i class="bi bi-arrow-bar-up"></i></div>    
+                    </li>
+                    <li class="contItem" [class.show]="listInventario"> 
+                        <a [routerLink]="['productos']">Productos y servicios</a>
+                        <a href="#">Valor de inventario</a>
+                        <a href="#">Ajuste de inventario</a>
+                        <a [routerLink]="['almacenes']">Almacenes</a>
+                        <a [routerLink]="['categorias']">Categorias</a>
+                        <a [routerLink]="['marcas']">Marcas</a>
+                        <a [routerLink]="['modelos']">Modelos</a>
+                </li>
+                    <li class="item"><a href=""><i class="bi bi-bank"></i> Bancos</a></li>
+                    <li class="item"><a [routerLink]="['configuraciones']" [routerLinkActive]="['itemActivo']"><i class="bi bi-sliders2"></i> Configuraciones</a></li>
+
+            </ul>
+            </div>
+            
+        </div>
+        <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12 containerbody">
+            <div class="headerPrincipal">
+               <div><img src="../../../assets/descarga.png" alt=""></div>
+               <div class="menuPrifiler" [matMenuTriggerFor]="menu">
+                <div class="icono">
+                    <mat-icon>arrow_drop_down</mat-icon>
+                     
+                  </div>
+                <div class="infoProfiler">
+                   <div>{{nombreCompleto}}</div>
+                  <div>{{rol}}</div>  
+                </div>
+             
+                <div class="icono">
+                    <img class="icono" src="../../../assets/1710425405810.jpg" alt="">
+                </div>
+                <mat-menu #menu="matMenu" #beforeMenu="matMenu" xPosition="before">
+                    <button mat-menu-item>
+                        <i class="bi bi-person-badge-fill"></i>
+                      <span> Perfil</span>
+                    </button>
+                    <button mat-menu-item >
+                        <i class="bi bi-pencil-square"></i>
+                      <span>Editar perfil</span>
+                    </button>
+                    <button mat-menu-item>
+                        <i class="bi bi-info-square-fill"></i>
+                      <span>Ayuda</span>
+                    </button>
+                    <button mat-menu-item>
+                        <i class="bi bi-box-arrow-left"></i>
+                      <span>Cerrar sesión</span>
+                    </button>
+                  </mat-menu>
+            
+            
+              </div>
+
+            </div>
+            <router-outlet></router-outlet>
+           
+
+
+        </div>
+        
+    </div>
+    
+</div>
+<!--  
+        <router-outlet></router-outlet> -->
+
+<!-- Modal -->
+<div class="modal fade" id="modalMenu" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <!-- <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div> -->
+        <div class="modal-body" style="margin: 0 !important; padding: 0 !important;">
+          
+            <div class="nav" [class.modalActive]="statusModal">
+                <ul>
+                    <li data-dismiss="modal" class="item" ><a [routerLink]="['inicio']" ><i class="bi bi-house"></i> <div>Inicio</div> </a> </li>
+                    <li class="item " (click)="showListVentas()"><i class="lni lni-cart-full"></i>Ingresos  
+                        <div *ngIf="listIngresos==false"><i class="bi bi-arrow-bar-down"></i></div>  
+                        <div *ngIf="listIngresos==true" ><i class="bi bi-arrow-bar-up"></i></div>    
+                    </li>
+                    <li class="contItem" [class.show]="listIngresos"> 
+                            <a href="#">Facturas</a>
+                            <a href="#">Pagos recibidos</a>
+                            <a href="#">Cotizaciones</a>
+                            <a href="#">Conduce</a>
+                            <a href="#">Nota de credito</a>
+                    </li>
+                    <li class="item"><a href=""><i class="bi bi-basket"></i> Compras</a></li>
+                    <li class="item"><a [routerLink]="['contactos']"><i class="bi bi-person-add"></i>Contactos</a></li>
+                    <li class="item " (click)="showListInventario()"><i class="lni lni-cart-full"></i>Inventario  
+                        <div *ngIf="listInventario==false"><i class="bi bi-arrow-bar-down"></i></div>  
+                        <div *ngIf="listInventario==true" ><i class="bi bi-arrow-bar-up"></i></div>    
+                    </li>
+                    <li data-dismiss="modal" class="contItem" [class.show]="listInventario" > 
+                        <a  [routerLink]="['productos']">Productos y servicios</a>
+                        <a href="#">Valor de inventario</a>
+                        <a href="#">Ajuste de inventario</a>
+                        <a [routerLink]="['almacenes']">Almacenes</a>
+                        <a [routerLink]="['categorias']">Categorias</a>
+                        <a [routerLink]="['marcas']">Marcas</a>
+                        <a [routerLink]="['modelos']">Modelos</a>
+                </li>
+                    <li class="item"><a href=""><i class="bi bi-bank"></i> Bancos</a></li>
+                    <li data-dismiss="modal" class="item"><a [routerLink]="['configuraciones']" [routerLinkActive]="['itemActivo']"><i class="bi bi-sliders2"></i> Configuraciones</a></li>
+
+            </ul>
+            </div>
+        </div>
+        <!-- <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div> -->
+      </div>
+    </div>
+  </div>
+
+
+        <div class="bottom-bar">
+            <div style="display: flex; flex-direction: column; margin: 0; padding: 0;"><i class="bi bi-house-check-fill icon"></i>Inicio</div>
+            <div><i class="bi bi-coin icon"></i></div>
+            <button type="button" data-toggle="modal" data-target="#modalMenu"><i class="bi bi-list icon"></i></button>
+           <div> <i class="bi bi-file-earmark-person-fill icon"></i></div>
+          <div> <i class="bi bi-basket-fill icon"></i></div>
+        </div>
+           
+        <script>
+            function change(item){
+                const buttons = document.querySelectorAll('ion-icon');
+                buttons.forEach(function(obj){
+                    obj.classList.remove("active");
+                });
+                item.classList.add("active");
+            }
+        </script>

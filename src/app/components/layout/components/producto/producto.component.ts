@@ -4,7 +4,7 @@ import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, 
 import { AlertServiceService } from '../../../utilities/alert-service.service';
 import { MsjService } from '../../../utilities/msj.service';
 import { ProductoService } from '../../../../services/producto.service';
-import { iProducto, iContactoPos, iTermino, iVendedor, idNumeracion, idTipoContacto, iUnidades, iCuentas, iiMpuesto, iAlmacen, iCategoria, iMarca, iModelo, iImpuestoProductoCodigo } from '../../../../interfaces/iTermino';
+import { iProducto, iContactoPos, iTermino, iVendedor, idNumeracion, idTipoContacto, iUnidades, iCuentas, iiMpuesto, iAlmacen, iCategoria, iMarca, iModelo, iImpuestoProductoCodigo, iMoneda } from '../../../../interfaces/iTermino';
 import { ThemePalette, provideNativeDateAdapter } from '@angular/material/core';
 import { ServiceResponse } from '../../../../interfaces/service-response-login';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -49,13 +49,15 @@ export class ProductoComponent implements OnInit {
     private modeloService: ModelosService
 
   ) {
-
+   
     this.getAll();
     //  this.getAllCuentas();
     this.getAllUnidadesFilter('a');
     this.getAllImpuesto();
     this.getAllAlmacenes();
     this.getAllCategorias();
+    this.moneda = this.usuarioService.usuarioLogueado.data.sucursal.empresa.moneda;
+   
 
 
   }
@@ -126,6 +128,7 @@ export class ProductoComponent implements OnInit {
   formData = new FormData();
   isProduct: boolean = false;
   impuestoArray: Array<iiMpuesto> = [];
+  moneda! : iMoneda;
 
 
   uploadFile(file: File) {
@@ -382,7 +385,9 @@ export class ProductoComponent implements OnInit {
   //Set precio total controla el impuesto
   contadorExecnto: number = 0;
   setPrecioTotal(accion: number) {
+   
     if (accion == 1) {
+    
       let Excento = this.dataListImpuesto.filter((c: any) => c.porcentaje == 0 && c.nombre == "Excento");
       if (this.miFormulario.value.impuestos.includes(Excento[0].idImpuesto) == true && this.contadorExecnto == 0) {
 
@@ -402,17 +407,21 @@ export class ProductoComponent implements OnInit {
         this.dataListImpuesto.forEach(im => {
           if (this.miFormulario.value.impuestos.includes(im.idImpuesto) == true) {
             acumulador += im.porcentaje;
-            this.miFormulario.patchValue({ 'precioFinal': (this.miFormulario.value.precioBase * (acumulador / 100)) + this.miFormulario.value.precioBase })
+            this.miFormulario.patchValue({'precioFinal': (this.miFormulario.value.precioBase * (acumulador / 100)) + this.miFormulario.value.precioBase })
           }
   
         }
         )
      }
+     
+    }
 
     else {
+      console.log('else')
+      
       this.miFormulario.patchValue({ 'precioFinal': this.miFormulario.value.precioBase })
     }
-  }
+  
 }
 
 

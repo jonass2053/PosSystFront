@@ -23,6 +23,7 @@
                               <th scope="col">Cod</th>
                               <th scope="col">Nombre</th>
                               <th scope="col">Días</th>
+                              <th scope="col">Predeterminada</th>
                               <th scope="col" class="accionesTitle">Acciones</th>
                               <th class="cargandoTableIcono" ><div *ngIf="cargando" class="loaderTable"></div></th> 
                             </tr>
@@ -32,6 +33,15 @@
                               <th scope="row">{{termino.idTermino}}</th>
                               <td>{{termino.nombre}}</td>
                               <td>{{termino.dias}}</td>
+                               <td>
+                                <mat-slide-toggle 
+                                (click)="setPlazoDefault(termino.idTermino)"
+                                class="example-margin-details"
+                                [color]="color"
+                                [checked]="termino.predeterminado">
+                               </mat-slide-toggle>
+                            
+                               </td>
                               <td class="acciones">
                                 <button class="btnaccion" (click)="editar(termino)" data-toggle="modal" data-target="#exampleModal"><mat-icon data-toggle="modal">edit</mat-icon>Editar</button> 
                                 <button class="btnaccion" (click)="delete(termino.idTermino!)" data-target="#exampleModal"><mat-icon data-toggle="modal">delete</mat-icon>Eliminar</button> 

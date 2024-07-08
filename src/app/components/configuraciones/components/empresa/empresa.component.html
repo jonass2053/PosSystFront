@@ -134,6 +134,16 @@
                   </mat-select>
                 </mat-form-field>
               </div>
+
+              <div class="form-group">
+                <mat-form-field appearance="outline" class="select control">
+                  <mat-label>Selecciona una moneda</mat-label>
+                  <mat-select formControlName="idMoneda">
+                    <mat-option  *ngFor="let moneda of dataListMonedas"
+                      [value]="moneda.idMoneda">{{moneda.nombre}} - {{moneda.abreviatura}} -{{moneda.simbolo}}  </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
              
              
               <small class="form-text text-muted"> Los campos marcados con * son obligatorios</small>

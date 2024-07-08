@@ -77,5 +77,9 @@ export class ProductoService {
      {
       return this.http.get<ServiceResponse>(`${this.url}/filter/${valor}`)
      }
+     getAllFilterForDocument(valor : string) : Observable<ServiceResponse>
+     {
+      return this.http.get<ServiceResponse>(`${this.url}/filter-for-document/${valor}`)
+     }
    
 }

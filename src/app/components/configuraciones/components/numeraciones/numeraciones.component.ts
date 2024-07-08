@@ -49,10 +49,10 @@ export class NumeracionesComponent {
       idTipoNumeracion: this.fb.control(""),
       nombre: this.fb.control("", Validators.required),
       predeterminada: this.fb.control(false),
-      vigencia: this.fb.control("", Validators.required),
+      vigencia: this.fb.control(""),
       prefijo: this.fb.control(""),
       numeracionInicial: this.fb.control("", Validators.required),
-      nuemracionSiguiente: this.fb.control("", Validators.required),
+      contador: this.fb.control("", Validators.required),
       numeracionFinal: this.fb.control(""),
 
     });
@@ -195,7 +195,7 @@ export class NumeracionesComponent {
         'vigencia': numeracion.vigencia,
         'prefijo': numeracion.prefijo,
         'numeracionInicial': numeracion.numeracionInicial,
-        'nuemracionSiguiente': numeracion.nuemracionSiguiente,
+        'contador': numeracion.contador,
         'numeracionFinal': numeracion.numeracionFinal
       })
       console.log(numeracion.idTipoDocumento)

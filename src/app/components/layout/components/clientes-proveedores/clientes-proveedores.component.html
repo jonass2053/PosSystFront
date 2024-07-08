@@ -13,11 +13,11 @@
   
       <hr>
   
-      <div class="formularioCard">
+      <div class="formularioCard ">
         <p style="font-size: small;">Crea un contacto de tipo proveedor o clientes a los cuales le puedes asignar las operaciones del sistema. </p>
        <div>
         <input type="button" value=" + Nuevo" data-toggle="modal" data-target="#exampleModal" class="btnGuardar">
-        <div style="display: flex; justify-content: space-between;">
+        <div class="input-parent" style="display: flex; justify-content: space-between;">
         <mat-radio-group aria-label="Select an option">
           <mat-radio-button value="0" (click)="filterContact(0)">Todos</mat-radio-button>
           <mat-radio-button  *ngFor="let tipo of dataListTipoContacto" [value]="tipo.idTipoContacto" (click)="filterContact(tipo.idTipoContacto)" >{{tipo.nombre}}</mat-radio-button>

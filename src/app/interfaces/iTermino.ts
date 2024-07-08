@@ -2,7 +2,8 @@ export interface iTermino
 {
     idTermino : number,
     nombre : string,
-    dias : number
+    dias : number,
+    predeterminado : boolean
 }
 
 export interface idNumeracion
@@ -15,7 +16,7 @@ export interface idNumeracion
     vigencia : Date,
     prefijo : string,
     numeracionInicial : string,
-    nuemracionSiguiente : string, 
+    contador : string, 
     numeracionFinal : string,
     estado : boolean
 }
@@ -210,5 +211,36 @@ export interface iMoneda
 {
     idMoneda : number,
     nombre : string,
+    abreviatura : string,
+    simbolo : string
     
 }
+
+ export interface iFactura {
+    idFactura: number;
+    idNumeracion: number;
+    idContacto: number;
+    idTipoDocumento: number;
+    idSucursal: number;
+    idUsuario: number;
+    subTotal: number;
+    descuento: number;
+    totalGeneral: number;
+    idEmpresa: number;
+    vencimiento: string;
+    detalle: iDetalleFactura[];
+  }
+  
+ export interface iDetalleFactura {
+    idDetalleFactura?: number;
+    idFactura?: number;
+    idProducto: number;
+    nombre : string,
+    cantidad: number;
+    precio: number;
+    descuento: number;
+    impuestos: number;
+    subTotal : number,
+    total: number;
+    impuestosObject? : iiMpuesto[] 
+  }

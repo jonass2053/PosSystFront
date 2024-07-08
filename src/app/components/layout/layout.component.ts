@@ -4,6 +4,7 @@ import { UsuarioService } from '../../services/usuario.service';
 import { ServiceResponse } from '../../interfaces/service-response-login';
 import { NumeracionesComponent } from '../configuraciones/components/numeraciones/numeraciones.component';
 import { material } from '../utilities/material/material';
+var $ : any;
 
 @Component({
   selector: 'app-layout',
@@ -27,7 +28,8 @@ export class LayoutComponent {
         this.usuario = usuarioService.usuarioLogueado.data;
         console.log(this.usuario)
         this.nombreCompleto= this.capitalizeInitials(`${this.usuario.nombre} ${this.usuario.apellidos}`);
-        console.log(this.nombreCompleto);
+        this.rol =usuarioService.usuarioLogueado.data.rol.nombre;
+        console.log(this.rol)
       }
   }
 
@@ -35,9 +37,28 @@ export class LayoutComponent {
     return str.toLowerCase().split(' ').map((word: any) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
   }
 
+  closeModal()
+  {
 
+    // $('#modalMenu').modal('hide') 
+   
+  }
+  statusModal =  false;
   usuario! : any;
   nombreCompleto!: any;
+  rol !: any;
+  listIngresos : boolean =false;
+  listInventario : boolean =false;
+  showListVentas()
+  {
+    this.listIngresos==false? this.listIngresos=true : this.listIngresos=false;
+  
+  }
+  showListInventario()
+  {
+    this.listInventario==false? this.listInventario=true : this.listInventario=false;
+  
+  }
   test()
   { 
     const hamBurger = document.querySelector(".toggle-btn");

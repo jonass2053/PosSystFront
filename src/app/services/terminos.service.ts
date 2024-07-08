@@ -39,4 +39,9 @@ export class TerminosService {
      {
       return this.http.get<ServiceResponse>(`${this.url}`)
      }
+     
+     setDefautlTermino(idTermino : number) : Observable<ServiceResponse>
+     {
+      return this.http.post<ServiceResponse>(`${this.url}/setdefault`, idTermino)
+     }
 }

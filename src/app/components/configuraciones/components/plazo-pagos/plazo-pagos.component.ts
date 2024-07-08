@@ -7,6 +7,7 @@ import { iTermino } from '../../../../interfaces/iTermino';
 import { AlertServiceService } from '../../../utilities/alert-service.service';
 import { ServiceResponse } from '../../../../interfaces/service-response-login';
 import { MsjService } from '../../../utilities/msj.service';
+import { ThemePalette } from '@angular/material/core';
 declare var $: any;
 
 @Component({
@@ -41,7 +42,8 @@ export class PlazoPagosComponent {
     cargando : boolean = false;
     sinRegistros : boolean = false;
     sinRegistrosTxt : string =this.msjService.msjSinRegistros;
-    
+    color: ThemePalette = 'primary';
+
     closeModal() {
   
       $("#exampleModal").modal('hide');
@@ -122,6 +124,18 @@ export class PlazoPagosComponent {
     resetForm() {
       this.miFormulario.reset();
       this.closeModal();
+    }
+
+    setPlazoDefault(id: number) {
+      // this.alertaService.ShowLoading();
+      this.terminoService.setDefautlTermino(id).subscribe((data: ServiceResponse) => {
+        setTimeout(() => {
+          // this.alertaService.successAlert(data.message);
+          data.status ? this.resetForm : '';
+          this.getAll();
+          // this.closeModal();
+        }, 1000);
+      })
     }
 
 }

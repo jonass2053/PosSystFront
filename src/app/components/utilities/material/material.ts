@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, NgModel, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import {MatSelectModule} from '@angular/material/select';
 import { HttpClientModule } from '@angular/common/http';
@@ -15,11 +15,6 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
-
-
-
-
-
 
 
 
@@ -54,12 +49,9 @@ export const  importaciones : any =[
   CommonModule,
   MatIconModule,
   MatInputModule,
-  MatFormFieldModule,
   ReactiveFormsModule,
   CommonModule,
   RouterLink,
-  MatFormFieldModule,
-  MatInputModule,
   MatSelectModule,
   MatRadioModule,
   MatMenuModule,
@@ -70,10 +62,26 @@ export const  importaciones : any =[
   NgxMaskDirective,
   NgxMaskPipe,
   MatAutocompleteModule,
-  MatFormFieldModule
+  
+  
+  
 
   
 ]
+
+import { MatDateFormats } from '@angular/material/core';
+
+export const MY_DATE_FORMATS: MatDateFormats = {
+  parse: {
+    dateInput: 'DD/MM/YYYY',
+  },
+  display: {
+    dateInput: 'DD/MM/YYYY',
+    monthYearLabel: 'MMM YYYY',
+    dateA11yLabel: 'DD/MM/YYYY',
+    monthYearA11yLabel: 'MMMM YYYY',
+  },
+};
 
 
 

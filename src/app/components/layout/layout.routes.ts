@@ -10,6 +10,8 @@ import { AlmacenComponent } from "./components/almacen/almacen.component";
 import { ProductoComponent } from "./components/producto/producto.component";
 import { ModelosComponent } from "./components/modelos/modelos.component";
 import { MarcasComponent } from "./components/marcas/marcas.component";
+import { InicioComponent } from "./components/inicio/inicio.component";
+import { FacturaComponent } from "./components/factura/factura.component";
 
 
 
@@ -18,12 +20,15 @@ export const routes : Routes=[
     children:[
         {path : "configuraciones", loadChildren : ()=>import("../configuraciones/configuraciones.routes").then((c)=>c.configuracionRoutes)},
         {path : "empresa", component : EmpresaComponent},
-        {path : "clientesproveedores", component : ClientesProveedoresComponent},
-        {path : "categoria", component : CategoriaPComponent},
-        {path : 'almacen', component : AlmacenComponent},
+        {path : "inicio", component : InicioComponent},
+        {path : "contactos", component : ClientesProveedoresComponent},
+        {path : "categorias", component : CategoriaPComponent},
+        {path : 'almacenes', component : AlmacenComponent},
         {path : 'productos', component : ProductoComponent},
         {path : 'marcas', component : MarcasComponent},
-        {path : 'modelos', component : ModelosComponent}
+        {path : 'modelos', component : ModelosComponent},
+        {path : 'factura', component : FacturaComponent},
+        {path : '', component : InicioComponent},
       
        
     ],    

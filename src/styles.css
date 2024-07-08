@@ -1,6 +1,7 @@
+
 /* You can add global styles to this file, and also import other style files */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
-/* @import url('../node_modules/@angular/material/prebuilt-themes/purple-green.css'); */
+@import url('../node_modules/@angular/material/prebuilt-themes/indigo-pink.css'); 
 /* html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; } */
 /* You can add global styles to this file, and also import other style files */
@@ -12,13 +13,18 @@ hamBurger.addEventListener("click", function () {
   document.querySelector("#sidebar").classList.toggle("expand");
 }); */
 
+
+body{
+  background-color: #edf2fa;
+}
+
 :root {
     --color-primario: white ;
-    --color-secundario: #0f308d;
+    --color-secundario: #09184d;
     --tamanio-texto: 16px;
     --color-texto : #696969;
     --color-texto-interno : #464646;
-    --fondo-suave-color-secundario : #c2d1fb;
+    --fondo-suave-color-secundario : #f0f4ff;
     --borde-siave :rgb(241, 240, 240);
     --color-supersuave :rgb(249, 249, 250);
   }
@@ -110,7 +116,7 @@ body {
 
 .main {
     min-height: 100vh;
-    width: 100%;
+  
     overflow: hidden;
     transition: all 0.35s ease-in-out;
     
@@ -572,8 +578,7 @@ nav{
 
  .containerConfiguraciones
 {
-  width:100%;
-  background-color: white;
+  width:96%;
   overflow-y: auto;
   display: grid;
   place-items: center;
@@ -631,6 +636,13 @@ nav{
   border-top: 10px solid #d0e7ff
 
 }
+/* .cardContainer
+{
+  background-color: var(--color-supersuave) !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+} */
 
 .cardInter .cardBody .titule{
   font-size: 15px;
@@ -873,9 +885,13 @@ table
   font-size: 12px;
   /* border: 1px solid silver; */
   /* border-radius: 50px; */
+  overflow: auto;
 
 }
-
+.tbody
+{
+  border: 50px solid red;
+}
 .input-field{
   display: flex;
   flex-direction: column;
@@ -895,13 +911,12 @@ table
 }
 .input{
   height: 45px;
-  width: 100%;
   background: transparent;
   border: none;
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
   outline: none;
-  margin-bottom: 20px;
-  color: #40414a;
+  margin-left: 5px;
+
 }
 .input-box .input-field label{
   position: absolute;
@@ -955,8 +970,9 @@ input:-webkit-autofill:focus {
   height: 50px;
   transition: height ease-in-out 400ms;
 }
-.mat-form-field {
-  background-color: red !important; /* Cambia el color de fondo */
+mat-form-field {
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 /* esta es el estilo para que los select funcionen bien*/
@@ -1063,4 +1079,384 @@ table
 .containerfuncionesheader
 {
   display: flex; justify-content: space-between; align-items: center; width: 100%;
+}
+nav{
+  padding: 10px;
+}
+.navbar-toggler-icon
+{
+
+}
+.navbar-toggler
+{
+  background-color: white;
+}
+
+
+
+
+
+
+nav{
+  padding: 10px;
+}
+.navbar-toggler-icon
+{
+
+}
+.navbar-toggler
+{
+  background-color: white;
+}
+
+
+.modalNav
+{
+  height: 99vh;   
+  margin-top: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.containerbody
+{
+  height: 93vh;
+  overflow: auto; 
+}
+
+.containerbody .row
+{
+
+  margin-top: 20px;
+  display: flex;
+}
+
+.col 
+{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  
+
+}
+.cardresumen
+{
+  border: 1px solid silver;
+  height: 100px;
+  width: 100%;
+  border-radius: 8px;
+}
+.cardresumenrow2
+{
+  border: 1px solid silver;
+  height: 400px;
+      width: 100%;
+  border-radius: 8px;
+}
+
+
+
+.fila
+{
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  justify-content: center;
+}
+.fila div
+{
+  display: flex;
+  align-items: center;
+  border: 1px solid silver;
+  width: 97%;
+  height: 47%;
+  flex-direction: column;
+}
+.nav
+{
+background-color: white;
+width: 95%;
+height: 90vh;
+border-radius: 10px;
+display: flex;
+flex-direction: column;
+padding-top: 20px;
+margin-top: 20px;
+overflow: auto;
+}
+
+.nav ul
+{
+  margin: 0;
+  padding: 0;
+}
+
+.contItem
+{
+  display: flex;
+  flex-direction: column;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.50s ease-out;
+  background-color: rgb(244, 243, 243);
+}
+.contItem a {
+  display: block;
+  padding: 10px 15px;
+  text-decoration: none;
+  color: #333;
+}
+.contItem a:hover {
+  background-color: #cecece;
+}
+.contItem.show {
+  max-height: 500px; /* Ajusta este valor según la altura de tu contenido */
+}
+
+
+.icon{
+  display: none;
+}
+.bottom-bar
+{
+  display: none;
+}
+
+
+@media (max-width: 600px)
+{
+
+
+.bottom-bar{
+  background-color: var(--color-secundario);
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  margin-top: 20em;
+  height: 5em;
+  max-width: 30em;
+  border-radius: 20px 20px 0 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  z-index: 9999;
+  color: white;
+
+}
+button
+{   
+  margin: 0;
+  padding: 0;
+  border: 0px;
+  background-color: transparent;
+
+}
+.icon{
+  display: block;
+  font-size: 1.5em;
+  padding-left: .5em;
+  padding-right: .5em;
+  margin-left: .5em;
+  margin-top: 0;
+  transition: .5s ease-in-out;
+  border-radius: 100%;
+  cursor: pointer;
+
+}
+.modalNav
+{
+  display: none;
+}
+
+}
+
+
+
+button
+{   
+  margin: 0;
+  padding: 0;
+  border: 0px;
+  background-color: transparent;
+}
+
+/* ::-webkit-scrollbar {
+  display: none;
+} */
+
+
+
+.active{
+  transform: scale(1.25) translateY(-1em);
+  background: linear-gradient(135deg, rgb(17, 16, 40),#250c1a);
+  border: 7px solid #9a9ac3;
+  color: white;
+}
+.item
+{
+  padding: 10px;
+  width: 95%;
+  cursor: pointer;
+  font-size: 15px;
+  margin: 5px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgb(239, 239, 239);
+}
+.itemActivo
+{
+  width: 100%;
+  height: 5vh;
+  background-color: rgb(238, 238, 238);
+  border-radius: 5px;
+
+}
+.itemActivo a
+{
+ 
+  color: white;
+}
+
+.item a
+{
+  color: rgb(100, 100, 100);
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+i
+{
+  margin-right: 10px;
+  margin-left: 10px;
+}
+.dropbtn {
+
+  cursor: pointer;
+}
+
+/* .dropdown {
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+} */
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  left: 160px;
+  top: 10px;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+.containerbody .headerPrincipal
+{
+  width: 96%;
+  height: 7vh;
+  margin-top: 30px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.menuPrifiler
+{
+
+  display: flex;
+ min-width: 225px;
+  height: 6vh;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  cursor: pointer;
+
+}
+.infoProfiler
+{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  height: 5vh;
+
+}
+.menuPrifiler .icono
+{
+
+  width: 40px;
+  height: 40px;
+  border-radius: 50px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+
+.modalActive
+{
+  display: none;
+}
+/*  */
+
+
+.modal-body{
+  max-height: 550px;
+  overflow-y: auto;
+}
+
+.inputCustom
+{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-width: 300px
+}
+.resumenTotalesContainer{
+  text-align: right; 
+  width: 300px; 
+  height: auto;
+  display: flex; 
+  border-radius: 10px;
+  padding: 15px;
+  color: var(--color-texto);
+
+}
+.resumenTotales{
+
+  width: 100%;
+  padding: 1%;
+  border-bottom: 1px solid rgb(227, 227, 227);
+
+}
+
+.btnEliminar
+{
+  color:  red;
+}
+
+.btnEditar
+{
+  color:  green;
+  margin-right: 4px;
 }

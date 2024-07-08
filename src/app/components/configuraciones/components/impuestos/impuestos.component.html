@@ -30,7 +30,7 @@
           <tr *ngFor="let impuesto of dataList">
             <th scope="row">{{impuesto.idImpuesto}}</th>
             <td>{{impuesto.nombre}}</td>
-            <td>{{impuesto.porcentaje}}</td>
+            <td>{{impuesto.porcentaje}}%</td>
             <td>{{impuesto.descripcion}}</td>
             <td class="acciones">
               <button class="btnaccion" (click)="editar(impuesto)" data-toggle="modal"
