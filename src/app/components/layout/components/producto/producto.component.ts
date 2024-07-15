@@ -89,7 +89,7 @@ export class ProductoComponent implements OnInit {
       idCategoria: this.fb.control(null),
       idEmpresa: this.fb.control(null),
       filterUnidades: this.fb.control(''),
-      impuestos: this.fb.control(''),
+      impuestos: this.fb.control('', Validators.required),
     });
 
   // formFilter : FormGroup = this.fb.group(

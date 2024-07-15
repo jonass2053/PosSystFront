@@ -163,8 +163,8 @@
                     <div class="input-parent control">
                         <mat-form-field appearance="outline" class="control">
                             <mat-icon matSuffix>search</mat-icon>
-                            <mat-label matTooltip="Puede consultar un cliente por identitifacion o su nombre">Buscar</mat-label>
-                            <input type="text" matInput [matAutocomplete]="prductoBuscador" (input)="searchProducto($event)" formControlName="producto" >
+                            <mat-label matTooltip="Puede consultar un producto por su nombre">Buscar</mat-label>
+                            <input type="text" #inputProducto matInput [matAutocomplete]="prductoBuscador" (input)="searchProducto($event)" formControlName="producto" >
                             <mat-autocomplete #prductoBuscador="matAutocomplete"  [displayWith]="displayFnProducto" (optionSelected)="selectProducto($event)" >
                                 <mat-option  *ngFor="let producto of dataListProductosSearch" [value]="producto">
                                     {{ producto.nombre }}
@@ -256,8 +256,8 @@
                         <td>{{item.descuento | number : '1.2-5'}}</td>
                         <td>{{item.total | number : '1.2-5'}}</td>
                         <td style="text-align: right; width: 70px;">
-                            <mat-icon  class="btnEditar" style="cursor: pointer;" matTooltip="Editar">edit</mat-icon>
-                            <mat-icon (click)="removeItem(i)" class="btnEliminar" style="cursor: pointer;" matTooltip="Eliminar">delete</mat-icon>
+                            <mat-icon (click)="editRow(item, i)" class="btnEditar" style="cursor: pointer;" matTooltip="Editar">edit</mat-icon>
+                            <mat-icon (click)="removeItem(i)" class="btnEliminar" style="cursor: pointer;" matTooltip="Eliminar">closed</mat-icon>
                         </td>
                        
                                 
@@ -267,24 +267,30 @@
                 </tbody>
             </table>
             <div style="display: flex; justify-content:space-between;">
-                <div></div>
+                <div style="width: 60%;">
+                    <mat-form-field class="example-full-width" appearance="outline" style="width: 90%">
+                        <mat-label>Agregar un comentario o una nota al documento.</mat-label>
+                        <textarea rows="2" matInput placeholder="Ex. It makes me feel..."></textarea>
+                      </mat-form-field>
+
+                </div>
              
 
                 <div class="resumenTotalesContainer">
-                    <div style="width: 50%; height: 100%; ; display: flex; flex-direction: column;">
-                        <div class="resumenTotales">SubTotal : </div>
-                        <div class="resumenTotales">Descuento :</div>
-                        <div class="resumenTotales">Total General :</div>
+                    <div style="width: 40%;"></div>
+                    <div style="width: 60%; height: 100%; ; display: flex; flex-direction: column;">
+                        <div class="resumenTotales"><section class="mitad">Sub Total:</section> <section class="mitad">{{moneda.simbolo}}  {{subTotalGeneral | number : '1.2-5'}}</section></div>
+                        <div class="resumenTotales"><section class="mitad">Descuento:</section> <section class="mitad">{{moneda.simbolo}}  {{descuentoGeneral | number : '1.2-5' }}</section></div>
+                        <div class="resumenTotales" *ngFor="let item of dataListImpuestosDetails"><section class="mitad" *ngIf="item.porcentaje>0">{{item.nombre}}:</section> <section *ngIf="item.porcentaje>0" class="mitad">{{moneda.simbolo}}  {{item.monto | number : '1.2-5'}}</section></div>
+                        <div class="resumenTotales "><section class="mitad">Total General:</section> <section class="mitad">{{moneda.simbolo}}  {{totalGeneral | number : '1.2-5'}}</section></div>
                     </div>
 
-                    <div style="width: 50%; height: 100%;  display: flex; flex-direction: column;">
-                        <div class="resumenTotales"> {{moneda.simbolo}} 5000.00</div>
-                        <div class="resumenTotales">{{moneda.simbolo}} 1000.00</div>
-                        <div class="resumenTotales"> {{moneda.simbolo}}4000.00</div>
-                    </div>
-
-
-
+                    <!-- <div style="width: 50%; height: 100%;  display: flex; flex-direction: column;">
+                        <div class="resumenTotales"> {{subTotalGeneral | number : '1.2-5'}}</div>
+                        <div class="resumenTotales"> {{descuentoGeneral | number : '1.2-5'}}</div>
+                        <div  class="resumenTotales" *ngFor="let item of dataListImpuestosDetails">{{(item.porcentaje / 100)  * subTotalGeneral   | number : '1.2-5' }}</div>
+                        <div class="resumenTotales"> {{totalGeneral | number : '1.2-5'}}</div>
+                    </div> -->
                 </div>
             </div>
         </div>

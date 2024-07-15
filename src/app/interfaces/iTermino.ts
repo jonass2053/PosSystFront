@@ -169,6 +169,8 @@ export interface iiMpuesto
     porcentaje : number,
     impuestoAcreditable : boolean,
     descripcion : string,
+    porcentajeCalculado : number,
+    monto : number  
 }
 
 export interface iCategoria
@@ -239,6 +241,7 @@ export interface iMoneda
     cantidad: number;
     precio: number;
     descuento: number;
+    descuentoProcentual: number;
     impuestos: number;
     subTotal : number,
     total: number;

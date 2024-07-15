@@ -80,6 +80,9 @@ export class EmpresaComponent {
   imageUrl: string | ArrayBuffer | null = null;
   formData =  new FormData();
   moneda! : iMoneda;
+  subtotalGeneral : number =0;
+  descuentoGeneral : number =0;
+  totalGeneral : number =0;
   uploadFile(file : File)
   {
     this.formData.append('file',file);

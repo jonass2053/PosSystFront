@@ -19,6 +19,7 @@ import { VendedoresService } from '../../../../services/vendedores.service';
 import { ProductoService } from '../../../../services/producto.service';
 import { totalmem } from 'os';
 import { log } from 'console';
+import { constrainedMemory } from 'process';
 
 
 @Component({
@@ -56,7 +57,6 @@ export class FacturaComponent {
         this.moneda = this.usuarioService.usuarioLogueado.data.sucursal.empresa.moneda;
       }
       this.miFormulario.patchValue({fecha : new Date()})
-      console.log(this.miFormulario.value)
       this.getAllTerminos();  
       this.getAllNumeracion();
       this.getAllVendedores();
@@ -83,7 +83,7 @@ export class FacturaComponent {
     total : this.fb.control(0),
 
   })
-
+  editando : boolean = false;
   idProducto! : number;
   nombre : string="";
   cantidad : number=0;
@@ -97,16 +97,22 @@ export class FacturaComponent {
   dataListNumeracion : idNumeracion[]=[];
   dataListVendedores : iVendedor []=[];
   dataListDetalleFactura :iDetalleFactura[]  =[];
-  DetalleFactura : iDetalleFactura = { idDetalleFactura : 0, nombre :"",  idFactura : 0,  idProducto: 0, cantidad: 0, precio: 0, subTotal :0, descuento: 0, impuestos: 0, total: 0};
-  
+  DetalleFactura : iDetalleFactura = { idDetalleFactura : 0, nombre :"", descuentoProcentual:0,  idFactura : 0,  idProducto: 0, cantidad: 0, precio: 0, subTotal :0, descuento: 0, impuestos: 0, total: 0};
+  subTotalGeneral : number = 0;
+  descuentoGeneral : number = 0;
+  totalGeneral : number = 0;
+  descuentoPorcentual : number = 0;
+  impuestosGenerales : number = 0;
   moneda! : iMoneda;
   dataListTerminos : iTermino[]=[];
   dataListContactos : iContactoPos[]=[]; 
   dataListProductosSearch : iProducto[]=[];
   fechaVenvimiento : any;
+  dataListImpuestosDetails : iiMpuesto[]=[];
 
 
    addDetails(){
+    
   if(this.miFormulario.value.total==0 && this.miFormulario.value.cantidad!="")
     {
       this.alertaService.warnigAlert("Debe seleccionar un item y llenar los campos para poder agregar.")
@@ -120,18 +126,38 @@ export class FacturaComponent {
       ,cantidad : this.cantidad
       ,precio : this.precio
       ,descuento : this.descuento
+      ,descuentoProcentual : this.descuentoPorcentual
       ,subTotal : this.subTotal
       ,impuestos:this.impuestos
-      ,total : this.total
+      ,total : this.total,
+      impuestosObject : this.miFormulario.value.impuestoObjet
       }
+  
       this.dataListDetalleFactura.push(detalle)
       this.resetDetails();
+      this.calculoGeneral();
+      this.carlculasImpuestos(1, detalle);
+      this.editando = false;
     }
  
 }
 removeItem(indice : number)
 {
-  this.dataListDetalleFactura.splice(indice, 1);
+  if(this.editando)
+  {
+    this.alertaService.warnigAlert("Esta editando una fila, debe finalizar una edicion para afectar otro registro.");
+  }
+  else
+  {
+    this.carlculasImpuestos(2, this.dataListDetalleFactura[indice])
+    this.dataListDetalleFactura.splice(indice, 1);
+    this.resetDetails();
+    this.calculoGeneral();
+  }
+ 
+
+
+
 }
 
 searchContacto(event : any)
@@ -154,8 +180,19 @@ searchProducto(event : any)
     {
       this.productoService.getAllFilterForDocument((event.target as HTMLInputElement).value).subscribe((data: ServiceResponse)=>
         {
-          console.log(data.data)
             this.dataListProductosSearch = data.data;
+        })
+    }
+}
+searchProductoEdit(valor : string)
+{
+
+  if(valor.length>0)
+    {
+      this.productoService.getAllFilterForDocument(valor).subscribe((data: ServiceResponse)=>
+        {
+            this.dataListProductosSearch = data.data;
+            this.miFormulario.patchValue({producto : data.data[0]})
         })
     }
 }
@@ -169,15 +206,11 @@ displayFnProducto(producto?: iProducto): string | undefined | any {
   return producto ? producto.nombre : undefined;
 }
 
-selectContacto(event : any)
-{
-
+selectContacto(event : any){
   this.miFormulario.patchValue({identificacion : event.option.value.rnc, telefono  : event.option.value.telefono1, idNumeracion : event.option.value.idTipoNumeracion})
-  
 }
 
-selectProducto(event : any)
-{
+selectProducto(event : any){
   this.idProducto = event.option.value.idProducto;
   this.nombre = event.option.value.nombre;
   this.miFormulario.patchValue(
@@ -189,6 +222,19 @@ selectProducto(event : any)
     })
     this.calcular();
 }
+selectProductoForEdit(item : iDetalleFactura){
+  this.idProducto = item.idProducto;
+  this.nombre = item.nombre;
+  this.miFormulario.patchValue(
+    {
+     cantidad : item.cantidad,   
+     nombre : item.nombre,
+     precio  : item.precio,
+    
+    })
+    this.calcular();
+}
+
 
 
 getAllTerminos(){
@@ -200,7 +246,7 @@ getAllTerminos(){
     this.setVencimiento();
   })
 }
-
+  
 
 calVencimiento(fecha : Date, dias : any){   
    return addDays(this.miFormulario.value.fecha, dias);  
@@ -232,11 +278,11 @@ calcular(){
      this.cantidad = this.miFormulario.value.cantidad;
      this.precio = this.miFormulario.value.precio;
      this.subTotal =this.cantidad * this.precio;
+     this.descuentoPorcentual = this.miFormulario.value.descuento;
      this.descuento = (this.miFormulario.value.descuento/100) * this.subTotal;
      this.impuestos =0;
      this.miFormulario.value.impuestoObjet.forEach((imp : iiMpuesto) => {
      this.impuestos+=((imp.porcentaje/100) * 100); 
-     console.log(this.impuestos) 
      }); 
      this.impuestos = (this.impuestos /100) * this.subTotal;
      this.total = this.subTotal + this.impuestos - this.descuento;
@@ -247,6 +293,60 @@ calcular(){
       this.resetDetails();
     }
 }
+
+carlculasImpuestos(accion : number, detalle : iDetalleFactura )
+{ 
+  console.log('dentro')
+  this.miFormulario.value.impuestoObjet.forEach((a : iiMpuesto) => {
+    if(this.dataListImpuestosDetails.filter(c=>c.idImpuesto===a.idImpuesto).length>0)
+    {
+      this.dataListImpuestosDetails.map(z=>
+      {
+        if(z.idImpuesto==a.idImpuesto)
+        {
+          if(accion==1)
+          {
+            z.porcentajeCalculado+=a.porcentaje;
+            z.monto+= (z.porcentaje / 100) * detalle.subTotal;
+          }
+          else
+          {
+            z.porcentajeCalculado-=a.porcentaje;
+            z.monto-= (z.porcentaje / 100) * detalle.subTotal;
+
+          }
+        }   
+      }
+      )
+    }
+    else
+    {
+      a.monto= (a.porcentaje / 100) * detalle.subTotal;
+      this.dataListImpuestosDetails.push(a);
+    }
+  });
+
+  console.log(this.dataListImpuestosDetails)
+}
+
+calculoGeneral(){
+  this.dataListDetalleFactura.forEach(item=>{
+    this.subTotalGeneral += item.subTotal; 
+    this.descuentoGeneral += item.descuento; 
+    this.totalGeneral = this.totalGeneral + item.total;
+
+  })
+  if(this.dataListDetalleFactura.length<1)
+  {
+    this.subTotalGeneral = 0; 
+    this.descuentoGeneral = 0; 
+    this.totalGeneral =0; 
+    this.dataListImpuestosDetails = [];
+  }
+
+}
+
+
 resetDetails(){
   this.cantidad = 1;
   this.precio = 0
@@ -254,6 +354,9 @@ resetDetails(){
   this.impuestos = 0;
   this.total =0; 
   this.descuento =0;
+  this.totalGeneral = 0;
+  this.subTotalGeneral=0;
+  this.descuentoGeneral = 0;
   this.miFormulario.patchValue({
     cantidad : 1,
     precio : 0,
@@ -263,8 +366,32 @@ resetDetails(){
     total : 0,
     producto : ""
   })
-
  this.dataListProductosSearch = [];
 }
+
+
+  editRow(item  : iDetalleFactura, index : number){
+    if(this.editando==true)
+    {
+      this.alertaService.warnigAlert("Esta editando una fila, debe finalizar una edicion para afectar otro registro.");
+    }
+    else
+    {
+      this.editando =true;
+      this.searchProductoEdit(item.nombre);
+      this.miFormulario.patchValue({
+       cantidad: item.cantidad,
+       descuento : this.descuentoPorcentual,
+       precio : item.precio,
+       subTotal : item.subTotal,
+       impuesto : item.impuestos,
+       total : item.total
+      })
+  
+      this.dataListDetalleFactura.splice(index, 1);
+      this.selectProductoForEdit(item);
+    }
+   
+  }
 }
 

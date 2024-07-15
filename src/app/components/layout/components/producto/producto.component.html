@@ -74,7 +74,7 @@
   <!-- Modal -->
   <div class="modal fade fade bd-example-modal-smq" id="exampleModal" tabindex="-1" role="dialog"
     aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-lg" role="document" style="display: flex;">
       <div class="modal-content" >
         <div class="modal-header">
           <h2 class="modal-title" id="exampleModalLabel">Producto</h2>
@@ -283,53 +283,29 @@
           </div>
         </div>
       </div>
-    </div>
 
 
 
 
-
-
-
-
-
-
-
-    <!-- CarProductos -->
-    <!-- <div class="card mb-3" style="max-width: 540px;">
-      <div class="row no-gutters">
-        <div class="col-md-4 align-middle" style="display: flex; justify-content: center; align-items: center;">
-          <img src="https://a3.espncdn.com/combiner/i?img=%2Fphoto%2F2020%2F0424%2Fr692269_800x450_16%2D9.jpg"
-            class="card-img" alt="...">
-        </div>
-        <div class="col-md-8">
-          <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional
-              content. This content is a little bit longer.</p>
-            <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+            
+      <div>
+        <div class="card" style="width: 150px; max-width: 150px;">
+          <br>
+          <p style="text-align: center;">Imagen del producto / servicio</p>
+          <div class="row no-gutters">
+            <div style="max-width: 145px;">
+              <div *ngIf="selectedFile || imageUrl!=null">
+                <img [src]="imageUrl" class="img-thumbnail" alt="Selected Image"  style="max-width:  145px; max-height: 300px;">
+              </div>
+            </div>
+            </div>
           </div>
         </div>
       </div>
-    </div> -->
-<div style="position: relative;">
-  <div class="card" style="max-width: 50; width: 250px; min-height: 500px; position: absolute; bottom:200px; left: 1200px; position: fixed;">
-    <br>
-    <p style="text-align: center;">Imagen del producto / servicio</p>
-    <div class="row no-gutters">
-      <div class="col-md-4 align-middle" style="display: flex; justify-content: center; align-items: center;">
         
-        <div *ngIf="selectedFile || imageUrl!=null">
-          <img [src]="imageUrl" class="img-thumbnail" alt="Selected Image"  style="max-width:  225px; max-height: 300px; border: 1px; margin-left: 180px;">
-        </div>
-        
-        
-        <!-- <img src="https://a3.espncdn.com/combiner/i?img=%2Fphoto%2F2020%2F0424%2Fr692269_800x450_16%2D9.jpg"
-          class="card-img" alt="..." style="max-width: 225px; height: auto; border: 1px solid red; margin-left: 180px;"> -->
-      </div>
-      </div>
     </div>
-  </div>
 
-</div>
-  
+
+
+
+
