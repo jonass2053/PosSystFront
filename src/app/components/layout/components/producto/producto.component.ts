@@ -49,7 +49,7 @@ export class ProductoComponent implements OnInit {
     private modeloService: ModelosService
 
   ) {
-   
+
     this.getAll();
     //  this.getAllCuentas();
     this.getAllUnidadesFilter('a');
@@ -57,7 +57,7 @@ export class ProductoComponent implements OnInit {
     this.getAllAlmacenes();
     this.getAllCategorias();
     this.moneda = this.usuarioService.usuarioLogueado.data.sucursal.empresa.moneda;
-   
+
 
 
   }
@@ -71,27 +71,28 @@ export class ProductoComponent implements OnInit {
     {
       idProducto: this.fb.control(null),
       isProduct: this.fb.control(false, Validators.required),
-      idMarca: this.fb.control(null),
-      idModelo: this.fb.control(null),
+      idMarca: this.fb.control(''),
+      idModelo: this.fb.control(''),
       nombre: this.fb.control("", Validators.required),
-      idUnidad: this.fb.control("", Validators.required),
+      idUnidad: this.fb.control(''),
       costoInicial: this.fb.control(0, Validators.required),
       precioBase: this.fb.control(0, Validators.required),
-      precioFinal: this.fb.control(0, Validators.required),
-      descripcion: this.fb.control('', Validators.required),
-      idAlmacen: this.fb.control('', Validators.required),
-      cantInicial: this.fb.control(0, Validators.required),
+      precioFinal: this.fb.control(0),
+      descripcion: this.fb.control(''),
+      idAlmacen: this.fb.control(''),
+      cantInicial: this.fb.control(0),
       cantMinima: this.fb.control(0),
       cantMaxima: this.fb.control(0),
       // idCuentaContableParaVenta: this.fb.control(""),
       imagen: this.fb.control(''),
       venderSinUnidades: this.fb.control(false),
-      idCategoria: this.fb.control(null),
+      idCategoria: this.fb.control(''),
       idEmpresa: this.fb.control(null),
       filterUnidades: this.fb.control(''),
-      impuestos: this.fb.control('', Validators.required),
+      impuestos: this.fb.control(new Array()),
     });
 
+    impuestosArrayNumber : number[] = [];
   // formFilter : FormGroup = this.fb.group(
   //   {
   //     filterUnidades : this.fb.control(''),
@@ -128,12 +129,11 @@ export class ProductoComponent implements OnInit {
   formData = new FormData();
   isProduct: boolean = false;
   impuestoArray: Array<iiMpuesto> = [];
-  moneda! : iMoneda;
+  moneda!: iMoneda;
 
 
   uploadFile(file: File) {
     this.formData.append('file', file);
-
   }
 
   closeModal() { $("#exampleModal").modal('hide'); }
@@ -144,7 +144,7 @@ export class ProductoComponent implements OnInit {
     this.alertaService.ShowLoading();
     this.productoService.insert(this.formData).subscribe((data: ServiceResponse) => {
 
-      this.miFormulario.value.impuestos.forEach((a: number) => {
+      this.impuestosArrayNumber.forEach((a: number) => {
         let imp = new iImpuestoProductoCodigo();
         imp.idProducto = data.data.idProducto;
         imp.idImpuesto = a;
@@ -184,6 +184,7 @@ export class ProductoComponent implements OnInit {
 
   }
   editar(producto: iProducto) {
+    console.log(producto)
     this.miFormulario.reset(producto)
     this.isProduct = producto.isProduct;
     this.getMarcas(this.miFormulario.value.idCategoria)
@@ -191,13 +192,8 @@ export class ProductoComponent implements OnInit {
     this.getAllUnidadesFilter('a');
     this.miFormulario.patchValue({ 'idUnidad': producto.idUnidad })
     this.imageUrl = producto.imagen;
-    console.log(producto.impuestos)
-    this.miFormulario.patchValue({ impuestos: producto.impuestos })
+    this.miFormulario.patchValue({ impuestos: producto.impuestos[0] })
     console.log(this.miFormulario.value)
-
-
-
-
     this.productoService.getAllUnidadesFilter(producto.idUnidad.toString()).subscribe((data: any) => {
       this.miFormulario.patchValue({ 'filterUnidades': data.data.find((c: any) => c.idUnidad == producto.idUnidad) })
     })
@@ -209,7 +205,9 @@ export class ProductoComponent implements OnInit {
   update() {
     this.alertaService.ShowLoading();
     this.productoService.update(this.formData).subscribe((data: ServiceResponse) => {
-
+      let a = [];
+      a.push(this.miFormulario.value.impuestos);  
+      this.miFormulario.patchValue({impuestos : a})
       this.miFormulario.value.impuestos.forEach((a: number) => {
         let imp = new iImpuestoProductoCodigo();
         imp.idProducto = this.miFormulario.value.idProducto;
@@ -232,31 +230,32 @@ export class ProductoComponent implements OnInit {
   }
 
   save() {
-
-    console.log(this.miFormulario.value);
     this.formData.append('idEmpresa', this.usuarioService.usuarioLogueado.data.sucursal.idEmpresa)
-    this.formData.append('nombre', this.miFormulario.get('nombre')?.value);
+    this.formData.append('nombre',  this.miFormulario.get('nombre')?.value);
     this.formData.append('idProducto', this.miFormulario.get('idProducto')?.value)
     this.formData.append('isProduct', this.miFormulario.get('isProduct')?.value);
-    this.formData.append('idUnidad', this.miFormulario.get('idUnidad')?.value);
+    this.formData.append('idUnidad', this.miFormulario.get('idUnidad')?.value==null? '' : this.miFormulario.get('idUnidad')?.value);
     this.formData.append('costoInicial', this.miFormulario.get('costoInicial')?.value);
     this.formData.append('precioBase', this.miFormulario.get('precioBase')?.value);
     this.formData.append('precioFinal', this.miFormulario.get('precioFinal')?.value);
     this.formData.append('descripcion', this.miFormulario.get('descripcion')?.value);
-    this.formData.append('idAlmacen', this.miFormulario.get('idAlmacen')?.value);
+    this.formData.append('idAlmacen', this.miFormulario.get('idAlmacen')?.value==null? '' : this.miFormulario.value.idAlmacen);
     this.formData.append('cantInicial', this.miFormulario.get('cantInicial')?.value);
     this.formData.append('cantMinima', this.miFormulario.get('cantMinima')?.value);
     this.formData.append('cantMaxima', this.miFormulario.get('cantMaxima')?.value);
     // this.formData.append('idCuentaContableParaVenta', this.miFormulario.get('idCuentaContableParaVenta')?.value);
-    this.formData.append('venderSinUnidades', this.miFormulario.get('venderSinUnidades')?.value);
-    this.formData.append('idCategoria', this.miFormulario.get('idCategoria')?.value);
-    this.formData.append('idMarca', this.miFormulario.get('idMarca')?.value);
-    this.formData.append('idModelo', this.miFormulario.get('idModelo')?.value);
+    this.formData.append('venderSinUnidades', this.miFormulario.get('venderSinUnidades')?.value==null? '' : this.miFormulario.value.venderSinUnidades);
+    this.formData.append('idCategoria', this.miFormulario.get('idCategoria')?.value==null? '' : this.miFormulario.value.idCategoria);
+    this.formData.append('idMarca', this.miFormulario.get('idMarca')?.value==null? '' : this.miFormulario.value.idMarca);
+    this.formData.append('idModelo', this.miFormulario.get('idModelo')?.value==null? '' : this.miFormulario.value.idModelo);
     this.impuestoArray = this.miFormulario.value.impuestos;
     console.log(this.impuestoArray);
     if (this.miFormulario.valid) {
       this.miFormulario.get('idProducto')?.value === null ? this.insert() : this.update()
-
+    }
+    else
+    {
+      this.alertaService.warnigAlert("Debe completar los campos necesarios para poder guardar el articulo.");
     }
   }
 
@@ -303,26 +302,25 @@ export class ProductoComponent implements OnInit {
   displayFnImpuesto(impuesto?: iiMpuesto): string | undefined | any {
     return impuesto ? impuesto.nombre : undefined;
   }
-  getAllFilter(event : any) {
+  getAllFilter(event: any) {
     const filtro = (event.target as HTMLInputElement).value;
-    if(filtro=="")
-      {
-        this.getAll();
-      }
-      else{
-        this.cargando = true;
-        this.productoService.getAllFilter(filtro).subscribe((data: any) => {
-          this.dataList = data.data;
-          if (this.dataList.length > 0) {
-            this.sinRegistros = false
-            this.cargando = false;
-          }
-          else {
-            this.sinRegistros = true;
-            this.cargando = false;
-          }
-        })
-      }
+    if (filtro == "") {
+      this.getAll();
+    }
+    else {
+      this.cargando = true;
+      this.productoService.getAllFilter(filtro).subscribe((data: any) => {
+        this.dataList = data.data;
+        if (this.dataList.length > 0) {
+          this.sinRegistros = false
+          this.cargando = false;
+        }
+        else {
+          this.sinRegistros = true;
+          this.cargando = false;
+        }
+      })
+    }
 
   }
 
@@ -384,45 +382,53 @@ export class ProductoComponent implements OnInit {
 
   //Set precio total controla el impuesto
   contadorExecnto: number = 0;
-  setPrecioTotal(accion: number) {
-   
-    if (accion == 1) {
+  setPrecioTotal(accion: number, impuesto? : iiMpuesto) {
+    console.log(accion)
+    console.log(impuesto)
+    if(impuesto===undefined)
+    {
+      this.miFormulario.patchValue({'precioFinal': this.miFormulario.value.precioBase})
+    }
+    else
+    {
+      let montoCalculado = this.miFormulario.value.precioBase + ((impuesto.porcentaje/100) * this.miFormulario.value.precioBase);
+      this.impuestosArrayNumber.push(impuesto.idImpuesto!);
+      console.log(montoCalculado)
+      this.miFormulario.patchValue({'precioFinal': montoCalculado})
+    }
+
     
-      let Excento = this.dataListImpuesto.filter((c: any) => c.porcentaje == 0 && c.nombre == "Excento");
-      if (this.miFormulario.value.impuestos.includes(Excento[0].idImpuesto) == true && this.contadorExecnto == 0) {
+    // if (accion == 1) {
+    //   let Excento = this.dataListImpuesto.filter((c: any) => c.porcentaje == 0 && c.nombre == "Excento");
+    //   if(this.miFormulario.value.impuestos.includes(Excento[0].idImpuesto) == true && this.contadorExecnto == 0) {
 
-        this.miFormulario.patchValue({ 'impuestos': [Excento[0].idImpuesto] })
-        this.contadorExecnto = 1;
-      }
-      else {
+    //     this.miFormulario.patchValue({ 'impuestos': [Excento[0].idImpuesto] })
+    //     this.contadorExecnto = 1;
+    //   }
+    //   else{
 
-        console.log(this.miFormulario.value.impuestos.filter((c: number) => c != Excento[0].idImpuesto))
-        this.miFormulario.patchValue({ 'impuestos': this.miFormulario.value.impuestos.filter((c: number) => c != Excento[0].idImpuesto) })
-        this.contadorExecnto = 0;
-      }
+    //     this.miFormulario.patchValue({ 'impuestos': this.miFormulario.value.impuestos.filter((c: number) => c != Excento[0].idImpuesto) })
+    //     this.contadorExecnto = 0;
+    //   }
 
-      if (this.miFormulario.value.impuestos.length > 0) {
-        let exento = this.dataListImpuesto.find((c: any) => c.porcentaje == 0)
-        let acumulador = 0;
-        this.dataListImpuesto.forEach(im => {
-          if (this.miFormulario.value.impuestos.includes(im.idImpuesto) == true) {
-            acumulador += im.porcentaje;
-            this.miFormulario.patchValue({'precioFinal': (this.miFormulario.value.precioBase * (acumulador / 100)) + this.miFormulario.value.precioBase })
-          }
-  
-        }
-        )
-     }
-     
-    }
+    //   if (this.miFormulario.value.impuestos.length > 0) {
+    //     let exento = this.dataListImpuesto.find((c: any) => c.porcentaje == 0)
+    //     let acumulador = 0;
+    //     this.dataListImpuesto.forEach(im => {
+    //       if (this.miFormulario.value.impuestos.includes(im.idImpuesto) == true) {
+    //         acumulador += im.porcentaje;
+    //         this.miFormulario.patchValue({ 'precioFinal': (this.miFormulario.value.precioBase * (acumulador / 100)) + this.miFormulario.value.precioBase })
+    //       }
 
-    else {
-      console.log('else')
-      
-      this.miFormulario.patchValue({ 'precioFinal': this.miFormulario.value.precioBase })
-    }
-  
-}
+    //     }
+    //     )
+    //   }
+    // }
+    // else {
+    //   this.miFormulario.patchValue({ 'precioFinal': this.miFormulario.value.precioBase })
+    // }
+
+  }
 
 
   getAllAlmacenes() {

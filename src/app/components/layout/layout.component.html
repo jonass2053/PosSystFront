@@ -190,7 +190,7 @@
                         <div *ngIf="listIngresos==true" ><i class="bi bi-caret-up-fill"></i></div>    
                     </li>
                     <li class="contItem" [class.show]="listIngresos"> 
-                            <a [routerLink]="['factura']">Facturas</a>
+                            <a [routerLink]="['facturas']">Facturas</a>
                             <a href="#">Pagos recibidos</a>
                             <a href="#">Cotizaciones</a>
                             <a href="#">Conduce</a>
@@ -211,7 +211,7 @@
                         <a [routerLink]="['marcas']">Marcas</a>
                         <a [routerLink]="['modelos']">Modelos</a>
                 </li>
-                    <li class="item"><a href=""><i class="bi bi-bank"></i> Bancos</a></li>
+                    <li class="item"><a [routerLink]="['bancos']"><i class="bi bi-bank"></i> Bancos</a></li>
                     <li class="item"><a [routerLink]="['configuraciones']" [routerLinkActive]="['itemActivo']"><i class="bi bi-sliders2"></i> Configuraciones</a></li>
 
             </ul>

@@ -1,0 +1,112 @@
+<div class="containerConfiguraciones">
+    <div class="containerInter">
+        <div class="titulo">
+            <div class="containerIcoText">
+                <mat-icon>inventory</mat-icon> Facturas
+            </div>
+            <a [routerLink]="['/layout']">
+                <div class="containerIcoText"><mat-icon>arrow_back</mat-icon>Retroceder</div>
+            </a>
+        </div>
+
+        <hr>
+
+        <div class="formularioCard">
+            <!-- <p style="font-size: small;">Crea una numeración para organizar y tener el control de tus comprobantes</p> -->
+
+            <div class="containerfuncionesheader input-parent">
+                <a [routerLink]="['/layout/factura']" class="btnGuardar">+ Agregar</a>
+                <!-- <input type="button" value=" + Agregar" data-toggle="modal" data-target="#exampleModal"
+                    class="btnGuardar"> -->
+                <mat-form-field appearance="outline">
+                    <mat-label>Buscar</mat-label>
+                    <input matInput (keyup)="getAllFilter($event)" placeholder="buscar">
+                    <mat-icon matSuffix>search</mat-icon>
+                </mat-form-field>
+            </div>
+
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <table class="table table-hover table-striped control">
+                    <thead class="con">
+                        <tr>
+                            <th scope="col">Numero</th>
+                            <th scope="col" class="d-lg-block d-md-block d-sm-none d-xs-none">Cliente</th>
+                            <th scope="col">Creación</th>
+                            <th scope="col">Vencimiento</th>
+                            <th scope="col">Total</th>
+                            <th scope="col">Monto pagado</th>
+                            <th scope="col">Monto por pagar</th>
+                            <th scope="col">Estado</th>
+
+
+                            <th scope="col" class="accionesTitle">Acciones</th>
+                            <th class="cargandoTableIcono">
+                                <div *ngIf="cargando" class="loaderTable"></div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let factura of dataList" class="filaBody">
+
+                            <td>
+                                <div>{{factura.numeracion || ''}}</div>
+                            </td>
+                            <td>
+                                <div>{{factura.contacto.nombreRazonSocial || ''}}</div>
+                            </td>
+                            <td>
+                                <div>{{factura.fechaCreacion | date: 'dd/MM/YYYY' || ''}}</div>
+                            </td>
+                            <td [ngStyle]="{'color': factura.estadoFactura.nombre === 'Por pagar' ? 'red' : factura.estadoFactura.nombre==='Cobrada'? '#09184d' : 'transparent'}">
+                                <div>{{factura.vencimiento | date: 'dd/MM/YYYY' || ''}}</div>
+                            </td>
+
+                            <td>
+                                <div>{{moneda.simbolo}} {{factura.totalGeneral | number : '1.2-5' || ''}}</div>
+                            </td>
+                            <td>
+                                <div>{{moneda.simbolo}} {{factura.montoPagado | number : '1.2-5' || ''}}</div>
+                            </td>
+                            <td>
+                                <div>{{moneda.simbolo}} {{factura.montoPorPagar| number : '1.2-5' || ''}}</div>
+                            </td>
+                            <td style="color: white;">
+                                <div style="text-align: center; border-radius: 5px; padding: 1px;" [ngStyle]="{'background-color': factura.estadoFactura.nombre === 'Por pagar' ? 'red' : factura.estadoFactura.nombre==='Cobrada'? 'green' : 'transparent'}">{{factura.estadoFactura.nombre || ''}}</div>
+                            </td>
+                            <td class="acciones">
+                                <button matTooltip="Ver detalle" class="btnaccion" 
+                                    data-toggle="modal" data-target="#exampleModal"><mat-icon
+                                        data-toggle="modal">preview</mat-icon></button>
+
+                                <button matTooltip="Imprimir" class="btnaccion" 
+                                    data-toggle="modal" data-target="#exampleModal"><mat-icon
+                                        data-toggle="modal">print</mat-icon></button>
+
+                                        
+                                <button [ngClass]="{'disabled': factura.montoPorPagar === 0, 'inactivo': factura.montoPorPagar !== 0}" (click)="openDialog(factura)" matTooltip="Agregar pago" class="btnaccion" 
+                                data-toggle="modal" data-target="#exampleModal"><mat-icon
+                                    data-toggle="modal">payments</mat-icon></button>
+
+                                <button [ngClass]="{'disabled': factura.montoPorPagar === 0, 'inactivo': factura.montoPorPagar !== 0}"  matTooltip="Editar" class="btnaccion" (click)="editar(factura!)"
+                                    data-toggle="modal" data-target="#exampleModal"><mat-icon
+                                        data-toggle="modal">edit</mat-icon></button>
+
+                                <button matTooltip="Eliminar" class="btnaccion" (click)="delete(factura.idFactura!)"
+                                    data-target="#exampleModal"><mat-icon data-toggle="modal">delete</mat-icon></button>
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr class="sinRegistros" *ngIf="sinRegistros">
+
+                            <td>{{sinRegistrosTxt}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div style="display: flex; width: 100%;">
+                <p style="font-size: 12px;"> Total de registros encontrados : {{dataList.length}} </p>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,40 @@
+/* codigo para que los select no salgan detras del modal */
+::ng-deep .cdk-overlay-connected-position-bounding-box {
+    z-index: 10000!important;
+    }
+    
+    ::ng-deep.cdk-global-overlay-wrapper {
+    z-index: 1000 !important;
+    }
+  
+.containerModal
+{
+    padding: 10px;
+}
+.containerheader
+{
+    color: red;
+    border: 1px solid red;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 50px; 
+    padding: 10px;
+    margin-bottom: 10px;
+}
+.bodycontainer
+{
+    display: block;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+.headpago
+
+{
+    display: flex;
+    justify-content: space-between;
+}
+
+  .mat-select-panel {
+    z-index: 1000 !important;
+  }

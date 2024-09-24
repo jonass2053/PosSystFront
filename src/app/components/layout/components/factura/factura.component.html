@@ -1,130 +1,133 @@
+<form action="" [formGroup]="miFormulario" (ngSubmit)="guardarFactura()">
 
-<form action="" [formGroup]="miFormulario">
-
-<div class="containerInter">
-    <div class="titulo">
-        <div class="containerIcoText">
-            <mat-icon>person</mat-icon> Agregar nueva factura
+    <div class="containerInter">
+        <div class="titulo">
+            <div class="containerIcoText">
+                <mat-icon>person</mat-icon> Agregar nueva factura
+            </div>
+            <a [routerLink]="['/layout/facturas']">
+                <div class="containerIcoText"><mat-icon>arrow_back</mat-icon>Retroceder</div>
+            </a>
         </div>
-        <a [routerLink]="['/layout/configuraciones']">
-            <div class="containerIcoText"><mat-icon>arrow_back</mat-icon>Retroceder</div>
-        </a>
-    </div>
 
-    <hr>
-    <div class="cardContainer form-control" style="background-color: transparent;">
-        <div class="card-body">
-            <div class="row">
-                <div class="col-5">
-                    <div class="input-parent">
-                        <mat-form-field appearance="outline" class="control">
-                            <mat-icon matSuffix>person</mat-icon>
-                            <mat-label matTooltip="Puede consultar un cliente por identitifacion o su nombre">Cliente</mat-label>
-                            <input type="text" matInput [matAutocomplete]="auto" (input)="searchContacto($event)" >
-                            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="selectContacto($event)" >
-                                <mat-option  *ngFor="let contacto of dataListContactos" [value]="contacto">
-                                    {{ contacto.nombreRazonSocial }}
-                                </mat-option>
-                            </mat-autocomplete>
-                         
-                        </mat-form-field>
-<!-- 
+        <hr>
+        <div class="cardContainer form-control" style="background-color: transparent;">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-5">
+                        <div class="input-parent">
+                            <mat-form-field appearance="outline" class="control">
+                                <mat-icon matSuffix>person_add</mat-icon>
+                                <mat-label
+                                    matTooltip="Puede consultar un cliente por identitifacion o su nombre">Cliente</mat-label>
+                                <input type="text" matInput [matAutocomplete]="auto" (input)="searchContacto($event)"
+                                    formControlName="nombreClienteCompleto">
+                                <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
+                                    (optionSelected)="selectContacto($event)">
+                                    <mat-option *ngFor="let contacto of dataListContactos" [value]="contacto">
+                                        {{ contacto.nombreRazonSocial }}
+                                    </mat-option>
+                                </mat-autocomplete>
+                            </mat-form-field>
+                            <!-- 
                         <a [routerLink]="['/layout/contactos']" style="margin-left: 5px;"
                             matTooltip="Agregar nuevo cliente"><mat-icon>add_circle</mat-icon></a> -->
+                        </div>
+                        <div class="input-parent">
+                            <mat-form-field class="example-full-width" appearance="outline">
+                                <mat-label>Identificación</mat-label>
+                                <input matInput formControlName="identificacion">
+                                <mat-icon matSuffix>badge</mat-icon>
+                            </mat-form-field>
+                            &nbsp;
+                            <mat-form-field class="example-full-width" appearance="outline">
+                                <mat-icon matSuffix>phone_iphone</mat-icon>
+                                <mat-label>Teléfono</mat-label>
+
+                                <input matInput formControlName="telefono">
+
+                            </mat-form-field>
+                        </div>
+
+
+
                     </div>
-                    <div class="input-parent">
-                        <mat-form-field class="example-full-width" appearance="outline">
-                            <mat-label>Identificación</mat-label>
-                            <input matInput formControlName="identificacion">
-                            <mat-icon matSuffix>badge</mat-icon>
-                        </mat-form-field>
-                        &nbsp;
-                        <mat-form-field class="example-full-width" appearance="outline">
-                           <mat-icon matSuffix>phone_iphone</mat-icon>
-                            <mat-label>Telefono</mat-label>
-                           
-                            <input  matInput formControlName="telefono">
-                           
-                        </mat-form-field>
-                    </div>
 
-                 
-
-                </div>
-
-                <!-- <div class="col-2">
+                    <!-- <div class="col-2">
 
 
                 </div> -->
-                <div class="col-7">
-                    <div class="input-parent">
-                        <mat-form-field class="control" appearance="outline">
-                            <mat-label>Fecha</mat-label>
-                            <input matInput [matDatepicker]="pickerFecha" formControlName="fecha" (dateChange)="setVencimiento()">
-                            <mat-datepicker-toggle matIconSuffix [for]="pickerFecha"></mat-datepicker-toggle>
-                            <mat-datepicker #pickerFecha></mat-datepicker>
-                        </mat-form-field>
-                        &nbsp;
+                    <div class="col-7">
+                        <div class="input-parent">
+                            <mat-form-field class="control" appearance="outline">
+                                <mat-label>Fecha</mat-label>
+                                <input matInput [matDatepicker]="pickerFecha" formControlName="fecha"
+                                    (dateChange)="setVencimiento()">
+                                <mat-datepicker-toggle matIconSuffix [for]="pickerFecha"></mat-datepicker-toggle>
+                                <mat-datepicker #pickerFecha></mat-datepicker>
+                            </mat-form-field>
+                            &nbsp;
 
-                        <mat-form-field class="control" appearance="outline">
-                            <mat-label>Plazo</mat-label>
-                            <mat-select formControlName="idTermino" (selectionChange)="setVencimiento()">
-                                @for (termino of dataListTerminos; track termino) {
-                                <mat-option [value]="termino.idTermino">{{termino.nombre}}</mat-option>
-                                }
-                            </mat-select>
-                        </mat-form-field>
-                        &nbsp;
-                        
-                       
-                        <mat-form-field class="example-full-width control" appearance="outline">
-                            <mat-label>Venvimiento</mat-label>
-                            <input  matInput formControlName="vencimiento">
-                        </mat-form-field>
-
-                       
+                            <mat-form-field class="control" appearance="outline">
+                                <mat-label>Plazo</mat-label>
+                                <mat-select formControlName="idTermino" (selectionChange)="setVencimiento()">
+                                    @for (termino of dataListTerminos; track termino) {
+                                    <mat-option [value]="termino.idTermino">{{termino.nombre}}</mat-option>
+                                    }
+                                </mat-select>
+                            </mat-form-field>
+                            &nbsp;
 
 
-                    </div>
-                    <div class="input-parent">
-                        <mat-form-field class="control" appearance="outline">
-                            <mat-label>Vendedor</mat-label>
-                            <mat-select formControlName="idVendedor" (selectionChange)="setVencimiento()">
-                                @for (vendedor of dataListVendedores; track vendedor) {
-                                <mat-option [value]="vendedor.idVendedor">{{vendedor.nombre}}</mat-option>
-                                }
-                            </mat-select>
-                        </mat-form-field>
-                     
-                        &nbsp;
+                            <mat-form-field class="example-full-width control" appearance="outline">
+                                <mat-label>Vencimiento</mat-label>
+                                <input type="datetime" matInput formControlName="vencimiento">
+                            </mat-form-field>
 
-                        <mat-form-field class="control" appearance="outline">
-                            <mat-label>Numeración</mat-label>
-                            <mat-select formControlName="idNumeracion">
-                                @for (numeracion of dataListNumeracion; track numeracion) {
-                                <mat-option [value]="numeracion.idNumeracion">{{numeracion.nombre}} {{numeracion.prefijo}}{{numeracion.contador}}</mat-option>
-                                }
-                            </mat-select>
-                        </mat-form-field>
 
-                    
+
+
+                        </div>
+                        <div class="input-parent">
+                            <mat-form-field class="control" appearance="outline">
+                                <mat-label>Vendedor</mat-label>
+                                <mat-select formControlName="idVendedor" (selectionChange)="setVencimiento()">
+                                    @for (vendedor of dataListVendedores; track vendedor) {
+                                    <mat-option [value]="vendedor.idVendedor">{{vendedor.nombre}}</mat-option>
+                                    }
+                                </mat-select>
+                            </mat-form-field>
+
+                            &nbsp;
+
+                            <mat-form-field class="control" appearance="outline">
+                                <mat-label>Numeración</mat-label>
+                                <mat-select formControlName="idNumeracion">
+                                    @for (numeracion of dataListNumeracion; track numeracion) {
+                                    <mat-option [value]="numeracion.idNumeracion">{{numeracion.nombre}}
+                                        {{numeracion.prefijo}}{{numeracion.contador +1}}</mat-option>
+                                    }
+                                </mat-select>
+                            </mat-form-field>
+
+
+
+                        </div>
+
 
                     </div>
 
 
                 </div>
 
-
             </div>
-
         </div>
-    </div>
 
 
-    <div class="cardContainer form-control" style="background-color: transparent;">
-        <div class="card-body">
-            <div class="row">
-                <!-- <div class="col-12">
+        <div class="cardContainer form-control" style="background-color: transparent;">
+            <div class="card-body">
+                <div class="row">
+                    <!-- <div class="col-12">
                     <div class="input-parent">
                         <mat-form-field appearance="outline" class="control">
                             <mat-icon matSuffix>person</mat-icon>
@@ -159,144 +162,294 @@
 
                 </div> -->
 
-                <div class="col-12">
-                    <div class="input-parent control">
-                        <mat-form-field appearance="outline" class="control">
-                            <mat-icon matSuffix>search</mat-icon>
-                            <mat-label matTooltip="Puede consultar un producto por su nombre">Buscar</mat-label>
-                            <input type="text" #inputProducto matInput [matAutocomplete]="prductoBuscador" (input)="searchProducto($event)" formControlName="producto" >
-                            <mat-autocomplete #prductoBuscador="matAutocomplete"  [displayWith]="displayFnProducto" (optionSelected)="selectProducto($event)" >
-                                <mat-option  *ngFor="let producto of dataListProductosSearch" [value]="producto">
-                                    {{ producto.nombre }}
-                                </mat-option>
-                            </mat-autocomplete>
-                         
-                        </mat-form-field>
-                        <mat-form-field class="example-full-width control" appearance="outline" style="width: 45%;">
-                            <mat-label>Cant.</mat-label>
-                            <input type="number" matInput formControlName="cantidad" (keyup)="calcular()" >
-                        </mat-form-field>
-                        <mat-form-field class="example-full-width control" appearance="outline" style="width: 45%;">
-                            <mat-label>Desc. %</mat-label>
-                            <input type="number" matInput formControlName="descuento" (keyup)="calcular()">
-                        </mat-form-field>
-                        <!-- <mat-form-field class="example-full-width control" appearance="outline">
+                    <div class="col-12">
+                        <div class="input-parent control">
+                            <mat-form-field appearance="outline" class="control">
+                                <mat-icon matSuffix>search</mat-icon>
+                                <mat-label matTooltip="Puede consultar un producto por su nombre">Buscar</mat-label>
+                                <input type="text" #inputProducto matInput [matAutocomplete]="prductoBuscador"
+                                    (input)="searchProducto($event)" formControlName="producto">
+                                <mat-autocomplete #prductoBuscador="matAutocomplete" [displayWith]="displayFnProducto"
+                                    (optionSelected)="selectProducto($event)">
+                                    <mat-option *ngFor="let producto of dataListProductosSearch" [value]="producto">
+                                        {{ producto.nombre }}
+                                    </mat-option>
+                                </mat-autocomplete>
+
+                            </mat-form-field>
+                            <mat-form-field class="example-full-width control" appearance="outline" style="width: 45%;">
+                                <mat-label>Cant.</mat-label>
+                                <input type="number" matInput formControlName="cantidad" (keyup)="calcular()">
+                            </mat-form-field>
+                            <mat-form-field class="example-full-width control" appearance="outline" style="width: 45%;">
+                                <mat-label>Desc. %</mat-label>
+                                <input type="number" matInput formControlName="descuento" (keyup)="calcular()">
+                            </mat-form-field>
+                            <!-- <mat-form-field class="example-full-width control" appearance="outline">
                             <mat-label>Descripcion</mat-label>
                             <input matInput formControlName="descripcion">
                         </mat-form-field> -->
-                        <mat-form-field class="example-full-width control" appearance="outline" style="width: 50%;">
-                            <mat-label>Precio</mat-label>
-                            <input matInput type="number" formControlName="precio" readonly="true">
-                        </mat-form-field>
-                        <mat-form-field class="example-full-width control" appearance="outline" style="width: 60%;">
-                            <mat-label>SubTotal</mat-label>
-                            <input matInput type="number" formControlName="subTotalDetails" readonly="true">
-                        </mat-form-field>
-                     
-                        <mat-form-field class="example-full-width control" appearance="outline" style="width: 60%;">
-                            <mat-label>Impuesto</mat-label>
-                            <input matInput type="number" formControlName="impuesto" readonly="true">
-                        </mat-form-field>
-                     
-                        <mat-form-field class="example-full-width control" appearance="outline">
-                            <mat-label>Total</mat-label>
-                            <input matInput formControlName="total" readonly="tru">
-                        </mat-form-field>
+                            <mat-form-field class="example-full-width control" appearance="outline" style="width: 50%;">
+                                <mat-label>Precio</mat-label>
+                                <input matInput type="number" formControlName="precio" readonly="true">
+                            </mat-form-field>
+                            <mat-form-field class="example-full-width control" appearance="outline" style="width: 60%;">
+                                <mat-label>SubTotal</mat-label>
+                                <input matInput type="number" formControlName="subTotalDetails" readonly="true">
+                            </mat-form-field>
+
+                            <mat-form-field class="example-full-width control" appearance="outline" style="width: 60%;">
+                                <mat-label>Impuesto</mat-label>
+                                <input matInput type="number" formControlName="impuesto" readonly="true">
+                            </mat-form-field>
+
+                            <mat-form-field class="example-full-width control" appearance="outline">
+                                <mat-label>Total</mat-label>
+                                <input matInput formControlName="total" readonly="true">
+                            </mat-form-field>
+
+
+
+
+
+
+
+                        </div>
+                        <input type="button" (click)="addDetails()" value=" +  Agregar fila" class="btnGuardar">
+
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+
+
+
+
+
+        <div class="formularioCard">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <table class="table table-hover control">
+                    <thead class="con">
+                        <tr>
+                            <th scope="col">Item</th>
+                            <th scope="col">Descripcion</th>
+                            <th scope="col">Cantidad</th>
+                            <th scope="col">Precio</th>
+                            <th scope="col">SubTotal</th>
+                            <th scope="col">Impuestos</th>
+                            <th scope="col">Descuento %</th>
+                            <th scope="col">Total</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of dataListDetalleFactura let i = index">
+                            <td>{{i+1}}</td>
+                            <td>{{item.nombre}}</td>
+                            <td>{{item.cantidad}}</td>
+                            <td>{{item.precio | number : '1.2-5'}}</td>
+                            <td>{{item.subTotal | number : '1.2-5'}}</td>
+                            <td>{{item.impuestos | number : '1.2-5'}}</td>
+                            <td>{{item.descuento | number : '1.2-5'}}</td>
+                            <td>{{item.total | number : '1.2-5'}}</td>
+                            <td style="text-align: right; width: 70px;">
+                                <!-- <mat-icon (click)="editRow(item, i)" class="btnEditar" style="cursor: pointer;"
+                                    matTooltip="Editar">edit</mat-icon> -->
+                                <mat-icon (click)="removeItem(i, item.idProducto)" class="btnEliminar" style="cursor: pointer;"
+                                    matTooltip="Eliminar">closed</mat-icon>
+                            </td>
+
+
+                        </tr>
+
+
+                    </tbody>
+                </table>
+                <div style="display: flex; justify-content:space-between;">
+                    <div style="width: 60%;">
+                        <!-- <mat-form-field class="example-full-width" appearance="outline" style="width: 90%">
+                            <mat-label>Agregar un comentario o una nota al documento.</mat-label>
+                            <textarea rows="2" matInput placeholder="Escribe tu comnetario o nota importante"
+                                formControlName="comentario"></textarea>
+                        </mat-form-field> -->
+
+                    </div>
+
+                    
+
+                </div>
+
+                <div class="barraResumen">
+                 
+                        <div class="containerTotalesResumen">
+                            <p>Subtotal</p>
+                            <h3>{{moneda.simbolo}} {{subTotalGeneral | number : '1.2-5'}}</h3>
+                        </div>
+
+                        <div class="containerTotalesResumen">
+                            <p>Descuento</p>
+                            <h3>{{moneda.simbolo}} {{descuentoGeneral | number : '1.2-5'}}</h3>
+                        </div>
+                        
+                        <div class="containerTotalesResumen" *ngIf="dataListImpuestosDetails.length>0">
+                            <div *ngFor="let item of dataListImpuestosDetails">
+                            <p *ngIf="item.porcentaje>0 && item.monto>0">{{item.nombre}} {{item.porcentaje}}%:</p>
+                            <h3 *ngIf="item.porcentaje>0 && item.monto>0">{{moneda.simbolo}} {{item.monto |number : '1.2-5'}}</h3>
+                        </div>
+                        </div>
+
+
+                        <div class="containerTotalesResumen">
+                            <p>Total</p>
+                            <h3>{{moneda.simbolo}} {{totalGeneral | number : '1.2-5'}}</h3>
+                        </div>
+                        
+                        
+                       
+                
+                </div>
+
+                <div style="display: flex; justify-content: space-between;">
+                    <div></div>
+                    <div style=" display:  flex;">
+                        <input [ngClass]="{'disabledbtn': dataListDetalleFactura.length === 0, 'inactivo': dataListDetalleFactura.length>0}"  class="btnGuardar" type="button" value="Guardar y pagar" data-toggle="modal"
+                            data-target="#exampleModal">
+                        &nbsp;
+                        <input [ngClass]="{'disabledbtn': dataListDetalleFactura.length === 0, 'inactivo': dataListDetalleFactura.length>0}"  class="btnGuardar" type="submit" value=" + Guardar">
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="exampleModalLabel">Pagar factura</h2>
+                    <mat-icon  (click)="resetFormPago()">close</mat-icon>
+                    <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button> -->
+                </div>
+                <div class="modal-body">
+                    <div class="control">
+                        <!-- <button mat-raised-button (click)="isEditable = !isEditable">
+                            {{!isEditable ? 'Enable edit mode' : 'Disable edit mode'}}
+                          </button> -->
+                       
+
+                          
+                          <mat-stepper linear #stepper>
+                            <mat-step [stepControl]="firstFormGroup" [editable]="isEditable">
+                              <form [formGroup]="firstFormGroup">
+                                <ng-template matStepLabel>Metodo de pago</ng-template>
+                                <div class="container" style="text-align: center; color: rgb(121, 121, 121);">
+                                    <!-- <h3 style="margin: 0; padding: 0;">---------------------------METODO DE
+                                        PAGO---------------------------</h3> -->
+                                    <div class="row" style="display: flex; justify-content: left;">
+                                        <div class="color-box" [ngClass]="{'active': activeIndex === 0}" (click)="setMetodoPago(1,'EFECTIVO', 0)" class="icono"><div><mat-icon>payments</mat-icon> <br>EFECTIVO</div></div>
+                                        <div class="color-box" [ngClass]="{'active': activeIndex === 1}" (click)="setMetodoPago(2, 'TARJETA', 1)"class="icono"><div><mat-icon>credit_card</mat-icon>  <br>TARGETA</div></div>
+                                        <div  cclass="color-box" [ngClass]="{'active': activeIndex === 2}"(click)="setMetodoPago(3, 'TRASNFERENCIA', 2)" class="icono"><div><mat-icon>account_balance</mat-icon>  <br>TRANSFERENCIA</div></div>
+                                    </div>
+        
+                                </div>
+                                <div>
+                                  <button  class="flexCenter" mat-button matStepperNext (click)="validSetFirsForm()">Siguiente <mat-icon>chevron_right</mat-icon> </button>
+                                </div>
+                              </form>
+                            </mat-step>
+                            <mat-step [stepControl]="secondFormGroup" [editable]="isEditable">
+                              <form [formGroup]="secondFormGroup" (ngSubmit)="pagarFactura()">
+                                <h3>{{metodoPagoSeleccionado}}</h3>
+                                <div class="titulo">
+                                    <div class="containerIcoText">
+                                        <h2> TOTAL  A PAGAR <b> {{moneda.simbolo}} {{totalApagar | number : '1.2-5'}}</b> </h2>
+                                    </div>
+                                    <div class="containerIcoText">
+                                        <h2>{{descripcionPago}} <b>{{moneda.simbolo}} {{cambio | number : '1.2-5'}}</b></h2>
+                                    </div> 
+                                </div>
+
+                               
+                                <!-- <div class="StylePayment">
+                                    <h2>TOTAL  A PAGAR <b> {{moneda.simbolo}} {{totalApagar | number : '1.2-5'}}</b> </h2>
+                                    <h2>{{descripcionPago}} {{moneda.simbolo}} {{cambio | number : '1.2-5'}} </h2>
+                                </div> -->
+                               
+                                <ng-template matStepLabel>Datos del pago</ng-template>
+                                <div *ngIf="metodoPagoSeleccionado==''">
+                                    <h3>Debe seleccionar un metodo de pago para poder pagar este documento!</h3>
+                                </div>
+                                <div *ngIf="metodoPagoSeleccionado!==''">
+                                    <mat-form-field style="width: 20%;">
+                                        <mat-label>Efectivo</mat-label>
+                                        <input type="number" (keyup)="calcularPagoEfectivo($event)" matInput formControlName="secondCtrl"  placeholder="Dijiste el monto a pagar"
+                                               required>
+                                      </mat-form-field>
+                                      &nbsp;
+                                          <mat-form-field style="width: 25%;" *ngIf="metodoPagoSeleccionado!=='EFECTIVO'">
+                                              <mat-label>Cuenta bancaria</mat-label>
+                                              <mat-select>
+                                                @for (banco of dataListBancos; track banco) {
+                                                  <mat-option [value]="banco.idBanco">{{banco.tipoCuenta.nombre}} {{banco.nombreCuenta}}</mat-option>
+                                                }
+                                              </mat-select>
+                                            </mat-form-field>
+                                            &nbsp;
+                                            <mat-form-field style="width: 20%;" *ngIf="metodoPagoSeleccionado!=='EFECTIVO'">
+                                              <mat-label>Numero Ticket</mat-label>
+                                              <input type="text"  matInput formControlName="noComprobante" placeholder="No de Ticket o comprobante de pago">
+                                            </mat-form-field>
+      
+                                            &nbsp;
+                                            <mat-form-field style="width: 50%;">
+                                              <mat-label>Observación</mat-label>
+                                              <input  type="text"  matInput formControlName="observacionPago" placeholder="Escriba una observación">
+                                            </mat-form-field>
+                                </div>
+                                
+                                     
+                                <div style="display: flex;">
+                                  <button class="flexCenter" mat-button matStepperPrevious><mat-icon>chevron_left </mat-icon>Cambiar metodo de pago</button>
+                                </div>
+
+                                <div>
+                                    <div style=" display:  flex;">
+                                        <input class="btnGuardar" data-dismiss="modal" type="button" value="CANCELAR" data-toggle="modal" (click)="resetFormPago()"
+                                            data-target="#exampleModal">
+                                        &nbsp;
+                                        <input *ngIf="metodoPagoSeleccionado!=''" class="btnGuardar" type="submit" value="APLICAR PAGO" >
+                                    </div>
+                                </div>
+                              </form>
+                            </mat-step>
+                          </mat-stepper>
 
 
                         
 
                        
-
+                   
 
                     </div>
-                    <input type="button" (click)="addDetails()" value=" +  Agregar fila" data-toggle="modal"
-                    data-target="#exampleModal" class="btnGuardar">
-             
-
-                </div>
-
-                </div>
-
-
-            </div>
-
-        </div>
-    
-
-
-
-
-
-
-    <div class="formularioCard">
-        <div class="col-md-12 col-sm-12 col-xs-12">
-            <table class="table table-hover control">
-                <thead class="con">
-                    <tr>
-                        <th scope="col">Item</th>
-                        <th scope="col">Descripcion</th>
-                        <th scope="col">Cantidad</th>
-                        <th scope="col">Precio</th>
-                        <th scope="col">SubTotal</th>
-                        <th scope="col">Impuestos</th>
-                        <th scope="col">Descuento %</th>
-                        <th scope="col">Total</th>
-                        <th scope="col"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let item of dataListDetalleFactura let i = index"  >
-                        <td>{{i+1}}</td>
-                        <td>{{item.nombre}}</td>
-                        <td>{{item.cantidad}}</td>
-                        <td>{{item.precio | number : '1.2-5'}}</td>
-                        <td>{{item.subTotal | number : '1.2-5'}}</td>
-                        <td>{{item.impuestos | number : '1.2-5'}}</td>
-                        <td>{{item.descuento | number : '1.2-5'}}</td>
-                        <td>{{item.total | number : '1.2-5'}}</td>
-                        <td style="text-align: right; width: 70px;">
-                            <mat-icon (click)="editRow(item, i)" class="btnEditar" style="cursor: pointer;" matTooltip="Editar">edit</mat-icon>
-                            <mat-icon (click)="removeItem(i)" class="btnEliminar" style="cursor: pointer;" matTooltip="Eliminar">closed</mat-icon>
-                        </td>
-                       
-                                
-                    </tr>
-
-
-                </tbody>
-            </table>
-            <div style="display: flex; justify-content:space-between;">
-                <div style="width: 60%;">
-                    <mat-form-field class="example-full-width" appearance="outline" style="width: 90%">
-                        <mat-label>Agregar un comentario o una nota al documento.</mat-label>
-                        <textarea rows="2" matInput placeholder="Ex. It makes me feel..."></textarea>
-                      </mat-form-field>
-
-                </div>
-             
-
-                <div class="resumenTotalesContainer">
-                    <div style="width: 40%;"></div>
-                    <div style="width: 60%; height: 100%; ; display: flex; flex-direction: column;">
-                        <div class="resumenTotales"><section class="mitad">Sub Total:</section> <section class="mitad">{{moneda.simbolo}}  {{subTotalGeneral | number : '1.2-5'}}</section></div>
-                        <div class="resumenTotales"><section class="mitad">Descuento:</section> <section class="mitad">{{moneda.simbolo}}  {{descuentoGeneral | number : '1.2-5' }}</section></div>
-                        <div class="resumenTotales" *ngFor="let item of dataListImpuestosDetails"><section class="mitad" *ngIf="item.porcentaje>0">{{item.nombre}}:</section> <section *ngIf="item.porcentaje>0" class="mitad">{{moneda.simbolo}}  {{item.monto | number : '1.2-5'}}</section></div>
-                        <div class="resumenTotales "><section class="mitad">Total General:</section> <section class="mitad">{{moneda.simbolo}}  {{totalGeneral | number : '1.2-5'}}</section></div>
-                    </div>
-
-                    <!-- <div style="width: 50%; height: 100%;  display: flex; flex-direction: column;">
-                        <div class="resumenTotales"> {{subTotalGeneral | number : '1.2-5'}}</div>
-                        <div class="resumenTotales"> {{descuentoGeneral | number : '1.2-5'}}</div>
-                        <div  class="resumenTotales" *ngFor="let item of dataListImpuestosDetails">{{(item.porcentaje / 100)  * subTotalGeneral   | number : '1.2-5' }}</div>
-                        <div class="resumenTotales"> {{totalGeneral | number : '1.2-5'}}</div>
-                    </div> -->
                 </div>
             </div>
         </div>
     </div>
-  
-</div>
+
 </form>
-
-

@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { MY_DATE_FORMATS, importaciones } from '../../../utilities/material/material';
-import { iContactoPos, iDetalleFactura, iMoneda, iProducto, iTermino, iVendedor, idNumeracion, iiMpuesto } from '../../../../interfaces/iTermino';
+import { iBanco, iContactoPos, iDetalleFactura, iFactura, iMoneda, iProducto, iTermino, iTipoDocumento, iVendedor, idNumeracion, iiMpuesto } from '../../../../interfaces/iTermino';
 import { UsuarioService } from '../../../../services/usuario.service';
 import { AlertServiceService } from '../../../utilities/alert-service.service';
 import { ContactosService } from '../../../../services/contactos.service';
@@ -13,14 +13,15 @@ import { NumeracionService } from '../../../../services/numeracion.service';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { addDays } from 'date-fns';
-import {DatePipe} from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
 import { VendedoresService } from '../../../../services/vendedores.service';
 import { ProductoService } from '../../../../services/producto.service';
-import { totalmem } from 'os';
-import { log } from 'console';
-import { constrainedMemory } from 'process';
 
+import { constrainedMemory, exit } from 'process';
+import { FacturaService } from '../../../../services/factura.service';
+import { BancosService } from '../../../../services/bancos.service';
+declare var $ : any;
 
 @Component({
   selector: 'app-factura',
@@ -28,370 +29,652 @@ import { constrainedMemory } from 'process';
   imports: [
     importaciones,
 
-    
+
   ],
   providers: [
-    { provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMATS},
+    { provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMATS },
     provideNativeDateAdapter(), DatePipe,
-    
+
   ],
   templateUrl: './factura.component.html',
   styleUrl: 'factura.component.css'
 })
 export class FacturaComponent {
+  @ViewChild('exampleModal') myModal!: ElementRef;
+
+
+  firstFormGroup = this.fb.group({
+    firstCtrl: ['', Validators.required],
+  });
+  secondFormGroup = this.fb.group({
+    secondCtrl: [''],
+    noComprobante : [''],
+    observacionPago : [''],
+    totalRecibido : [''],
+    cambio : ['']
+  });
+  isEditable = true;
+  metodoPagoSeleccionado = "";
+  moneda! : iMoneda;
+
 
   constructor(
-    private usuarioService : UsuarioService,
+    private usuarioService: UsuarioService,
     private alertaService: AlertServiceService,
-    private contactoService : ContactosService,
-    private plazoService : TerminosService,
-    private fb : FormBuilder,
-    private numeracionService : NumeracionService,
-    private datePipe : DatePipe,
-    private vendedoresService : VendedoresService,
-    private productoService : ProductoService
-  )
-  {
-    if(this.usuarioService.usuarioLogueado!=undefined)
-      {
-        this.moneda = this.usuarioService.usuarioLogueado.data.sucursal.empresa.moneda;
-      }
-      this.miFormulario.patchValue({fecha : new Date()})
-      this.getAllTerminos();  
-      this.getAllNumeracion();
-      this.getAllVendedores();
+    private contactoService: ContactosService,
+    private plazoService: TerminosService,
+    private fb: FormBuilder,
+    private numeracionService: NumeracionService,
+    private datePipe: DatePipe,
+    private vendedoresService: VendedoresService,
+    private productoService: ProductoService,
+    private facturaServcie: FacturaService,
+    private bancoService : BancosService
+
+  ) {
+    if (this.usuarioService.usuarioLogueado != undefined) {
+      this.moneda = this.usuarioService.usuarioLogueado.data.sucursal.empresa.moneda;
+    }
+    this.miFormulario.patchValue({ fecha: new Date() })
+    this.getAllTerminos();
+    this.getAllNumeracion();
+    this.getAllVendedores();
+    this.getTipoDocumentos();
+    this.getAllBancos();
+    if(facturaServcie.facturaEdit!=null)
+    {
+      console.log('hola')
+      this.editarFactura(facturaServcie.facturaEdit);
+
+     
+    }
   }
-  
-  miFormulario : FormGroup = this.fb.group({
-    idFactura : this.fb.control(""),
-    idNumeracion :  this.fb.control("", Validators.required),
-    idContacto :  this.fb.control("", Validators.required),
-    idTermino : this.fb.control("", Validators.required),
-    idVendedor : this.fb.control(null),
-    identificacion : this.fb.control(""),
-    vencimiento : this.fb.control(""),
-    telefono :  this.fb.control("", Validators.required),
-    fecha : this.fb.control(""),
-    descripcion : this.fb.control({value : "", disabled : true}),
-    precio : this.fb.control({value : 0, disabled : false}),
-    cantidad : this.fb.control(1),
-    descuento : this.fb.control({value : 0, disabled : false}),
-    impuesto : this.fb.control(0),
-    producto :  this.fb.control(''),
-    impuestoObjet : this.fb.control(""),
+ 
+
+  editarFactura(factura : iFactura){
+    this.miFormulario.patchValue({
+      idFactura : factura.idFactura,
+      idNumeracion : factura.idNumeracion,
+      idContacto : factura.idContacto,
+      identificacion : factura.contacto.rnc,
+      telefono :  factura.contacto.telefono1,
+      idTipoDocumento : factura.idTipoDocumento,
+      idSucursal : factura.idSucursal,
+      idEmpresa : factura.idEmpresa,
+      idTermino : factura.idTermino,
+      idUsuario : factura.idUsuario,
+      idVendedor : factura.idVendedor,
+      vencimiento : factura.vencimiento,
+      detalle : factura.detalle,
+      subTotal : factura.subTotal,
+      totalGeneral: factura.totalGeneral,
+      nombreClienteCompleto : factura.contacto.nombreRazonSocial,
+      montoPagado : factura.montoPagado,
+
+      
+    })
+    this.dataListDetalleFactura = factura.detalle;
+    this.dataListDetalleFactura.forEach(c=>{
+      c.impuestosObject?.forEach (element => {
+        this.dataListImpuestosDetails.push(element)
+      });
+    })
+    this.totalGeneral = factura.totalGeneral;
+    this.subTotalGeneral = factura.subTotal;
+    this.descuentoGeneral = factura.descuento;
+    this.totalApagar = factura.montoPorPagar
+   
+     
+  }
+
+  miFormulario: FormGroup = this.fb.group({
+    idFactura: this.fb.control(null),
+    idNumeracion: this.fb.control("", Validators.required),
+    idContacto: this.fb.control("", Validators.required),
+    idTipoDocumento: this.fb.control("", Validators.required),
+    idSucursal: this.fb.control("", Validators.required),
+    idEmpresa: this.fb.control("", Validators.required),
+    idTermino: this.fb.control("", Validators.required),
+    idUsuario: this.fb.control("", Validators.required),
+    idVendedor: this.fb.control(null),
+    identificacion: this.fb.control(""),
+    vencimiento: this.fb.control(""),
+    telefono: this.fb.control(""),
+    fecha: this.fb.control(""),
+    descripcion: this.fb.control({ value: "", disabled: true }),
+    precio: this.fb.control({ value: 0, disabled: false }),
+    cantidad: this.fb.control(1),
+    descuento: this.fb.control({ value: 0, disabled: false }),
+    impuesto: this.fb.control(0),
+    producto: this.fb.control(''),
+    impuestoObjet: this.fb.control(""),
     subTotalDetails: this.fb.control(0),
-    total : this.fb.control(0),
+    total: this.fb.control(0),
+    subTotal: this.fb.control(0),
+    totalGeneral: this.fb.control(0),
+    detalle: this.fb.control(""),
+    comentario: this.fb.control(""),
+    nombreClienteCompleto : this.fb.control(""),
+    efectivo : this.fb.control(0),
+    montoPagado : this.fb.control(0),
+    nombreProducto :  this.fb.control(''),
+    totalRecibido : this.fb.control(0),
+    cambio : this.fb.control(0)
 
   })
-  editando : boolean = false;
-  idProducto! : number;
-  nombre : string="";
-  cantidad : number=0;
-  precio : number =0;
-  descuento : number=0;
-  impuestos : number =0;
-  subTotal : number=0;
-  total : number=0;
-  identificacion : string= "jonas dia";   
-  telefono : string ="";  
-  dataListNumeracion : idNumeracion[]=[];
-  dataListVendedores : iVendedor []=[];
-  dataListDetalleFactura :iDetalleFactura[]  =[];
-  DetalleFactura : iDetalleFactura = { idDetalleFactura : 0, nombre :"", descuentoProcentual:0,  idFactura : 0,  idProducto: 0, cantidad: 0, precio: 0, subTotal :0, descuento: 0, impuestos: 0, total: 0};
-  subTotalGeneral : number = 0;
-  descuentoGeneral : number = 0;
-  totalGeneral : number = 0;
-  descuentoPorcentual : number = 0;
-  impuestosGenerales : number = 0;
-  moneda! : iMoneda;
-  dataListTerminos : iTermino[]=[];
-  dataListContactos : iContactoPos[]=[]; 
-  dataListProductosSearch : iProducto[]=[];
-  fechaVenvimiento : any;
-  dataListImpuestosDetails : iiMpuesto[]=[];
+  editando: boolean = false;
+  idProducto: number=0;
+  nombre: string = "";
+  cantidad: number = 0;
+  precio: number = 0;
+  descuento: number = 0;
+  impuestos: number = 0;
+  subTotal: number = 0;
+  cambio : number = 0;
+  total: number = 0;
+  identificacion: string = "jonas dia";
+  telefono: string = "";
+  efectivo : number =0;
+  dataListNumeracion: idNumeracion[] = [];
+  dataListVendedores: iVendedor[] = [];
+  dataListDetalleFactura: iDetalleFactura[] = [];
+  DetalleFactura: iDetalleFactura = { idDetalleFactura: 0, nombre: "", descuentoProcentual: 0, idFactura: 0, idProducto: 0, cantidad: 0, precio: 0, subTotal: 0, descuento: 0, impuestos: 0, total: 0 };
+  subTotalGeneral: number = 0;
+  descuentoGeneral: number = 0;
+  totalGeneral: number = 0;
+  descuentoPorcentual: number = 0;
+  impuestosGenerales: number = 0;
+  dataListTerminos: iTermino[] = [];
+  dataListContactos: iContactoPos[] = [];
+  dataListProductosSearch: iProducto[] = [];
+  fechaVenvimiento: any;
+  dataListImpuestosDetails: iiMpuesto[] = [];
+  totalApagar : number= 0;
+  descripcionPago : string="POR PAGAR";
+  dataListBancos: iBanco[]=[];
+  
 
-
-   addDetails(){
-    
-  if(this.miFormulario.value.total==0 && this.miFormulario.value.cantidad!="")
-    {
+  addDetails() {
+    let cantLocal = 0;
+    if (this.idProducto==0) {
       this.alertaService.warnigAlert("Debe seleccionar un item y llenar los campos para poder agregar.")
     }
-    else
-    {
-       let detalle  : iDetalleFactura = {
-       nombre : this.nombre
-      ,idProducto : this.idProducto
-      ,idDetalleFactura : 0
-      ,cantidad : this.cantidad
-      ,precio : this.precio
-      ,descuento : this.descuento
-      ,descuentoProcentual : this.descuentoPorcentual
-      ,subTotal : this.subTotal
-      ,impuestos:this.impuestos
-      ,total : this.total,
-      impuestosObject : this.miFormulario.value.impuestoObjet
-      }
-  
-      this.dataListDetalleFactura.push(detalle)
-      this.resetDetails();
-      this.calculoGeneral();
-      this.carlculasImpuestos(1, detalle);
-      this.editando = false;
-    }
- 
-}
-removeItem(indice : number)
-{
-  if(this.editando)
-  {
-    this.alertaService.warnigAlert("Esta editando una fila, debe finalizar una edicion para afectar otro registro.");
-  }
-  else
-  {
-    this.carlculasImpuestos(2, this.dataListDetalleFactura[indice])
-    this.dataListDetalleFactura.splice(indice, 1);
-    this.resetDetails();
-    this.calculoGeneral();
-  }
- 
+    else {
+      let detalle: iDetalleFactura = {
+         nombre: this.nombre
+        , idProducto: this.idProducto
+        , idDetalleFactura: 0
+        , cantidad: this.cantidad
+        , precio: this.precio
+        , descuento: this.descuento
+        , descuentoProcentual: this.descuentoPorcentual
+        , subTotal: this.subTotal
+        , impuestos: this.impuestos
+        , total: this.total,
+         impuestosObject: this.miFormulario.value.impuestoObjet}
 
-
-
-}
-
-searchContacto(event : any)
-{
-  let valor  = (event.target as HTMLInputElement).value;
-  if(valor.length>0)
-    {
-      this.contactoService.getAllFilter((event.target as HTMLInputElement).value).subscribe((data: ServiceResponse)=>
-        {
-            this.dataListContactos = data.data.filter((c:iContactoPos)=>c.idTipoContacto!=2);
-            console.log( this.dataListContactos)
-        })
-    }
-}
-
-searchProducto(event : any)
-{
-  let valor  = (event.target as HTMLInputElement).value;
-  if(valor.length>0)
-    {
-      this.productoService.getAllFilterForDocument((event.target as HTMLInputElement).value).subscribe((data: ServiceResponse)=>
-        {
-            this.dataListProductosSearch = data.data;
-        })
-    }
-}
-searchProductoEdit(valor : string)
-{
-
-  if(valor.length>0)
-    {
-      this.productoService.getAllFilterForDocument(valor).subscribe((data: ServiceResponse)=>
-        {
-            this.dataListProductosSearch = data.data;
-            this.miFormulario.patchValue({producto : data.data[0]})
-        })
-    }
-}
-
-
-displayFn(contacto?: iContactoPos): string | undefined | any {
-  return contacto ? contacto.nombreRazonSocial : undefined;
-}
-
-displayFnProducto(producto?: iProducto): string | undefined | any {
-  return producto ? producto.nombre : undefined;
-}
-
-selectContacto(event : any){
-  this.miFormulario.patchValue({identificacion : event.option.value.rnc, telefono  : event.option.value.telefono1, idNumeracion : event.option.value.idTipoNumeracion})
-}
-
-selectProducto(event : any){
-  this.idProducto = event.option.value.idProducto;
-  this.nombre = event.option.value.nombre;
-  this.miFormulario.patchValue(
-    {
-     cantidad : this.miFormulario.value.cantidad,   
-     descripcion : event.option.value.descripcion,
-     precio  : event.option.value.precioBase,
-     impuestoObjet : event.option.value.impuestos
-    })
-    this.calcular();
-}
-selectProductoForEdit(item : iDetalleFactura){
-  this.idProducto = item.idProducto;
-  this.nombre = item.nombre;
-  this.miFormulario.patchValue(
-    {
-     cantidad : item.cantidad,   
-     nombre : item.nombre,
-     precio  : item.precio,
-    
-    })
-    this.calcular();
-}
-
-
-
-getAllTerminos(){
-   this.plazoService.getAll().subscribe((data: ServiceResponse)=>
-  {
-    this.dataListTerminos = data.data;
-    let dateNow =  new Date();
-    this.miFormulario.patchValue({idTermino : data.data.find((c:iTermino)=>c.predeterminado==true).idTermino})
-    this.setVencimiento();
-  })
-}
-  
-
-calVencimiento(fecha : Date, dias : any){   
-   return addDays(this.miFormulario.value.fecha, dias);  
-}
-
-getAllNumeracion(){
-  this.numeracionService.getAll().subscribe((data: ServiceResponse)=>
-  {
-    this.dataListNumeracion = data.data;
-    this.miFormulario.patchValue({"idNumeracion" : (data.data.find((c: idNumeracion)=>c.predeterminada==true)).idNumeracion})
-  })
-}
-
-setVencimiento(){
-  let dias = this.dataListTerminos.find((c: iTermino)=>c.idTermino==this.miFormulario.value.idTermino)?.dias;
-  let fechaVencimiento = this.calVencimiento(this.miFormulario.value.fecha, dias);
-  let fechaFormateada = this.datePipe.transform(fechaVencimiento, 'dd-MM-yyyy');
-  this.miFormulario.patchValue({vencimiento : fechaFormateada})
-}
-
-getAllVendedores(){
-  this.vendedoresService.getAll().subscribe((data: ServiceResponse)=>{
-    this.dataListVendedores = data.data;
-  })
-} 
-
-calcular(){
-  if(this.miFormulario.value.cantidad>0 && this.miFormulario.value.cantidad!=="" && this.miFormulario.value.descuento!==""){
-     this.cantidad = this.miFormulario.value.cantidad;
-     this.precio = this.miFormulario.value.precio;
-     this.subTotal =this.cantidad * this.precio;
-     this.descuentoPorcentual = this.miFormulario.value.descuento;
-     this.descuento = (this.miFormulario.value.descuento/100) * this.subTotal;
-     this.impuestos =0;
-     this.miFormulario.value.impuestoObjet.forEach((imp : iiMpuesto) => {
-     this.impuestos+=((imp.porcentaje/100) * 100); 
-     }); 
-     this.impuestos = (this.impuestos /100) * this.subTotal;
-     this.total = this.subTotal + this.impuestos - this.descuento;
-     this.miFormulario.patchValue({impuesto : this.impuestos, subTotalDetails : this.subTotal, total : this.total})
-    } 
-    else{
-      this.miFormulario.value.descuento=0;
-      this.resetDetails();
-    }
-}
-
-carlculasImpuestos(accion : number, detalle : iDetalleFactura )
-{ 
-  console.log('dentro')
-  this.miFormulario.value.impuestoObjet.forEach((a : iiMpuesto) => {
-    if(this.dataListImpuestosDetails.filter(c=>c.idImpuesto===a.idImpuesto).length>0)
-    {
-      this.dataListImpuestosDetails.map(z=>
+      let proExit = this.dataListDetalleFactura.find(c=>c.idProducto==detalle.idProducto)
+      if(proExit!==undefined)
       {
-        if(z.idImpuesto==a.idImpuesto)
-        {
-          if(accion==1)
+         this.dataListDetalleFactura = this.dataListDetalleFactura.filter(c=>c.idProducto!=proExit.idProducto)
+          proExit.idDetalleFactura= 0;
+          proExit.cantidad+= this.cantidad;
+          proExit.precio= this.precio;
+          proExit.descuento+= this.descuento;
+          proExit.descuentoProcentual+= this.descuentoPorcentual;
+          proExit.subTotal+= this.subTotal;
+          proExit.impuestos+= this.impuestos;
+          proExit.total+= this.total;
+          proExit.impuestosObject= this.miFormulario.value.impuestoObjet;
+          this.dataListDetalleFactura.push(proExit) 
+          this.subTotalGeneral+= proExit.cantidad;
+          cantLocal = proExit.cantidad;
+      }
+      else
+      {
+        cantLocal = detalle.cantidad;
+        this.dataListDetalleFactura.push(detalle);
+      }
+      
+      //Este codgio agrega los impuestos de cada producto que pertenece al detalle
+      this.miFormulario.value.impuestoObjet.forEach((element : iiMpuesto) =>
+      {
+        let existImpuesto = this.dataListImpuestosDetails.find(c=>c.idImpuesto==element.idImpuesto)
+        if(existImpuesto===undefined)
           {
-            z.porcentajeCalculado+=a.porcentaje;
-            z.monto+= (z.porcentaje / 100) * detalle.subTotal;
+            element.monto += (element.porcentaje/100)*this.subTotal;
+            this.dataListImpuestosDetails.push(element);
           }
           else
           {
-            z.porcentajeCalculado-=a.porcentaje;
-            z.monto-= (z.porcentaje / 100) * detalle.subTotal;
-
+            this.dataListImpuestosDetails = this.dataListImpuestosDetails.filter(c=>c.idImpuesto!==existImpuesto.idImpuesto)
+            existImpuesto.monto+=element.monto;
+            this.dataListImpuestosDetails.push(existImpuesto);
           }
-        }   
-      }
-      )
+      })
+
+      this.calculoGeneral();
+      this.carlculasImpuestos(1, detalle);
+      
+       this.resetDetails();
+       this.editando = false;
     }
-    else
-    {
-      a.monto= (a.porcentaje / 100) * detalle.subTotal;
-      this.dataListImpuestosDetails.push(a);
-    }
-  });
 
-  console.log(this.dataListImpuestosDetails)
-}
-
-calculoGeneral(){
-  this.dataListDetalleFactura.forEach(item=>{
-    this.subTotalGeneral += item.subTotal; 
-    this.descuentoGeneral += item.descuento; 
-    this.totalGeneral = this.totalGeneral + item.total;
-
-  })
-  if(this.dataListDetalleFactura.length<1)
-  {
-    this.subTotalGeneral = 0; 
-    this.descuentoGeneral = 0; 
-    this.totalGeneral =0; 
-    this.dataListImpuestosDetails = [];
   }
-
-}
-
-
-resetDetails(){
-  this.cantidad = 1;
-  this.precio = 0
-  this.subTotal =0  
-  this.impuestos = 0;
-  this.total =0; 
-  this.descuento =0;
-  this.totalGeneral = 0;
-  this.subTotalGeneral=0;
-  this.descuentoGeneral = 0;
-  this.miFormulario.patchValue({
-    cantidad : 1,
-    precio : 0,
-    subTotalDetails : 0,
-    impuesto : 0,
-    descuento : 0,
-    total : 0,
-    producto : ""
-  })
- this.dataListProductosSearch = [];
-}
-
-
-  editRow(item  : iDetalleFactura, index : number){
-    if(this.editando==true)
-    {
+  removeItem(indice: number, idProducto : number){
+    if (this.editando) {
       this.alertaService.warnigAlert("Esta editando una fila, debe finalizar una edicion para afectar otro registro.");
     }
-    else
-    {
-      this.editando =true;
+    else {
+      this.carlculasImpuestos(2, this.dataListDetalleFactura[indice])
+      this.dataListDetalleFactura.splice(indice, 1);
+      this.resetDetails();
+      this.calculoGeneral();
+      this.dataListImpuestosDetails = this.dataListImpuestosDetails.filter(c=>c.idProducto!=idProducto);
+    }
+  }
+
+  searchContacto(event: any) {
+    let valor = (event.target as HTMLInputElement).value;
+    if (valor.length > 0) {
+      this.contactoService.getAllFilter((event.target as HTMLInputElement).value).subscribe((data: ServiceResponse) => {
+        this.dataListContactos = data.data.filter((c: iContactoPos) => c.idTipoContacto != 2);
+        console.log(this.dataListContactos)
+      })
+    }
+  }
+
+  searchProducto(event: any) {
+    let valor = (event.target as HTMLInputElement).value;
+    if (valor.length > 0) {
+      this.productoService.getAllFilterForDocument((event.target as HTMLInputElement).value).subscribe((data: ServiceResponse) => {
+        this.dataListProductosSearch = data.data;
+      })
+    }
+  }
+  searchProductoEdit(valor: string) {
+
+    if (valor.length > 0) {
+      this.productoService.getAllFilterForDocument(valor).subscribe((data: ServiceResponse) => {
+        this.dataListProductosSearch = data.data;
+        this.miFormulario.patchValue({ producto: data.data[0] })
+      })
+    }
+  }
+
+
+  displayFn(contacto?: iContactoPos): string | undefined | any {
+    return contacto ? contacto.nombreRazonSocial : undefined;
+  }
+
+  displayFnProducto(producto?: iProducto): string | undefined | any {
+    return producto ? producto.nombre : undefined;
+  }
+
+  getTipoDocumentos() {
+    this.numeracionService.getAllTipoDocumentos().subscribe((data: ServiceResponse) => {
+      if (data.status) {
+        this.miFormulario.patchValue({ idTipoDocumento: data.data.find((c: iTipoDocumento) => c.nombre.toUpperCase().includes("FACTURA DE VENTA")).idTipoDocumento })
+      }
+    })
+  }
+
+  selectContacto(event: any) {
+    this.miFormulario.patchValue(
+      {
+        identificacion: event.option.value.rnc,
+        telefono: event.option.value.telefono1,
+        idNumeracion: event.option.value.idTipoNumeracion,
+        idContacto: event.option.value.idContacto
+      })
+    }
+
+  selectProducto(event: any) {
+    this.idProducto = event.option.value.idProducto;
+    this.nombre = event.option.value.nombre; 
+    let arrayImpuestos =event.option.value.impuestos;
+    event.option.value.impuestos.forEach((elemen : any) => {
+    elemen.idProducto =this.idProducto;
+    });
+   
+    this.miFormulario.patchValue(
+      {
+        cantidad: this.miFormulario.value.cantidad,
+        descripcion: event.option.value.descripcion,
+        precio: event.option.value.precioBase,
+        impuestoObjet:  event.option.value.impuestos
+      })
+    this.calcular();
+
+      console.log(event.option.value)
+
+  }
+  selectProductoForEdit(item: iDetalleFactura) {
+    this.idProducto = item.idProducto;
+    this.nombre = item.nombre;
+    this.miFormulario.patchValue(
+      {
+        cantidad: item.cantidad,
+        nombre: item.nombre,
+        precio: item.precio,
+
+      })
+    this.calcular();
+    
+  }
+
+
+
+  getAllTerminos() {
+    this.plazoService.getAll().subscribe((data: ServiceResponse) => {
+      this.dataListTerminos = data.data;
+      let dateNow = new Date();
+      this.miFormulario.patchValue({ idTermino: data.data.find((c: iTermino) => c.predeterminado == true).idTermino })
+      this.setVencimiento();
+    })
+  }
+
+
+  calVencimiento(fecha: Date, dias: any) {
+    return addDays(this.miFormulario.value.fecha, dias);
+  }
+
+  getAllNumeracion() {
+    this.numeracionService.getAll().subscribe((data: ServiceResponse) => {
+      this.dataListNumeracion = data.data;
+      if(this.facturaServcie.facturaEdit==undefined ){
+        console.log('dentro')
+        this.miFormulario.patchValue({ "idNumeracion": (data.data.find((c: idNumeracion) => c.predeterminada == true)).idNumeracion })
+      }
+    })
+  }
+
+  setVencimiento() {
+    let dias = this.dataListTerminos.find((c: iTermino) => c.idTermino == this.miFormulario.value.idTermino)?.dias;
+    let fechaVencimiento = this.calVencimiento(this.miFormulario.value.fecha, dias);
+    // let fechaFormateada = this.datePipe.transform(fechaVencimiento, 'yyyy-MM-dd hh:mm:ss');
+    let fechaFormateada = fechaVencimiento;
+    this.miFormulario.patchValue({ vencimiento: fechaFormateada })
+  }
+
+  getAllVendedores() {
+    this.vendedoresService.getAll().subscribe((data: ServiceResponse) => {
+      this.dataListVendedores = data.data;
+    })
+  }
+// El metodo calcular calcula los totales del proudcto que se esta agregando
+  calcular() {
+    if (this.miFormulario.value.cantidad > 0 && this.miFormulario.value.cantidad !== "" && this.miFormulario.value.descuento !== "") {
+      this.cantidad = this.miFormulario.value.cantidad;
+      this.precio = this.miFormulario.value.precio;
+      this.subTotal = this.cantidad * this.precio;
+      //this.descuentoPorcentual = this.miFormulario.a.descuento;
+      this.descuento = (this.miFormulario.value.descuento / 100) * this.subTotal;
+      this.impuestos = 0;
+      this.miFormulario.value.impuestoObjet.forEach((imp: iiMpuesto) => {
+      this.impuestos += ((imp.porcentaje / 100) * 100);
+      });
+      this.impuestos = (this.impuestos / 100) * this.subTotal;
+      this.total = this.subTotal + this.impuestos - this.descuento;
+      this.miFormulario.patchValue({ impuesto: this.impuestos, subTotalDetails: this.subTotal, total: this.total })
+    }
+    else {
+      this.miFormulario.patchValue({descuento : 0});
+      this.miFormulario.patchValue({cantidad : 1});
+    }
+  }
+
+  carlculasImpuestos(accion: number, detalle: iDetalleFactura) {
+    this.miFormulario.value.impuestoObjet.forEach((a: iiMpuesto) => {
+     {
+      let exist = this.dataListImpuestosDetails.find(c=>c.idImpuesto===a.idImpuesto);
+      console.log(exist)
+      if(exist==undefined)
+      { 
+        a.monto+=detalle.impuestos;
+        this.dataListImpuestosDetails.push(a);
+      }
+      else
+      {
+        console.log(exist.porcentaje)
+        this.dataListImpuestosDetails = this.dataListImpuestosDetails.filter(c=>c.idImpuesto!==a.idImpuesto);
+        if(accion==2)
+        {
+          exist.porcentaje-=a.porcentaje;
+        }
+        exist.monto = (exist.porcentaje / 100)*this.subTotalGeneral;
+        this.dataListImpuestosDetails.push(exist)
+      }        
+      }
+    
+    });
+
+  }
+
+   contador =0;
+   calculoGeneral() {
+    let a=0; let b=0; let e=0;
+    this.dataListDetalleFactura.forEach(c=>{
+      a+=c.subTotal;
+      b+=c.descuento;
+      e+=c.total;
+   })
+    this.subTotalGeneral =a;
+    this.descuentoGeneral = b;
+    this.totalGeneral=e;
+    this.totalApagar = e;
+  
+    if (this.dataListDetalleFactura.length < 1) {
+      this.subTotalGeneral = 0;
+      this.descuentoGeneral = 0;
+      this.totalGeneral = 0;
+      this.totalApagar =  0;
+      this.cambio = 0;
+      this.dataListImpuestosDetails = [];
+    }
+  }
+
+
+  resetDetails() {
+    this.cantidad = 1;
+    this.precio = 0;
+    this.subTotal = 0;
+    this.impuestos = 0;
+    this.total = 0;
+    this.descuento = 0;
+    this.dataListProductosSearch = [];
+   // this.dataListImpuestosDetails = [];
+    this.dataListContactos =[];
+    this.idProducto=0;
+    this.miFormulario.patchValue({precio : 0, descuento: 0, subTotalDetails : 0, impuesto : 0, total : 0, producto : "", cantidad : 1 })
+  }
+
+
+
+
+  editRow(item: iDetalleFactura, index: number) {
+    if (this.editando == true) {
+      this.alertaService.warnigAlert("Esta editando una fila, debe finalizar una edicion para afectar otro registro.");
+    }
+    else {
+      this.editando = true;
       this.searchProductoEdit(item.nombre);
       this.miFormulario.patchValue({
-       cantidad: item.cantidad,
-       descuento : this.descuentoPorcentual,
-       precio : item.precio,
-       subTotal : item.subTotal,
-       impuesto : item.impuestos,
-       total : item.total
+        cantidad: item.cantidad,
+        descuento: this.descuentoPorcentual,
+        precio: item.precio,
+        subTotal: item.subTotal,
+        impuesto: item.impuestos,
+        total: item.total
       })
-  
+
+      // this.dataListDetalleFactura.splice(index, 1);
+      // this.selectProductoForEdit(item);
+      // // this.carlculasImpuestos(2, this.dataListDetalleFactura[index])
+
+      this.carlculasImpuestos(2, this.dataListDetalleFactura[index])
       this.dataListDetalleFactura.splice(index, 1);
-      this.selectProductoForEdit(item);
+      // this.resetDetails();
+      this.calculoGeneral();
+      
+      this.dataListImpuestosDetails = this.dataListImpuestosDetails.filter(c=>c.idProducto!=item.idProducto);
+
     }
-   
+    
+
   }
+
+  guardarFactura() {
+    this.miFormulario.patchValue(
+      {
+        detalle: this.dataListDetalleFactura,
+        idEmpresa: this.usuarioService.usuarioLogueado.data.sucursal.idEmpresa,
+        idSucursal: this.usuarioService.usuarioLogueado.data.sucursal.idSucursal,
+        idUsuario: this.usuarioService.usuarioLogueado.data.idUsuario,
+        descuento: this.descuentoGeneral,
+        subTotal: this.subTotalGeneral,
+        totalGeneral: this.totalGeneral,
+        impuestos: this.miFormulario.value.impuestoObjet 
+      })
+    
+    if (this.miFormulario.valid && this.dataListDetalleFactura.length>0) {
+      this.alertaService.ShowLoading();
+      if(this.miFormulario.value.idFactura!==null)
+      {
+        this.facturaServcie.update(this.miFormulario.value).subscribe((data: ServiceResponse) => {
+          if (data.status) {
+            this.alertaService.successAlert(data.message);
+            this.resetHeader();
+            this.resetDetails();
+            this.resetFormPago()
+          }
+          else {
+            this.alertaService.errorAlert(data.message);
+          }
+  
+        })
+      }
+      else
+      {
+        this.facturaServcie.insert(this.miFormulario.value).subscribe((data: ServiceResponse) => {
+          if (data.status) {
+            this.alertaService.successAlert(data.message);
+            this.resetHeader();
+            this.resetDetails();
+            this.resetFormPago()
+          }
+          else {
+            this.alertaService.errorAlert(data.message);
+          }
+  
+        })
+      }
+
+      
+    }
+    else {
+      this.alertaService.warnigAlert("Debe completar todos para poder guardar el documento");
+    }
+  }
+
+
+  //Este metodo siver para limpiar todo despues de hacer un insercion
+  resetData() {
+    this.resetDetails();
+  }
+  resetHeader()
+  {
+    this.dataListDetalleFactura=[];
+    this.miFormulario.patchValue({
+      cantidad: 1,
+      precio: 0,
+      subTotalDetails: 0,
+      impuesto: 0,
+      descuento: 0,
+      total: 0,
+      producto: "",
+      comenatrios : "",
+      telefono : "",
+      identificacion : "",
+      idContacto : "",
+      nombreClienteCompleto: "",
+      comentario : "",
+      idFactura: null
+      
+    })
+    this.totalGeneral=0;
+    this.subTotalGeneral=0;
+    this.descuentoGeneral=0;
+    this.dataListImpuestosDetails=[];
+  }
+
+  setMetodoPago(metodo :  number,  descripcion : string, index : number){
+    this.firstFormGroup.patchValue({firstCtrl : 'metodo'})
+    this.metodoPagoSeleccionado = descripcion;
+    this.setActive(index);
+
+  }
+
+  validSetFirsForm(){
+    if(this.firstFormGroup.invalid){
+      this.alertaService.warnigAlert('Seleccione un metodo de pago');
+    } 
+  }
+  activeIndex: number | null = null;
+  
+  setActive(index: number) {
+    this.activeIndex = index;
+  }
+
+  calcularPagoEfectivo(event : any){
+     this.cambio =this.totalApagar -event.target.value;
+     let totalRecibido = event.target.value; 
+     this.addMontoPagar(event);
+     if(this.cambio<0)
+      {
+        this.descripcionPago="CAMBIO" 
+        this.cambio = (this.cambio * -1)
+        this.miFormulario.patchValue({cambio : this.cambio, totalRecibido : event.target.value, montoPagado : event.target.value  })
+      }
+      else
+      {
+        this.descripcionPago="POR PAGAR" 
+      } 
+  }
+
+  getAllBancos(){
+    this.bancoService.getAll(this.usuarioService.usuarioLogueado.data.sucursal.idSucursal).subscribe((c: ServiceResponse)=>
+    {
+        this.dataListBancos = c.data;
+        
+    }
+    )
+  }
+
+  addMontoPagar(event : any){
+    event.target.value.length>0? this.miFormulario.patchValue({montoPagado : this.efectivo}) : 0;
+  }
+
+  resetFormPago(){
+    this.firstFormGroup.reset();
+    this.secondFormGroup.reset();
+    this.metodoPagoSeleccionado ='';
+    this.closeModal();
+  }
+
+  pagarFactura(){
+    this.secondFormGroup.valid===true? this.guardarFactura() : this.alertaService.warnigAlert("Debe completar los campos para poder aplicar el pago y guardar la factura.") 
+  }
+  closeModal() {
+    console.log('cerrando')
+    $('#exampleModal').modal('hide');
+  }
+
+  openModal() {
+    console.log('cerrando')
+    $('#exampleModal').modal('show');
+  }
+  
+  
 }
 

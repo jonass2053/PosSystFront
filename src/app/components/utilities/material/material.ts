@@ -15,6 +15,7 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import {MatStepperModule} from '@angular/material/stepper';
 
 
 
@@ -62,6 +63,8 @@ export const  importaciones : any =[
   NgxMaskDirective,
   NgxMaskPipe,
   MatAutocompleteModule,
+  MatStepperModule 
+  
   
   
   
@@ -70,6 +73,7 @@ export const  importaciones : any =[
 ]
 
 import { MatDateFormats } from '@angular/material/core';
+import { MatDialog } from '@angular/material/dialog';
 
 export const MY_DATE_FORMATS: MatDateFormats = {
   parse: {

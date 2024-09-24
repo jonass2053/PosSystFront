@@ -12,6 +12,10 @@ import { ModelosComponent } from "./components/modelos/modelos.component";
 import { MarcasComponent } from "./components/marcas/marcas.component";
 import { InicioComponent } from "./components/inicio/inicio.component";
 import { FacturaComponent } from "./components/factura/factura.component";
+import { FacturaConsultaComponent } from "./components/factura-consulta/factura-consulta.component";
+import { ListFacturasComponent } from "./components/factura/list-facturas/list-facturas.component";
+import { BancosComponent } from "./components/bancos/bancos.component";
+import { PagoFacturaComponent } from "./components/factura/pago-factura/pago-factura.component";
 
 
 
@@ -28,6 +32,9 @@ export const routes : Routes=[
         {path : 'marcas', component : MarcasComponent},
         {path : 'modelos', component : ModelosComponent},
         {path : 'factura', component : FacturaComponent},
+        {path : 'facturas', component : ListFacturasComponent},
+        {path : 'pago', component : PagoFacturaComponent},
+        {path : 'bancos', component : BancosComponent},
         {path : '', component : InicioComponent},
       
        

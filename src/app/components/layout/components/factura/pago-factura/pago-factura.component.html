@@ -1,0 +1,64 @@
+<h2 mat-dialog-title
+>Agregar pago</h2>
+<mat-dialog-content>
+
+    <div class="headpago">
+        <p style="font-size: 17px;">
+            <b>Contacto:</b> {{nombreCliente}} <br>
+            <b>Número de factura: </b> {{noFactura}}  <br>
+            <b>Valor por cobrar: </b>{{moneda.simbolo}} {{montoPorPagar |  number : '1.2-5' || ''}}
+         </p>
+         <div>
+            <mat-icon style="width: 60px; height: 60px; font-size: 50px;">payments</mat-icon>
+         </div>
+
+    </div>
+   
+    <hr>
+    <form action="" [formGroup]="miFormulario">
+    <div style="margin-top: 20px;">
+        <mat-form-field class="example-full-width " appearance="outline">
+            <mat-label>Monto</mat-label>
+            <input matInput type="number" placeholder="Monto" value="0" formControlName="monto">
+        </mat-form-field> 
+        &nbsp; 
+        <mat-form-field appearance="outline" style="color: red;">
+            <mat-label>Metodo de pago</mat-label>
+            <mat-select formControlName="idMetodoPago">
+              <mat-option  (click)="selectMetodo(metodo)" *ngFor="let metodo of dataListMetodoPago" [value]="metodo.idMetodoPago">
+                {{ metodo.nombre }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+    </div>
+    <div >
+      <mat-form-field appearance="outline">
+        <mat-label>Banco</mat-label>
+        <mat-select formControlName="idBanco">
+          <mat-option  *ngFor="let tipo of dataListBanco" [value]="tipo.idBanco">
+            {{ tipo.nombreCuenta }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field> 
+      &nbsp; 
+        <mat-form-field class="example-full-width" appearance="outline">
+            <mat-label>No.Ticket</mat-label>
+            <input matInput placeholder="No.Ticket">
+        </mat-form-field>  
+    </div>
+  
+    <mat-form-field class="fullwidth" appearance="outline">
+      <mat-label>Nota del pago</mat-label>
+      <textarea matInput formControlName="notaPago"></textarea>
+    </mat-form-field>
+    
+
+</form>
+   
+
+    
+</mat-dialog-content>
+<mat-dialog-actions  align="end">
+  <button mat-button mat-dialog-close>Cancelar</button>
+  <button mat-button  (click)="save()">Guardar</button>
+</mat-dialog-actions>

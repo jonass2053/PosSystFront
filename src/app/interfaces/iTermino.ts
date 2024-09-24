@@ -1,3 +1,5 @@
+import { IUsuario } from "./i-usuario"
+
 export interface iTermino
 {
     idTermino : number,
@@ -144,10 +146,11 @@ export interface iProducto
     cantMaxima : number,
     idCuentaContableParaVenta : number,
     imagen : string,
-    venderSinUnidades : boolean,
+    venderSinUnidades? : boolean,
     idCategoria : number,
     idEmpresa : number
     impuestos : iiMpuesto[]
+    ImpuestosObj : iiMpuesto[]
 
 }
 
@@ -164,7 +167,8 @@ export interface iUnidades
 
 export interface iiMpuesto
 {
-    idImpuesto?:number
+    idImpuesto?:number,
+    idProducto : number,
     nombre : string,
     porcentaje : number,
     impuestoAcreditable : boolean,
@@ -219,17 +223,28 @@ export interface iMoneda
 }
 
  export interface iFactura {
-    idFactura: number;
+    idFactura?: number;
+    idTermino : number,
     idNumeracion: number;
+    numeracionObj : idNumeracion,
+    numeracion : string,
     idContacto: number;
+    contacto : iContactoPos
     idTipoDocumento: number;
     idSucursal: number;
     idUsuario: number;
+    usuario : IUsuario,
+    idVendedor : number,
     subTotal: number;
     descuento: number;
     totalGeneral: number;
     idEmpresa: number;
     vencimiento: string;
+    comentario : string,
+    fechaCreacion? : Date,
+    montoPagado :  number,
+    montoPorPagar : number,
+    estadoFactura : {idDetalleFactura : number, nombre : string},
     detalle: iDetalleFactura[];
   }
   
@@ -247,3 +262,38 @@ export interface iMoneda
     total: number;
     impuestosObject? : iiMpuesto[] 
   }
+
+  export interface iTiopCuentaBanck {
+    idTipoCuenta: number;
+    nombre: string;
+    descripcion: string;
+
+  }
+
+  export interface iBanco{
+    idBanco?: number;
+    idTipoCuenta: number;
+    tipoCuenta : iTiopCuentaBanck,
+    nombreCuenta: string;
+    numerCuenta: string;
+    saldoInicial: number;
+    fechaSaldoInicial: Date;
+    descripcion: string;
+    estado: boolean;
+  }
+
+  export interface iMetodoPago{
+     idMetodoPago : number;
+     nombre : string;
+  }
+  export interface iPago {
+    idPago?: number;
+    idContacto: number;
+    idBanco: number;
+    idMetodoPago: number;
+    monto: number;
+    notaPago: string;
+    idFactura: number;
+    noTicket: string;
+  }
+  

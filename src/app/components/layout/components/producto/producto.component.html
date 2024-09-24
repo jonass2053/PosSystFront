@@ -34,7 +34,9 @@
            
               <th scope="col">Nombre</th>
               <th scope="col" class="d-lg-block d-md-block d-sm-none d-xs-none">Descripción</th>
-              <th scope="col">Precio</th>
+              <th scope="col">Precio base </th>
+              <th scope="col">Impuestos </th>
+              <th scope="col">Precio + Impuestos </th>
               <th scope="col">Cantidad en almacen</th>
               
               <th scope="col" class="accionesTitle">Acciones</th>
@@ -48,13 +50,15 @@
               <td><div style="display: flex; justify-content: center; align-items: center; width: 100%; box-sizing: border-box; border-radius: 50px;"><img class="d-sm-block" src="{{producto.imagen}}" alt="" style="width: 25px; height: 25px; border-radius: 50%;"></div>  </td>
               <td><div>{{producto.nombre}}</div></td>
               <td><div>{{producto.descripcion}}</div></td>
+              <td><div>{{moneda.simbolo }} {{producto.precioBase}}</div> </td>
+              <td><div>{{moneda.simbolo }} {{producto.precioFinal - producto.precioBase}}</div> </td>
               <td><div>{{moneda.simbolo }} {{producto.precioFinal}}</div> </td>
               <td><div> {{producto.cantInicial}}</div></td>
               <td class="acciones">
-                <button class="btnaccion" (click)="editar(producto)" data-toggle="modal"
-                  data-target="#exampleModal"><mat-icon data-toggle="modal">edit</mat-icon>Editar</button>
-                <button class="btnaccion" (click)="delete(producto.idProducto)" data-target="#exampleModal"><mat-icon
-                    data-toggle="modal">delete</mat-icon>Eliminar</button>
+                <button matTooltip="Editar" class="btnaccion" (click)="editar(producto)" data-toggle="modal"
+                  data-target="#exampleModal"><mat-icon data-toggle="modal">edit</mat-icon></button>
+                <button matTooltip="Eliminar" class="btnaccion" (click)="delete(producto.idProducto)" data-target="#exampleModal"><mat-icon
+                    data-toggle="modal">delete</mat-icon></button>
               </td>
               <td></td>
             </tr>
@@ -191,11 +195,11 @@
                       <div class="col-md-6 col-sm-6 col-xs-6">
                         <mat-form-field appearance="outline" class="control">
                           <mat-label>Impuestos</mat-label>
-                          <mat-select disableRipple multiple formControlName="impuestos">
+                          <mat-select disableRipple  formControlName="impuestos">
                             <ng-container *ngIf="dataListImpuesto.length> 0; else noInvol">
                               <mat-option [value]="impuesto.idImpuesto" *ngFor="let impuesto of dataListImpuesto"
-                                (click)="setPrecioTotal(1)">
-                                {{impuesto.nombre}}
+                                (click)="setPrecioTotal(1, impuesto)">
+                                {{impuesto.nombre}} {{impuesto.porcentaje}}%
                               </mat-option>
                             </ng-container>
                             <ng-template #noInvol> <mat-option>No hay campos disponibles</mat-option> </ng-template>
@@ -207,7 +211,7 @@
 
                       <div class="col-md-6 col-sm-6 col-xs-6">
                         <mat-form-field appearance="outline" class="example-full-width control">
-                          <mat-label>Precio Total </mat-label>
+                          <mat-label>Precio + Impuestos </mat-label>
                           <input type="text" readonly="true" matInput class="control" formControlName="precioFinal"
                             placeholder="Escriba la numeración final">
                         </mat-form-field>

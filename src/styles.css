@@ -554,6 +554,9 @@ nav{
     transition: all 0.5s ease;
     margin-bottom: 4px;
     width: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .btnGuardar:hover
 {
@@ -680,6 +683,7 @@ nav{
   display: flex;
   height: 35px;
   margin-top: 10px;
+  margin-bottom: 10px;
   justify-content: space-between;
   align-items: center;
   background-color: var(--color-supersuave);
@@ -687,6 +691,7 @@ nav{
   padding: 20px;
   border-left: 10px solid rgba(0, 0, 0, 0.2);
   border-right: 10px solid rgba(0, 0, 0, 0.2);
+  
 
 }
 
@@ -718,11 +723,8 @@ nav{
 
   width: 40px;
   height: 40px;
-
-
   color: var(--color-secundario);
 
-  /* box-shadow: 1px 2px 5px silver; */
 
 }
 
@@ -799,11 +801,11 @@ mat-icon:hover
   
 
 }
-.acciones mat-icon
+/* .acciones mat-icon
 {
   color: var(--color-secundario);
 
-}
+} */
 .accionesTitle
 {
   text-align: center;
@@ -845,24 +847,22 @@ mat-icon:hover
 {
   background-color: transparent;
   margin: 0 2px 0 2px;
-  border: 1px solid var(--fondo-suave-color-secundario); 
-  height: 23px;
+  /* border: 1px solid var(--fondo-suave-color-secundario);   */
+  height: 17px;
   width:auto;
-  display: flex;
-
 }
 .btnaccion mat-icon
 { 
-  font-size: 18px;
+  font-size: 15px;
 
 }
-.btnaccion :hover
+/* .btnaccion :hover
 {
  
   color: white;
   
   
-}
+} */
 thead
 {
   background-color: var(--fondo-suave-color-secundario);
@@ -985,7 +985,14 @@ mat-form-field {
   display: flex;
   justify-content: center;
   align-items: center;
-  color: var(--color-texto-interno)
+  color: var(--color-texto-interno);
+  
+}
+.containerIcoText h2
+{
+ margin: 0px;
+ padding: 0px;
+ font-weight: 300;
 }
 .containerIcoText mat-icon
 {
@@ -1141,7 +1148,7 @@ nav{
   
 
 }
-.cardresumen
+.cardresumen  
 {
   border: 1px solid silver;
   height: 100px;
@@ -1258,7 +1265,6 @@ button
   padding: 0;
   border: 0px;
   background-color: transparent;
-
 }
 .icon{
   display: block;
@@ -1279,8 +1285,6 @@ button
 
 }
 
-
-
 button
 {   
   margin: 0;
@@ -1288,12 +1292,6 @@ button
   border: 0px;
   background-color: transparent;
 }
-
-/* ::-webkit-scrollbar {
-  display: none;
-} */
-
-
 
 .active{
   transform: scale(1.25) translateY(-1em);
@@ -1443,6 +1441,10 @@ i
 
 
 }
+.disabledbtn {
+  pointer-events: none; /* No permite interactuar con el div */
+  opacity: 0.5; /* Cambia la opacidad para dar efecto de "desactivado" */
+}
 .resumenTotales{
 
   width: 100%;
@@ -1469,3 +1471,17 @@ i
 {
   width: 50%; 
 }
+
+.flexCenter
+{
+  display:  flex;
+  align-items: center;
+  justify-content: center;
+  margin: 5px;
+}
+
+.fullwidth
+{
+  width: 100%;
+}
+
