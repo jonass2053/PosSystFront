@@ -71,7 +71,6 @@ export interface iEmpresa
     numEmpleados : string,
     logo : string,
     idMoneda : number
-    
 
 }
 export interface iRegimen
@@ -223,28 +222,42 @@ export interface iMoneda
 }
 
  export interface iFactura {
-    idFactura?: number;
+    idFactura?: number,
     idTermino : number,
-    idNumeracion: number;
+    terminoObj : iTermino,
+    idNumeracion: number,
     numeracionObj : idNumeracion,
     numeracion : string,
-    idContacto: number;
-    contacto : iContactoPos
-    idTipoDocumento: number;
-    idSucursal: number;
-    idUsuario: number;
+    idContacto: number,
+    contacto : iContactoPos,
+    idTipoDocumento: number,
+    idSucursal: number,
+    sucursalObj : 
+        {
+            idSucursal: number,
+            idEmpresa: number,
+            empresa?: iEmpresa,
+            nombre?: string,
+            direccion?: string,
+            telefono1?: string,
+            telefono2?: string,
+          },
+    idUsuario: number,
     usuario : IUsuario,
     idVendedor : number,
-    subTotal: number;
-    descuento: number;
-    totalGeneral: number;
-    idEmpresa: number;
-    vencimiento: string;
+    subTotal: number,
+    descuento: number,
+    totalGeneral: number,
+    totalRecibido : number,
+    cambio : number,
+    idEmpresa: number,
+    empresaObj : iEmpresa
+    vencimiento: string,
     comentario : string,
     fechaCreacion? : Date,
     montoPagado :  number,
     montoPorPagar : number,
-    estadoFactura : {idDetalleFactura : number, nombre : string},
+    estadoFactura : {idDetalleFactura : number, nombre : string, color : string},
     detalle: iDetalleFactura[];
   }
   
@@ -291,9 +304,12 @@ export interface iMoneda
     idContacto: number;
     idBanco: number;
     idMetodoPago: number;
+    metodoPagoObj  : iMetodoPago,
     monto: number;
     notaPago: string;
     idFactura: number;
     noTicket: string;
+    fecha : string;
+    
   }
   

@@ -5,13 +5,14 @@ import { FormBuilder } from '@angular/forms';
 import { AlertServiceService } from '../components/utilities/alert-service.service';
 import { catchError, Observable } from 'rxjs';
 import { ServiceResponse } from '../interfaces/service-response-login';
-import { iFactura } from '../interfaces/iTermino';
+import { iFactura, iPago } from '../interfaces/iTermino';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FacturaService {
  facturaEdit!:iFactura;
+ pagosFactura : iPago[]=[];
   url : string = `${baseUrl}/Factura`;
   constructor(
       private http : HttpClient,

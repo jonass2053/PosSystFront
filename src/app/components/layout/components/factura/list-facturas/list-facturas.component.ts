@@ -98,10 +98,12 @@ export class ListFacturasComponent {
         console.log(data)
         this.facturaService.facturaEdit = data.data;
         this.router.navigateByUrl('layout/factura');
-      })
-      
+      }) 
     }
-   
+  }
+
+  verFactura(idFactura : number){
+    this.router.navigateByUrl(`layout/detalle_factura/${idFactura}`);
   }
 
   update() {

@@ -16,6 +16,11 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatStepperModule} from '@angular/material/stepper';
+import {MatListModule} from '@angular/material/list';
+import {MatDividerModule} from '@angular/material/divider';
+import {MatTabsModule} from '@angular/material/tabs';
+
+
 
 
 
@@ -63,17 +68,19 @@ export const  importaciones : any =[
   NgxMaskDirective,
   NgxMaskPipe,
   MatAutocompleteModule,
-  MatStepperModule 
-  
-  
-  
-  
+  MatStepperModule,
+  MatButtonModule, 
+  MatIconModule,
+  MatListModule,
+  MatDividerModule,
+  MatTabsModule
 
-  
+
 ]
 
 import { MatDateFormats } from '@angular/material/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
 
 export const MY_DATE_FORMATS: MatDateFormats = {
   parse: {

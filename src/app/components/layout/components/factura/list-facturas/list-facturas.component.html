@@ -37,8 +37,6 @@
                             <th scope="col">Monto pagado</th>
                             <th scope="col">Monto por pagar</th>
                             <th scope="col">Estado</th>
-
-
                             <th scope="col" class="accionesTitle">Acciones</th>
                             <th class="cargandoTableIcono">
                                 <div *ngIf="cargando" class="loaderTable"></div>
@@ -57,24 +55,24 @@
                             <td>
                                 <div>{{factura.fechaCreacion | date: 'dd/MM/YYYY' || ''}}</div>
                             </td>
-                            <td [ngStyle]="{'color': factura.estadoFactura.nombre === 'Por pagar' ? 'red' : factura.estadoFactura.nombre==='Cobrada'? '#09184d' : 'transparent'}">
+                            <td>
                                 <div>{{factura.vencimiento | date: 'dd/MM/YYYY' || ''}}</div>
                             </td>
 
                             <td>
                                 <div>{{moneda.simbolo}} {{factura.totalGeneral | number : '1.2-5' || ''}}</div>
                             </td>
-                            <td>
+                            <td> 
                                 <div>{{moneda.simbolo}} {{factura.montoPagado | number : '1.2-5' || ''}}</div>
                             </td>
                             <td>
                                 <div>{{moneda.simbolo}} {{factura.montoPorPagar| number : '1.2-5' || ''}}</div>
                             </td>
                             <td style="color: white;">
-                                <div style="text-align: center; border-radius: 5px; padding: 1px;" [ngStyle]="{'background-color': factura.estadoFactura.nombre === 'Por pagar' ? 'red' : factura.estadoFactura.nombre==='Cobrada'? 'green' : 'transparent'}">{{factura.estadoFactura.nombre || ''}}</div>
+                                <div style="text-align: center; border-radius: 5px; padding: 1px;" [style.background-color]="factura.estadoFactura.color">{{factura.estadoFactura.nombre || ''}}</div>
                             </td>
                             <td class="acciones">
-                                <button matTooltip="Ver detalle" class="btnaccion" 
+                                <button matTooltip="Ver detalle" class="btnaccion"  (click)="verFactura(factura.idFactura!)"
                                     data-toggle="modal" data-target="#exampleModal"><mat-icon
                                         data-toggle="modal">preview</mat-icon></button>
 
