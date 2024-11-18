@@ -39,9 +39,9 @@ export class ProductoService {
      {
       return this.http.get<ServiceResponse>(`${this.url}/${id}`)
      }
-     getAll() : Observable<ServiceResponse>
+     getAll(idEmpresa : number) : Observable<ServiceResponse>
      {
-      return this.http.get<ServiceResponse>(`${this.url}`)
+      return this.http.get<ServiceResponse>(`${this.url}/get_all/${idEmpresa}`)
      }
      getAllUnidades() : Observable<ServiceResponse>
      {
