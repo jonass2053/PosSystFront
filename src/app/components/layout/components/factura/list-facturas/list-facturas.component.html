@@ -86,11 +86,11 @@
                                     data-toggle="modal">payments</mat-icon></button>
 
                                 <button [ngClass]="{'disabled': factura.montoPorPagar === 0, 'inactivo': factura.montoPorPagar !== 0}"  matTooltip="Editar" class="btnaccion" (click)="editar(factura!)"
-                                    data-toggle="modal" data-target="#exampleModal"><mat-icon
+                                    data-toggle="modal" data-target="#exampleModal"><mat-icon class="btnEditar"
                                         data-toggle="modal">edit</mat-icon></button>
 
                                 <button matTooltip="Eliminar" class="btnaccion" (click)="delete(factura.idFactura!)"
-                                    data-target="#exampleModal"><mat-icon data-toggle="modal">delete</mat-icon></button>
+                                    data-target="#exampleModal"><mat-icon class="btnEliminar" data-toggle="modal">delete</mat-icon></button>
                             </td>
                             <td></td>
                         </tr>
@@ -101,9 +101,27 @@
                     </tbody>
                 </table>
             </div>
+            <!-- paginacion -->
+            <ul class="pagination" *ngIf="dataList.length>0">
+                <li class="page-item">
+                    <input  class="page-link text-dark" type="button" value="«" (click)="getAll(pageNumbewr-1)">
+                </li>
+                <li *ngFor="let p of paginations" class="page-item"><input class="page-link text-dark" value="{{p}}" type="button" (click)="getAll(p)"></li>
+                <li class="page-item">
+                    <input  class="page-link text-dark" type="button" value="»" (click)="getAll(pageNumbewr +1)">
+                </li>
+              </ul>
+
+              
+           
+    <div>
+    
+
             <div style="display: flex; width: 100%;">
-                <p style="font-size: 12px;"> Total de registros encontrados : {{dataList.length}} </p>
+                <p style="font-size: 12px;" > Items:{{dataList.length}} / Pagina actual {{pageNumbewr}} / Cant. Paginas {{paginations.length}}</p>
             </div>
+  
+            
         </div>
     </div>
 

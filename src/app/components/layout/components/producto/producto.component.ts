@@ -62,7 +62,6 @@ export class ProductoComponent implements OnInit {
 
   }
 
-  impuestos = new FormControl('');
   ngOnInit(): void {
   }
 
@@ -89,7 +88,7 @@ export class ProductoComponent implements OnInit {
       idCategoria: this.fb.control(''),
       idEmpresa: this.fb.control(null),
       filterUnidades: this.fb.control(''),
-      impuestos: this.fb.control(new Array()),
+      idImpuesto : this.fb.control(null)
     });
 
     impuestosArrayNumber : number[] = [];
@@ -151,9 +150,6 @@ export class ProductoComponent implements OnInit {
         this.impuestosCodigos.push(imp);
       });
 
-      if (this.impuestosCodigos.length > 0) {
-        this.addImpuestos(this.impuestosCodigos);
-      }
 
       setTimeout(() => {
         this.alertaService.successAlert(data.message);
@@ -195,7 +191,7 @@ export class ProductoComponent implements OnInit {
     this.miFormulario.patchValue({ impuestos: producto.impuestos[0] })
     console.log(this.miFormulario.value)
     this.productoService.getAllUnidadesFilter(producto.idUnidad.toString()).subscribe((data: any) => {
-      this.miFormulario.patchValue({ 'filterUnidades': data.data.find((c: any) => c.idUnidad == producto.idUnidad) })
+    this.miFormulario.patchValue({'filterUnidades': data.data.find((c: any) => c.idUnidad == producto.idUnidad) })
     })
 
 
@@ -204,22 +200,9 @@ export class ProductoComponent implements OnInit {
 
   update() {
     this.alertaService.ShowLoading();
-    this.productoService.update(this.formData).subscribe((data: ServiceResponse) => {
-      let a = [];
-      a.push(this.miFormulario.value.impuestos);  
-      this.miFormulario.patchValue({impuestos : a})
-      this.miFormulario.value.impuestos.forEach((a: number) => {
-        let imp = new iImpuestoProductoCodigo();
-        imp.idProducto = this.miFormulario.value.idProducto;
-        imp.idImpuesto = a;
-        this.impuestosCodigos.push(imp);
-      });
-      if (this.impuestosCodigos.length > 0) {
-        this.addImpuestos(this.impuestosCodigos);
-      }
-
-
-
+    
+    this.productoService.update(this.formData).subscribe((data: ServiceResponse) => { 
+    
       setTimeout(() => {
         this.alertaService.successAlert(data.message);
         data.status ? this.resetForm : '';
@@ -230,6 +213,7 @@ export class ProductoComponent implements OnInit {
   }
 
   save() {
+    
     this.formData.append('idEmpresa', this.usuarioService.usuarioLogueado.data.sucursal.idEmpresa)
     this.formData.append('nombre',  this.miFormulario.get('nombre')?.value);
     this.formData.append('idProducto', this.miFormulario.get('idProducto')?.value)
@@ -240,16 +224,15 @@ export class ProductoComponent implements OnInit {
     this.formData.append('precioFinal', this.miFormulario.get('precioFinal')?.value);
     this.formData.append('descripcion', this.miFormulario.get('descripcion')?.value);
     this.formData.append('idAlmacen', this.miFormulario.get('idAlmacen')?.value==null? '' : this.miFormulario.value.idAlmacen);
+    this.formData.append('idImpuesto', this.miFormulario.value.idImpuesto);
     this.formData.append('cantInicial', this.miFormulario.get('cantInicial')?.value);
     this.formData.append('cantMinima', this.miFormulario.get('cantMinima')?.value);
     this.formData.append('cantMaxima', this.miFormulario.get('cantMaxima')?.value);
-    // this.formData.append('idCuentaContableParaVenta', this.miFormulario.get('idCuentaContableParaVenta')?.value);
     this.formData.append('venderSinUnidades', this.miFormulario.get('venderSinUnidades')?.value==null? '' : this.miFormulario.value.venderSinUnidades);
     this.formData.append('idCategoria', this.miFormulario.get('idCategoria')?.value==null? '' : this.miFormulario.value.idCategoria);
     this.formData.append('idMarca', this.miFormulario.get('idMarca')?.value==null? '' : this.miFormulario.value.idMarca);
     this.formData.append('idModelo', this.miFormulario.get('idModelo')?.value==null? '' : this.miFormulario.value.idModelo);
-    this.impuestoArray = this.miFormulario.value.impuestos;
-    console.log(this.impuestoArray);
+    
     if (this.miFormulario.valid) {
       this.miFormulario.get('idProducto')?.value === null ? this.insert() : this.update()
     }
@@ -263,8 +246,6 @@ export class ProductoComponent implements OnInit {
     this.cargando = true;
     this.productoService.getAll().subscribe((data: any) => {
       this.dataList = data.data;
-      this.impuestosCodigos = [];
-      console.log(this.dataList)
       if (this.dataList.length > 0) {
         this.sinRegistros = false
         this.cargando = false;
@@ -344,6 +325,13 @@ export class ProductoComponent implements OnInit {
 
   resetForm() {
     this.miFormulario.reset();
+    this. miFormulario.patchValue({
+      isProduct : this.isProduct,
+      cantInicial : 0,
+      cantMinima : 0,
+      cantMaxima : 0
+      
+    })
     this.isProductView(0);
     this.closeModal();
   }
@@ -368,11 +356,7 @@ export class ProductoComponent implements OnInit {
       this.dataListImpuesto = data.data;
     })
   }
-  addImpuestos(impuestos: iImpuestoProductoCodigo[]) {
-    this.productoService.insertImpuestos(impuestos).subscribe((data: any) => {
-      console.log(data)
-    })
-  }
+  
 
 
   setUnidad(event: any) {
@@ -383,50 +367,14 @@ export class ProductoComponent implements OnInit {
   //Set precio total controla el impuesto
   contadorExecnto: number = 0;
   setPrecioTotal(accion: number, impuesto? : iiMpuesto) {
-    console.log(accion)
-    console.log(impuesto)
-    if(impuesto===undefined)
-    {
-      this.miFormulario.patchValue({'precioFinal': this.miFormulario.value.precioBase})
+    if(impuesto===undefined){
+      this.miFormulario.patchValue({'precioFinal': this.miFormulario.value.precioBase}) 
     }
-    else
-    {
+    else {
       let montoCalculado = this.miFormulario.value.precioBase + ((impuesto.porcentaje/100) * this.miFormulario.value.precioBase);
-      this.impuestosArrayNumber.push(impuesto.idImpuesto!);
-      console.log(montoCalculado)
       this.miFormulario.patchValue({'precioFinal': montoCalculado})
     }
-
-    
-    // if (accion == 1) {
-    //   let Excento = this.dataListImpuesto.filter((c: any) => c.porcentaje == 0 && c.nombre == "Excento");
-    //   if(this.miFormulario.value.impuestos.includes(Excento[0].idImpuesto) == true && this.contadorExecnto == 0) {
-
-    //     this.miFormulario.patchValue({ 'impuestos': [Excento[0].idImpuesto] })
-    //     this.contadorExecnto = 1;
-    //   }
-    //   else{
-
-    //     this.miFormulario.patchValue({ 'impuestos': this.miFormulario.value.impuestos.filter((c: number) => c != Excento[0].idImpuesto) })
-    //     this.contadorExecnto = 0;
-    //   }
-
-    //   if (this.miFormulario.value.impuestos.length > 0) {
-    //     let exento = this.dataListImpuesto.find((c: any) => c.porcentaje == 0)
-    //     let acumulador = 0;
-    //     this.dataListImpuesto.forEach(im => {
-    //       if (this.miFormulario.value.impuestos.includes(im.idImpuesto) == true) {
-    //         acumulador += im.porcentaje;
-    //         this.miFormulario.patchValue({ 'precioFinal': (this.miFormulario.value.precioBase * (acumulador / 100)) + this.miFormulario.value.precioBase })
-    //       }
-
-    //     }
-    //     )
-    //   }
-    // }
-    // else {
-    //   this.miFormulario.patchValue({ 'precioFinal': this.miFormulario.value.precioBase })
-    // }
+  
 
   }
 
@@ -438,8 +386,10 @@ export class ProductoComponent implements OnInit {
   }
 
   isProductView(value: number) {
+    console.log('yo soy el valor del producto' + value)
     value == 1 ? this.isProduct = true : this.isProduct = false;
     value == 0 ? this.miFormulario.patchValue({ 'idCategoria': null, 'idMarca': null, 'idModelo': null }) : '';
+    console.log(this.isProduct)
   }
 
   getMarcas(idCategoria: number) {

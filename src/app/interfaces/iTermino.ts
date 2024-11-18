@@ -173,7 +173,10 @@ export interface iiMpuesto
     impuestoAcreditable : boolean,
     descripcion : string,
     porcentajeCalculado : number,
-    monto : number  
+    monto : number,
+    idCuentaContableParaCompra : number,
+    idCuentaContableParaVenta : number
+
 }
 
 export interface iCategoria
@@ -247,6 +250,7 @@ export interface iMoneda
     idVendedor : number,
     subTotal: number,
     descuento: number,
+    itbis : number
     totalGeneral: number,
     totalRecibido : number,
     cambio : number,
@@ -262,18 +266,21 @@ export interface iMoneda
   }
   
  export interface iDetalleFactura {
-    idDetalleFactura?: number;
-    idFactura?: number;
-    idProducto: number;
+    idDetalleFactura?: number,
+    idFactura?: number,
+    idProducto: number,
     nombre : string,
-    cantidad: number;
-    precio: number;
-    descuento: number;
-    descuentoProcentual: number;
-    impuestos: number;
+    cantidad: number,
+    precio: number,
+    descuento: number,
+    descuentoProcentual: number,
+    impuestos: number,
     subTotal : number,
-    total: number;
-    impuestosObject? : iiMpuesto[] 
+    total: number,
+    productoObj : any,
+    producto : any,
+    IdImpuesto? : number
+    impuestoObj? : iiMpuesto
   }
 
   export interface iTiopCuentaBanck {
@@ -313,3 +320,10 @@ export interface iMoneda
     
   }
   
+  export interface iResumenFacturas{
+    totalVentas: number,
+    totalVentasCobradas : number,
+    cantTotalVentasCobradas: number,
+    totalVentasPorCobrar : number,
+    cantTotalVentasPorCobrar : number
+  }

@@ -1,24 +1,96 @@
 <div class="row">
     <div class="col-lg-4 col-md-12 col-sm-12">
-        <div class="cardresumen">resumen1</div>
+        <div class="cardresumen">
+            <div class="card">
+                <div *ngIf="dataResumen==undefined" style=" width: 100%; display: flex;">
+                <div class="card_load"></div>
+                <div style="width: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column;">
+                    <div class="card_load_extreme_title"></div>
+                    <div class="card_load_extreme_descripion"></div>
+                </div>
+                </div>
+
+                <div *ngIf="dataResumen!==undefined" style=" width: 100%; display: flex;">
+                    <div class="card_no_load">
+                        <img src="../../../../../assets/ventas.png" alt="">
+                    </div>
+                    <div style="width: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column;">
+                        <div class="card_extreme_title">
+                            Total de las ventas
+                        </div>
+                        <div class="card_extreme_descripion">
+                          {{moneda}} {{dataResumen.totalVentas | number:'2.2-2'}}
+                        </div>
+                    </div>
+                    </div>
+            </div>
+        </div>
     </div>
     <div class="col-lg-4 col-md-12 col-sm-12">
-        <div class="cardresumen">resumen2</div>
+        <div class="cardresumen">
+            <div class="card">
+                <div *ngIf="dataResumen==undefined" style=" width: 100%; display: flex;">
+                <div class="card_load"></div>
+                <div style="width: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column;">
+                    <div class="card_load_extreme_title"></div>
+                    <div class="card_load_extreme_descripion"></div>
+                </div>
+                </div>
+
+                <div *ngIf="dataResumen!==undefined" style=" width: 100%; display: flex;">
+                    <div class="card_no_load">
+                        <img src="../../../../../assets/finanzas.png" alt="">
+                    </div>
+                    <div style="width: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column;">
+                        <div class="card_extreme_title">
+                            Cobradas
+                        </div>
+                        <div class="card_extreme_descripion">
+                          {{moneda}} {{dataResumen.totalVentasCobradas | number : "1.2-2"}}
+                        </div>
+                    </div>
+                    </div>
+            </div>
+        </div>
     </div>
     <div class="col-lg-4 col-md- col-sm-12">
-        <div class="cardresumen">resumen3</div>
+        <div class="cardresumen">
+            <div class="card">
+                <div *ngIf="dataResumen==undefined" style=" width: 100%; display: flex;">
+                <div class="card_load"></div>
+                <div style="width: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column;">
+                    <div class="card_load_extreme_title"></div>
+                    <div class="card_load_extreme_descripion"></div>
+                </div>
+                </div>
+
+                <div *ngIf="dataResumen!==undefined" style=" width: 100%; display: flex;">
+                    <div class="card_no_load">
+                        <img src="../../../../../assets/impuesto.png" alt="">
+                    </div>
+                    <div style="width: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column;">
+                        <div class="card_extreme_title">
+                            Por cobrar
+                        </div>
+                        <div class="card_extreme_descripion">
+                           {{moneda}}{{dataResumen.totalVentasPorCobrar | number : "1.2-2"}}
+                        </div>
+                    </div>
+                    </div>
+            </div>
+        </div>
     </div>
 </div>
 <div class="row">
-    <div class="col col-lg-8 col-md-8 col-sm-12 col-xs-12">
-        <div class="cardresumenrow2">grafica uno</div>
+    <div class="col col-lg-8 col-md-8 col-sm-8 col-xs-12" id="graficauno">
+        <div  #graficauno class="cardresumenrow2"></div>
     </div>
     <div class="col col-lg-4 col-md-4 col-sm-12 col-xs-12">
         <div class="cardresumenrow2">grafica dos</div>
     </div>
 </div>
 <div class="row">
-    <div class="col col-lg-8 col-md-8 col-sm-12 col-xs-12">
+    <div class="col col-lg-8 col-md-8 col-sm-12 col-xs-12">~
         <div class="cardresumenrow2">grafica tres</div>
     </div>
     <div class="col col-lg-4 col-md-4 col-sm-12 col-xs-12">

@@ -40,11 +40,12 @@ export class ListFacturasComponent {
 
   ) {
    
-    this.getAll();
+    this.getAll(1);
     this.moneda = this.usuarioService.usuarioLogueado.data.sucursal.empresa.moneda;
   }
   dialog = inject(MatDialog);
-
+  pageNumbewr : number=0;
+  pageSize : number = 0;
 
   ngOnInit(): void {
   }
@@ -54,7 +55,7 @@ export class ListFacturasComponent {
       this.pagoService.facturaPagar = factura;
       var ref = this.dialog.open(PagoFacturaComponent, {hasBackdrop: true})
       ref.beforeClosed().subscribe(c=>{
-        this.getAll();
+        this.getAll(1);
       } 
       )
   
@@ -69,6 +70,8 @@ export class ListFacturasComponent {
   checked = false;
   moneda! : iMoneda;
   sinRegistrosTxt : string =""; 
+  paginations : number[] = [1];
+  filtro : string="";
 
   async delete(id: any) {
     if (await this.alertaService.questionDelete()) {
@@ -76,7 +79,7 @@ export class ListFacturasComponent {
       this.facturaService.delete(id).subscribe(((data: ServiceResponse) => {
         if (data.status) {
           this.alertaService.successAlert(data.message);
-          this.getAll();
+          this.getAll(1);
         }
         else {
           this.alertaService.errorAlert(data.message)
@@ -110,13 +113,18 @@ export class ListFacturasComponent {
     this.alertaService.ShowLoading();
   }
 
-  getAll() {
+  getAll(pageNumber : number, pageSize : number = 10) {
+    pageNumber = pageNumber<0? pageNumber = 1 : pageNumber;
+    if(this.paginations.filter(c=>c>=pageNumber && c>0).length>0){
+    this.pageNumbewr = pageNumber;
+    this.pageSize = pageSize;
     this.cargando = true;
-    this.facturaService.getAll(this.usuarioService.usuarioLogueado.data.sucursal.idSucursal).subscribe((data: any) => {
+    this.facturaService.getAll(this.usuarioService.usuarioLogueado.data.sucursal.idSucursal,pageNumber, pageSize).subscribe((data: ServiceResponse) => {
       this.dataList = data.data;
       if (this.dataList.length > 0) {
         this.sinRegistros = false
-        this.cargando = false;    
+        this.cargando = false;   
+        this.loadPaginacion(data.totalPage)
       }
       else {
         this.sinRegistros = true;
@@ -125,13 +133,15 @@ export class ListFacturasComponent {
       }
     })
   }
+  }
 
 
   getAllFilter(event : any) {
     const filtro = (event.target as HTMLInputElement).value;
+    this.filtro = filtro;
     if(filtro=="")
       {
-        this.getAll();
+        // this.getAll();
       }
       else{
         this.cargando = true;
@@ -148,6 +158,15 @@ export class ListFacturasComponent {
         // })
       }
 
+  }
+
+  loadPaginacion(valu : number){
+    this.paginations=[]; 
+    for(let i=1; i<valu+1; i++){
+        this.paginations.push(i)
+        console.log(i)
+      } 
+    
   }
 
 

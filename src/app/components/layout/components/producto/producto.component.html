@@ -195,7 +195,7 @@
                       <div class="col-md-6 col-sm-6 col-xs-6">
                         <mat-form-field appearance="outline" class="control">
                           <mat-label>Impuestos</mat-label>
-                          <mat-select disableRipple  formControlName="impuestos">
+                          <mat-select disableRipple  formControlName="idImpuesto">
                             <ng-container *ngIf="dataListImpuesto.length> 0; else noInvol">
                               <mat-option [value]="impuesto.idImpuesto" *ngFor="let impuesto of dataListImpuesto"
                                 (click)="setPrecioTotal(1, impuesto)">

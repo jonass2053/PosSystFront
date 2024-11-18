@@ -208,6 +208,7 @@
 {
   display: flex;
   justify-content: space-between;
+  margin-right: 5px;
 
 }
 .firma
@@ -219,15 +220,15 @@
 .totalesitem
 {
   display: flex;
-  gap: 50px;
+  gap: 100px;
   justify-content: space-between;
-  font-size: 17px;
+  font-size: 15px;
 
 }
 .totalesitems
 {
   display: flex;
-  width: 40%;
+  width: 25%;
   flex-direction: column;
   
 }

@@ -1,5 +1,4 @@
 <form action="" [formGroup]="miFormulario" (ngSubmit)="guardarFactura()">
-
     <div class="containerInter">
         <div class="titulo">
             <div class="containerIcoText">
@@ -16,12 +15,12 @@
                 <div class="row">
                     <div class="col-5">
                         <div class="input-parent">
+                           
                             <mat-form-field appearance="outline" class="control">
                                 <mat-icon matSuffix>person_add</mat-icon>
                                 <mat-label
-                                    matTooltip="Puede consultar un cliente por identitifacion o su nombre">Cliente</mat-label>
-                                <input type="text" matInput [matAutocomplete]="auto" (input)="searchContacto($event)"
-                                    formControlName="nombreClienteCompleto">
+                                matTooltip="Puede consultar un cliente por identitifacion o su nombre">Cliente</mat-label>
+                                <input  matInput formControlName="nombreClienteCompleto"  [matAutocomplete]="auto" (input)="searchContacto($event)">
                                 <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
                                     (optionSelected)="selectContacto($event)">
                                     <mat-option *ngFor="let contacto of dataListContactos" [value]="contacto">
@@ -100,7 +99,7 @@
 
                             &nbsp;
 
-                            <mat-form-field class="control" appearance="outline">
+                            <mat-form-field class="control" appearance="outline" *ngIf="isEditable">
                                 <mat-label>Numeración</mat-label>
                                 <mat-select formControlName="idNumeracion">
                                     @for (numeracion of dataListNumeracion; track numeracion) {
@@ -260,9 +259,9 @@
                             <td>{{item.descuento | number : '1.2-5'}}</td>
                             <td>{{item.total | number : '1.2-5'}}</td>
                             <td style="text-align: right; width: 70px;">
-                                <!-- <mat-icon (click)="editRow(item, i)" class="btnEditar" style="cursor: pointer;"
-                                    matTooltip="Editar">edit</mat-icon> -->
-                                <mat-icon (click)="removeItem(i, item.idProducto)" class="btnEliminar" style="cursor: pointer;"
+                                <mat-icon (click)="editRow(item, i)" class="btnEditar" style="cursor: pointer;"
+                                    matTooltip="Editar">edit</mat-icon>
+                                <mat-icon (click)="removeItem(i, item)" class="btnEliminar" style="cursor: pointer;"
                                     matTooltip="Eliminar">closed</mat-icon>
                             </td>
 
@@ -298,11 +297,11 @@
                             <h3>{{moneda.simbolo}} {{descuentoGeneral | number : '1.2-5'}}</h3>
                         </div>
                         
-                        <div class="containerTotalesResumen" *ngIf="dataListImpuestosDetails.length>0">
-                            <div *ngFor="let item of dataListImpuestosDetails">
-                            <p *ngIf="item.porcentaje>0 && item.monto>0">{{item.nombre}} {{item.porcentaje}}%:</p>
-                            <h3 *ngIf="item.porcentaje>0 && item.monto>0">{{moneda.simbolo}} {{item.monto |number : '1.2-5'}}</h3>
-                        </div>
+                        <div class="containerTotalesResumen">
+                         
+                            <p>ITBIS</p>
+                            <h3>{{impuestosGenerales |number : '1.2-5'}}</h3>
+                      
                         </div>
 
 
@@ -312,8 +311,6 @@
                         </div>
                         
                         
-                       
-                
                 </div>
 
                 <div style="display: flex; justify-content: space-between;">
@@ -453,3 +450,11 @@
     </div>
 
 </form>
+
+<div>
+
+
+
+
+    
+</div>

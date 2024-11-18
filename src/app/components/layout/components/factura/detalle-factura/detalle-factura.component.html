@@ -137,22 +137,22 @@
                     </td>
             
                     <td>
-                        <div>{{moneda}} {{detalle.cantidad | number : '1.2-5' || ''}}</div>
+                        <div>{{detalle.cantidad }}</div>
                     </td>
                     <td>
-                        <div>{{moneda}} {{detalle.precio | number : '1.2-5' || ''}}</div>
+                        <div>{{moneda}} {{detalle.precio | number : '1.2-5'}}</div>
                     </td>
                     <td>
-                        <div>{{moneda}} {{detalle.subTotal| number : '1.2-5' || ''}}</div>
+                        <div>{{moneda}} {{detalle.subTotal| number : '1.2-5'}}</div>
                     </td>
                     <td>
-                        <div>{{moneda}} {{detalle.impuestos| number : '1.2-5' || ''}}</div>
+                        <div>{{moneda}} {{detalle.impuestos| number : '1.2-5'}}</div>
                     </td>
                     <td>
-                        <div>{{moneda}} {{detalle.descuento | number : '1.2-5' || ''}}</div>
+                        <div>{{moneda}} {{detalle.descuento | number : '1.2-5'}}</div>
                     </td>
                     <td style="text-align: right;">
-                        <div>{{moneda}} {{detalle.total | number : '1.2-5' || ''}}</div>
+                        <div>{{moneda}} {{detalle.total | number : '1.2-5'}}</div>
                     </td>
                   
                    
@@ -174,20 +174,20 @@
                     <div>{{moneda}}{{factura.descuento | number:'1.2-2'}}</div>
                 </div>
          
-                    <div class="totalesitem" *ngFor="let i of dataListIMpuestos" >
-                        <div>{{i.nombre}}</div>
-                        <div>{{moneda}}{{i.monto | number:'1.2-2'}}</div>
+                    <div class="totalesitem"  >
+                        <div >ITBIS</div>
+                        <div>{{moneda}}{{factura.itbis| number:'1.2-2'}}</div>
                     </div>
-             
+             <hr> 
                 <div class="totalesitem">
-                    <div>Subtotal</div>
-                    <div>{{moneda}}{{factura.subTotal | number:'1.2-2'}}</div>
+                    <div>Total General</div>
+                    <div>{{moneda}}{{factura.totalGeneral| number:'1.2-2'}}</div>
                 </div>
-                <hr>
+                <!-- <hr>
                 <div class="totalesitem" style="font-size: 25px;">
                     <div>Total</div>
                     <div>{{moneda}}{{factura.totalGeneral | number:'1.2-2'}}</div>
-                </div>
+                </div> -->
 
             </div>
 

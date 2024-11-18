@@ -40,20 +40,18 @@ export class DetalleFacturaComponent {
     alertas.ShowLoading();
     facturaService.getById(this.idFactura).subscribe((r: ServiceResponse)=>{
       this.factura =r.data;
-      this.factura.detalle.forEach((i: iDetalleFactura) => {
-        i.impuestosObject?.forEach(c=>{
-          i.impuestosObject?.map(c=>{
-            c.monto = (this.factura.subTotal *(c.porcentaje /100))  
-          })
-          if(i.impuestosObject!==undefined) {
-            this.dataListIMpuestos =  i.impuestosObject;
-          }
-      });
-    });
+    //   this.factura.detalle.forEach((i: iDetalleFactura) => {
+    //     i.impuestosObject?.forEach(c=>{
+    //       i.impuestosObject?.map(c=>{
+    //         c.monto = (this.factura.subTotal *(c.porcentaje /100))  
+    //       })
+    //       if(i.impuestosObject!==undefined) {
+    //         this.dataListIMpuestos =  i.impuestosObject;
+    //       }
+    //   });
+    // });
     
   });
-
-
 
 
     pagosService.getByIdFactura(this.idFactura).subscribe((r: ServiceResponse)=>{
@@ -67,7 +65,6 @@ export class DetalleFacturaComponent {
       this.alertas.hideLoading();
     }, 1000);
 
-    console.log(this.dataListIMpuestos)
 
   }
   

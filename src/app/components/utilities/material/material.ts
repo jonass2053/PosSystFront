@@ -19,6 +19,8 @@ import {MatStepperModule} from '@angular/material/stepper';
 import {MatListModule} from '@angular/material/list';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatTabsModule} from '@angular/material/tabs';
+import {MatPaginatorModule} from '@angular/material/paginator';
+
 
 
 
@@ -73,7 +75,8 @@ export const  importaciones : any =[
   MatIconModule,
   MatListModule,
   MatDividerModule,
-  MatTabsModule
+  MatTabsModule,
+  MatPaginatorModule
 
 
 ]

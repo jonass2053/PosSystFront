@@ -21,15 +21,14 @@ import { ProductoService } from '../../../../services/producto.service';
 import { constrainedMemory, exit } from 'process';
 import { FacturaService } from '../../../../services/factura.service';
 import { BancosService } from '../../../../services/bancos.service';
+import { json } from 'stream/consumers';
 declare var $ : any;
 
 @Component({
   selector: 'app-factura',
   standalone: true,
   imports: [
-    importaciones,
-
-
+    importaciones
   ],
   providers: [
     { provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMATS },
@@ -53,9 +52,11 @@ export class FacturaComponent {
     totalRecibido : [''],
     cambio : ['']
   });
-  isEditable = true;
+  isEditable = false;
   metodoPagoSeleccionado = "";
   moneda! : iMoneda;
+  prodcutoSeleccionado! : iProducto;
+  impuestoProduct : number = 0;
 
 
   constructor(
@@ -83,11 +84,15 @@ export class FacturaComponent {
     this.getAllBancos();
     if(facturaServcie.facturaEdit!=null)
     {
-      console.log('hola')
+      console.log('editanado')
+      console.log(facturaServcie.facturaEdit.contacto.nombreRazonSocial)
       this.editarFactura(facturaServcie.facturaEdit);
-
-     
     }
+    else
+    {
+      facturaServcie.facturaEdit = null;
+    }
+  
   }
  
 
@@ -109,16 +114,18 @@ export class FacturaComponent {
       subTotal : factura.subTotal,
       totalGeneral: factura.totalGeneral,
       nombreClienteCompleto : factura.contacto.nombreRazonSocial,
-      montoPagado : factura.montoPagado,
+      montoPagado : factura.montoPagado, 
+    })
+    this.impuestosGenerales = factura.itbis;
 
-      
-    })
+    this.miFormulario.get('nombreClienteCompleto')?.setValue(factura.contacto); // Cambia "Opción 2" por el valor deseado
     this.dataListDetalleFactura = factura.detalle;
-    this.dataListDetalleFactura.forEach(c=>{
-      c.impuestosObject?.forEach (element => {
-        this.dataListImpuestosDetails.push(element)
-      });
-    })
+    console.log(this.dataListDetalleFactura)
+    // this.dataListDetalleFactura.forEach(c=>{
+    //   c.impuestosObject?.forEach (element => {
+    //     this.dataListImpuestosDetails.push(element)
+    //   });
+    // })
     this.totalGeneral = factura.totalGeneral;
     this.subTotalGeneral = factura.subTotal;
     this.descuentoGeneral = factura.descuento;
@@ -129,7 +136,7 @@ export class FacturaComponent {
 
   miFormulario: FormGroup = this.fb.group({
     idFactura: this.fb.control(null),
-    idNumeracion: this.fb.control("", Validators.required),
+    idNumeracion: this.fb.control({value: "", disabled: false } ,Validators.required),
     idContacto: this.fb.control("", Validators.required),
     idTipoDocumento: this.fb.control("", Validators.required),
     idSucursal: this.fb.control("", Validators.required),
@@ -137,21 +144,23 @@ export class FacturaComponent {
     idTermino: this.fb.control("", Validators.required),
     idUsuario: this.fb.control("", Validators.required),
     idVendedor: this.fb.control(null),
-    identificacion: this.fb.control(""),
+    identificacion: this.fb.control({value: "", disabled: true }),
     vencimiento: this.fb.control(""),
-    telefono: this.fb.control(""),
+    telefono: this.fb.control({ value: "", disabled: true }),
     fecha: this.fb.control(""),
     descripcion: this.fb.control({ value: "", disabled: true }),
     precio: this.fb.control({ value: 0, disabled: false }),
     cantidad: this.fb.control(1),
     descuento: this.fb.control({ value: 0, disabled: false }),
     impuesto: this.fb.control(0),
+    impuestos: this.fb.control(0),
     producto: this.fb.control(''),
     impuestoObjet: this.fb.control(""),
     subTotalDetails: this.fb.control(0),
     total: this.fb.control(0),
     subTotal: this.fb.control(0),
     totalGeneral: this.fb.control(0),
+    itbis : this.fb.control(0),
     detalle: this.fb.control(""),
     comentario: this.fb.control(""),
     nombreClienteCompleto : this.fb.control(""),
@@ -178,7 +187,21 @@ export class FacturaComponent {
   dataListNumeracion: idNumeracion[] = [];
   dataListVendedores: iVendedor[] = [];
   dataListDetalleFactura: iDetalleFactura[] = [];
-  DetalleFactura: iDetalleFactura = { idDetalleFactura: 0, nombre: "", descuentoProcentual: 0, idFactura: 0, idProducto: 0, cantidad: 0, precio: 0, subTotal: 0, descuento: 0, impuestos: 0, total: 0 };
+  DetalleFactura: iDetalleFactura = { 
+    idDetalleFactura: 0,
+    nombre: "",
+    descuentoProcentual: 0, 
+    idFactura: 0,
+    idProducto: 0, 
+    cantidad: 0,
+    precio: 0,
+    subTotal: 0,
+    descuento: 0, 
+    impuestos: 0, 
+    total: 0,
+    productoObj : null,
+    producto : null
+   };
   subTotalGeneral: number = 0;
   descuentoGeneral: number = 0;
   totalGeneral: number = 0;
@@ -195,6 +218,7 @@ export class FacturaComponent {
   
 
   addDetails() {
+    console.log(this.impuestos)
     let cantLocal = 0;
     if (this.idProducto==0) {
       this.alertaService.warnigAlert("Debe seleccionar un item y llenar los campos para poder agregar.")
@@ -206,16 +230,17 @@ export class FacturaComponent {
         , idDetalleFactura: 0
         , cantidad: this.cantidad
         , precio: this.precio
-        , descuento: this.descuento
+        , descuento: this.descuento 
         , descuentoProcentual: this.descuentoPorcentual
         , subTotal: this.subTotal
-        , impuestos: this.impuestos
-        , total: this.total,
-         impuestosObject: this.miFormulario.value.impuestoObjet}
+        , impuestos: this.impuestoProduct * this.cantidad
+        , total: this.total
+        , productoObj : this.prodcutoSeleccionado
+        , producto :this.prodcutoSeleccionado
+        }
 
       let proExit = this.dataListDetalleFactura.find(c=>c.idProducto==detalle.idProducto)
-      if(proExit!==undefined)
-      {
+      if(proExit!==undefined){
          this.dataListDetalleFactura = this.dataListDetalleFactura.filter(c=>c.idProducto!=proExit.idProducto)
           proExit.idDetalleFactura= 0;
           proExit.cantidad+= this.cantidad;
@@ -225,52 +250,48 @@ export class FacturaComponent {
           proExit.subTotal+= this.subTotal;
           proExit.impuestos+= this.impuestos;
           proExit.total+= this.total;
-          proExit.impuestosObject= this.miFormulario.value.impuestoObjet;
           this.dataListDetalleFactura.push(proExit) 
           this.subTotalGeneral+= proExit.cantidad;
           cantLocal = proExit.cantidad;
       }
-      else
-      {
+      else{
         cantLocal = detalle.cantidad;
         this.dataListDetalleFactura.push(detalle);
       }
-      
+ 
       //Este codgio agrega los impuestos de cada producto que pertenece al detalle
-      this.miFormulario.value.impuestoObjet.forEach((element : iiMpuesto) =>
-      {
-        let existImpuesto = this.dataListImpuestosDetails.find(c=>c.idImpuesto==element.idImpuesto)
-        if(existImpuesto===undefined)
-          {
-            element.monto += (element.porcentaje/100)*this.subTotal;
-            this.dataListImpuestosDetails.push(element);
-          }
-          else
-          {
-            this.dataListImpuestosDetails = this.dataListImpuestosDetails.filter(c=>c.idImpuesto!==existImpuesto.idImpuesto)
-            existImpuesto.monto+=element.monto;
-            this.dataListImpuestosDetails.push(existImpuesto);
-          }
-      })
+      // this.miFormulario.value.impuestoObjet.forEach((element : iiMpuesto) =>
+      // {
+      //   let existImpuesto = this.dataListImpuestosDetails.find(c=>c.idImpuesto==element.idImpuesto)
+      //   console.log(this.dataListImpuestosDetails)
+      //   if(existImpuesto===undefined)
+      //     {
+      //       element.monto += (element.porcentaje/100)*this.subTotal;
+      //       this.dataListImpuestosDetails.push(element);
+      //     }
+      //     else
+      //     {
+      //       this.dataListImpuestosDetails = this.dataListImpuestosDetails.filter(c=>c.idImpuesto!==existImpuesto.idImpuesto)
+      //       existImpuesto.monto+=element.monto;
+      //       this.dataListImpuestosDetails.push(existImpuesto);
+      //     }
+      // })
 
-      this.calculoGeneral();
-      this.carlculasImpuestos(1, detalle);
-      
+       this.calculoGeneral();
        this.resetDetails();
        this.editando = false;
     }
 
   }
-  removeItem(indice: number, idProducto : number){
+ async removeItem(indice: number, detalle : iDetalleFactura){
     if (this.editando) {
       this.alertaService.warnigAlert("Esta editando una fila, debe finalizar una edicion para afectar otro registro.");
     }
-    else {
-      this.carlculasImpuestos(2, this.dataListDetalleFactura[indice])
+    else if (await this.alertaService.questionDelete()){
       this.dataListDetalleFactura.splice(indice, 1);
       this.resetDetails();
       this.calculoGeneral();
-      this.dataListImpuestosDetails = this.dataListImpuestosDetails.filter(c=>c.idProducto!=idProducto);
+      this.dataListImpuestosDetails = this.dataListImpuestosDetails.filter(c=>c.idProducto!=detalle.idProducto);
     }
   }
 
@@ -292,12 +313,13 @@ export class FacturaComponent {
       })
     }
   }
-  searchProductoEdit(valor: string) {
+  searchProductoEdit(valor: string, cant : number) {
 
     if (valor.length > 0) {
       this.productoService.getAllFilterForDocument(valor).subscribe((data: ServiceResponse) => {
         this.dataListProductosSearch = data.data;
-        this.miFormulario.patchValue({ producto: data.data[0] })
+        this.impuestoProduct  = Math.round((data.data[0].precioFinal - data.data[0].precioBase) * 100) / 100;
+        this.miFormulario.patchValue({ producto: data.data[0], impuesto: this.impuestoProduct * cant })
       })
     }
   }
@@ -327,27 +349,38 @@ export class FacturaComponent {
         idNumeracion: event.option.value.idTipoNumeracion,
         idContacto: event.option.value.idContacto
       })
+      console.log(this.miFormulario.value)
     }
 
   selectProducto(event: any) {
-    this.idProducto = event.option.value.idProducto;
-    this.nombre = event.option.value.nombre; 
-    let arrayImpuestos =event.option.value.impuestos;
-    event.option.value.impuestos.forEach((elemen : any) => {
-    elemen.idProducto =this.idProducto;
-    });
+    console.log(event.option.value.precioFinal - event.option.value.precioBase)
+  console.log(event.option.value)
+   this.idProducto = event.option.value.idProducto;
+   this.nombre = event.option.value.nombre; 
+   this.prodcutoSeleccionado = event.option.value;
+   this.impuestoProduct =  Math.round((event.option.value.precioFinal - event.option.value.precioBase) * 100) / 100;
    
     this.miFormulario.patchValue(
       {
         cantidad: this.miFormulario.value.cantidad,
         descripcion: event.option.value.descripcion,
         precio: event.option.value.precioBase,
-        impuestoObjet:  event.option.value.impuestos
+        impuesto : Math.round((event.option.value.precioFinal - event.option.value.precioBase) * 100) / 100
       })
     this.calcular();
+  }
 
-      console.log(event.option.value)
-
+  selectProductoById(producto: any, impuestos : any) {
+    this.idProducto = producto.idProducto!;
+    this.nombre = producto.nombre; 
+    this.miFormulario.patchValue(
+      {
+        cantidad: this.miFormulario.value.cantidad,
+        descripcion: producto.descripcion,
+        precio: producto.precioBase,
+        impuesto :Math.round((producto.precioFinal - producto.precioBase) * 100) / 100
+      })
+    this.calcular();
   }
   selectProductoForEdit(item: iDetalleFactura) {
     this.idProducto = item.idProducto;
@@ -360,7 +393,6 @@ export class FacturaComponent {
 
       })
     this.calcular();
-    
   }
 
 
@@ -383,8 +415,8 @@ export class FacturaComponent {
     this.numeracionService.getAll().subscribe((data: ServiceResponse) => {
       this.dataListNumeracion = data.data;
       if(this.facturaServcie.facturaEdit==undefined ){
-        console.log('dentro')
-        this.miFormulario.patchValue({ "idNumeracion": (data.data.find((c: idNumeracion) => c.predeterminada == true)).idNumeracion })
+        // console.log('dentro')
+        // this.miFormulario.patchValue({ "idNumeracion": (data.data.find((c: idNumeracion) => c.predeterminada == true)).idNumeracion })
       }
     })
   }
@@ -408,61 +440,35 @@ export class FacturaComponent {
       this.cantidad = this.miFormulario.value.cantidad;
       this.precio = this.miFormulario.value.precio;
       this.subTotal = this.cantidad * this.precio;
-      //this.descuentoPorcentual = this.miFormulario.a.descuento;
+      this.impuestos =  this.impuestoProduct*this.cantidad;
+
       this.descuento = (this.miFormulario.value.descuento / 100) * this.subTotal;
-      this.impuestos = 0;
-      this.miFormulario.value.impuestoObjet.forEach((imp: iiMpuesto) => {
-      this.impuestos += ((imp.porcentaje / 100) * 100);
-      });
-      this.impuestos = (this.impuestos / 100) * this.subTotal;
-      this.total = this.subTotal + this.impuestos - this.descuento;
-      this.miFormulario.patchValue({ impuesto: this.impuestos, subTotalDetails: this.subTotal, total: this.total })
+     
+      this.total = this.subTotal + (this.impuestoProduct * this.cantidad) - this.descuento;
+      this.miFormulario.patchValue({ subTotalDetails: this.subTotal, total: this.total, impuesto : this.cantidad==1? this.impuestoProduct :  this.impuestoProduct*this.cantidad  })
     }
     else {
-      this.miFormulario.patchValue({descuento : 0});
-      this.miFormulario.patchValue({cantidad : 1});
+      this.miFormulario.patchValue({descuento : 0, cantidad : 1, impuesto : this.impuestoProduct});
+      console.log()
     }
   }
 
-  carlculasImpuestos(accion: number, detalle: iDetalleFactura) {
-    this.miFormulario.value.impuestoObjet.forEach((a: iiMpuesto) => {
-     {
-      let exist = this.dataListImpuestosDetails.find(c=>c.idImpuesto===a.idImpuesto);
-      console.log(exist)
-      if(exist==undefined)
-      { 
-        a.monto+=detalle.impuestos;
-        this.dataListImpuestosDetails.push(a);
-      }
-      else
-      {
-        console.log(exist.porcentaje)
-        this.dataListImpuestosDetails = this.dataListImpuestosDetails.filter(c=>c.idImpuesto!==a.idImpuesto);
-        if(accion==2)
-        {
-          exist.porcentaje-=a.porcentaje;
-        }
-        exist.monto = (exist.porcentaje / 100)*this.subTotalGeneral;
-        this.dataListImpuestosDetails.push(exist)
-      }        
-      }
-    
-    });
 
-  }
 
    contador =0;
    calculoGeneral() {
-    let a=0; let b=0; let e=0;
+    let a=0; let b=0; let e=0; let i = 0;
     this.dataListDetalleFactura.forEach(c=>{
       a+=c.subTotal;
       b+=c.descuento;
       e+=c.total;
+      i+=c.impuestos;
    })
     this.subTotalGeneral =a;
     this.descuentoGeneral = b;
     this.totalGeneral=e;
     this.totalApagar = e;
+    this.impuestosGenerales = i;
   
     if (this.dataListDetalleFactura.length < 1) {
       this.subTotalGeneral = 0;
@@ -470,7 +476,7 @@ export class FacturaComponent {
       this.totalGeneral = 0;
       this.totalApagar =  0;
       this.cambio = 0;
-      this.dataListImpuestosDetails = [];
+      this.impuestosGenerales = 0;
     }
   }
 
@@ -493,31 +499,28 @@ export class FacturaComponent {
 
 
   editRow(item: iDetalleFactura, index: number) {
+
     if (this.editando == true) {
       this.alertaService.warnigAlert("Esta editando una fila, debe finalizar una edicion para afectar otro registro.");
     }
     else {
+      this.prodcutoSeleccionado = item.productoObj;
       this.editando = true;
-      this.searchProductoEdit(item.nombre);
+      this.idProducto =  item.idProducto;
+      this.searchProductoEdit(item.nombre, item.cantidad);
+      this.calcular();
       this.miFormulario.patchValue({
         cantidad: item.cantidad,
         descuento: this.descuentoPorcentual,
         precio: item.precio,
         subTotal: item.subTotal,
-        impuesto: item.impuestos,
+        subTotalDetails :  item.subTotal,
         total: item.total
       })
-
-      // this.dataListDetalleFactura.splice(index, 1);
-      // this.selectProductoForEdit(item);
-      // // this.carlculasImpuestos(2, this.dataListDetalleFactura[index])
-
-      this.carlculasImpuestos(2, this.dataListDetalleFactura[index])
+      this.selectProductoById(item.producto, item.impuestoObj);
       this.dataListDetalleFactura.splice(index, 1);
-      // this.resetDetails();
       this.calculoGeneral();
       
-      this.dataListImpuestosDetails = this.dataListImpuestosDetails.filter(c=>c.idProducto!=item.idProducto);
 
     }
     
@@ -525,6 +528,7 @@ export class FacturaComponent {
   }
 
   guardarFactura() {
+   
     this.miFormulario.patchValue(
       {
         detalle: this.dataListDetalleFactura,
@@ -534,9 +538,10 @@ export class FacturaComponent {
         descuento: this.descuentoGeneral,
         subTotal: this.subTotalGeneral,
         totalGeneral: this.totalGeneral,
+        itbis :  this.impuestosGenerales, 
         impuestos: this.miFormulario.value.impuestoObjet 
       })
-    
+
     if (this.miFormulario.valid && this.dataListDetalleFactura.length>0) {
       this.alertaService.ShowLoading();
       if(this.miFormulario.value.idFactura!==null)
@@ -556,6 +561,7 @@ export class FacturaComponent {
       }
       else
       {
+        
         this.facturaServcie.insert(this.miFormulario.value).subscribe((data: ServiceResponse) => {
           if (data.status) {
             this.alertaService.successAlert(data.message);
@@ -606,6 +612,7 @@ export class FacturaComponent {
     this.subTotalGeneral=0;
     this.descuentoGeneral=0;
     this.dataListImpuestosDetails=[];
+    this.facturaServcie.facturaEdit=null;
   }
 
   setMetodoPago(metodo :  number,  descripcion : string, index : number){
