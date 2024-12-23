@@ -37,7 +37,7 @@
                             <th scope="col">Monto pagado</th>
                             <th scope="col">Monto por pagar</th>
                             <th scope="col">Estado</th>
-                            <th scope="col" class="accionesTitle">Acciones</th>
+                            <th scope="col" class="accionesTitle"></th>
                             <th class="cargandoTableIcono">
                                 <div *ngIf="cargando" class="loaderTable"></div>
                             </th>
@@ -49,49 +49,90 @@
                             <td>
                                 <div>{{factura.numeracion || ''}}</div>
                             </td>
-                            <td>
-                                <div>{{factura.contacto.nombreRazonSocial || ''}}</div>
+                            <td
+                                style="max-width: 150px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+                                <div class="limitar" style="display: block; max-width: 100%;">
+                                    {{factura.contacto.nombreRazonSocial || ''}}</div>
                             </td>
                             <td>
-                                <div>{{factura.fechaCreacion | date: 'dd/MM/YYYY' || ''}}</div>
+                                <div>{{factura.fechaCreacion | date: 'dd/MM/YYYY'}}</div>
                             </td>
                             <td>
-                                <div>{{factura.vencimiento | date: 'dd/MM/YYYY' || ''}}</div>
+                                <div>{{factura.vencimiento | date: 'dd/MM/YYYY'}}</div>
                             </td>
 
                             <td>
-                                <div>{{moneda.simbolo}} {{factura.totalGeneral | number : '1.2-5' || ''}}</div>
-                            </td>
-                            <td> 
-                                <div>{{moneda.simbolo}} {{factura.montoPagado | number : '1.2-5' || ''}}</div>
+                                <div>{{moneda.simbolo}} {{factura.totalGeneral | number : '1.2-5'}}</div>
                             </td>
                             <td>
-                                <div>{{moneda.simbolo}} {{factura.montoPorPagar| number : '1.2-5' || ''}}</div>
+                                <div>{{moneda.simbolo}} {{factura.montoPagado | number : '1.2-5'}}</div>
+                            </td>
+                            <td>
+                                <div>{{moneda.simbolo}} {{factura.montoPorPagar| number : '1.2-5'}}</div>
                             </td>
                             <td style="color: white;">
-                                <div style="text-align: center; border-radius: 5px; padding: 1px;" [style.background-color]="factura.estadoFactura.color">{{factura.estadoFactura.nombre || ''}}</div>
+                                <div style="text-align: center; border-radius: 5px; padding: 1px;"
+                                    [style.background-color]="factura.estadoFactura.color">
+                                    {{factura.estadoFactura.nombre || ''}}</div>
                             </td>
                             <td class="acciones">
-                                <button matTooltip="Ver detalle" class="btnaccion"  (click)="verFactura(factura.idFactura!)"
-                                    data-toggle="modal" data-target="#exampleModal"><mat-icon
-                                        data-toggle="modal">preview</mat-icon></button>
 
-                                <button matTooltip="Imprimir" class="btnaccion" 
-                                    data-toggle="modal" data-target="#exampleModal"><mat-icon
-                                        data-toggle="modal">print</mat-icon></button>
 
-                                        
-                                <button [ngClass]="{'disabled': factura.montoPorPagar === 0, 'inactivo': factura.montoPorPagar !== 0}" (click)="openDialog(factura)" matTooltip="Agregar pago" class="btnaccion" 
+                                <!-- <button matTooltip="Imprimir" class="btnaccion" (click)="printFactura(factura!)" 
+                                    data-toggle="modal" data-target="#exampleModal"><mat-icon
+                                        data-toggle="modal">print</mat-icon></button> -->
+
+
+                                <button
+                                    [ngClass]="{'disabled': factura.montoPorPagar === 0, 'inactivo': factura.montoPorPagar !== 0}"
+                                    (click)="openDialog(factura)" matTooltip="Agregar pago" class="btnaccion"
+                                    data-toggle="modal" data-target="#exampleModal"><mat-icon
+                                        data-toggle="modal">payments</mat-icon></button>
+
+                                <!-- <button  *ngIf="factura.montoPorPagar!==0" (click)="openDialog(factura)" matTooltip="Agregar pago" class="btnaccion" 
                                 data-toggle="modal" data-target="#exampleModal"><mat-icon
-                                    data-toggle="modal">payments</mat-icon></button>
+                                    data-toggle="modal">payments</mat-icon></button> -->
 
-                                <button [ngClass]="{'disabled': factura.montoPorPagar === 0, 'inactivo': factura.montoPorPagar !== 0}"  matTooltip="Editar" class="btnaccion" (click)="editar(factura!)"
+                                <!-- <button [ngClass]="{'disabled': factura.montoPorPagar === 0, 'inactivo': factura.montoPorPagar !== 0}"  matTooltip="Editar" class="btnaccion" (click)="editar(factura!)"
                                     data-toggle="modal" data-target="#exampleModal"><mat-icon class="btnEditar"
                                         data-toggle="modal">edit</mat-icon></button>
 
-                                <button matTooltip="Eliminar" class="btnaccion" (click)="delete(factura.idFactura!)"
+                                <button [ngClass]="{'disabled': factura.montoPorPagar === 0, 'inactivo': factura.montoPorPagar !== 0}" matTooltip="Eliminar" class="btnaccion" (click)="delete(factura.idFactura!)"
                                     data-target="#exampleModal"><mat-icon class="btnEliminar" data-toggle="modal">delete</mat-icon></button>
+                                    <button matTooltip="Ver detalle" class="btnaccion"  (click)="verFactura(factura.idFactura!)"
+                                    data-toggle="modal" data-target="#exampleModal"><mat-icon
+                                        data-toggle="modal">preview</mat-icon></button> -->
+
+                                <button mat-icon-button [matMenuTriggerFor]="menu"
+                                    aria-label="Example icon-button with a menu">
+                                    <mat-icon>more_vert</mat-icon>
+                                </button>
+                                <mat-menu #menu="matMenu" xPosition="before">
+                                    <button mat-menu-item (click)="verFactura(factura.idFactura!)">
+                                        <mat-icon>visibility</mat-icon>
+                                        <span>Ver detalle</span>
+                                    </button>
+                                    <button mat-menu-item (click)="getFacturaByIdForPrint(factura.idFactura!)">
+                                        <mat-icon>print</mat-icon>
+                                        <span>Imprimir</span>
+                                    </button>
+                                    <button
+                                        [ngClass]="{'disabled': factura.montoPorPagar === 0, 'inactivo': factura.montoPorPagar !== 0}"
+                                        mat-menu-item (click)="editar(factura)" mat-menu-item>
+                                        <mat-icon>edit</mat-icon>
+                                        <span>Editar</span>
+                                    </button>
+                                    <button
+                                        [ngClass]="{'disabled': factura.montoPorPagar === 0, 'inactivo': factura.montoPorPagar !== 0}"
+                                        mat-menu-item>
+                                        <mat-icon>do_not_disturb_on</mat-icon>
+                                        <span>Anular</span>
+                                    </button>
+                                </mat-menu>
+
                             </td>
+
+
                             <td></td>
                         </tr>
                         <tr class="sinRegistros" *ngIf="sinRegistros">
@@ -104,25 +145,148 @@
             <!-- paginacion -->
             <ul class="pagination" *ngIf="dataList.length>0">
                 <li class="page-item">
-                    <input  class="page-link text-dark" type="button" value="«" (click)="getAll(pageNumbewr-1)">
+                    <input class="page-link text-dark" type="button" value="«" (click)="getAll(pageNumbewr-1)">
                 </li>
-                <li *ngFor="let p of paginations" class="page-item"><input class="page-link text-dark" value="{{p}}" type="button" (click)="getAll(p)"></li>
+                <li *ngFor="let p of paginations" class="page-item"><input class="page-link text-dark" value="{{p}}"
+                        type="button" (click)="getAll(p)"></li>
                 <li class="page-item">
-                    <input  class="page-link text-dark" type="button" value="»" (click)="getAll(pageNumbewr +1)">
+                    <input class="page-link text-dark" type="button" value="»" (click)="getAll(pageNumbewr +1)">
                 </li>
-              </ul>
+            </ul>
 
-              
-           
-    <div>
-    
 
-            <div style="display: flex; width: 100%;">
-                <p style="font-size: 12px;" > Items:{{dataList.length}} / Pagina actual {{pageNumbewr}} / Cant. Paginas {{paginations.length}}</p>
+
+            <div>
+
+
+                <div style="display: flex; width: 100%;">
+                    <p style="font-size: 12px;"> Items:{{dataList.length}} / Pagina actual {{pageNumbewr}} / Cant.
+                        Paginas {{paginations.length}}</p>
+                </div>
+
+
             </div>
-  
-            
         </div>
-    </div>
 
+   
+
+
+    <!-- REPORTE DE FACTURA -->
+<div>
+    <div class="container report" id="print-section" *ngIf="facturaForPrint!==undefined">
+        <div class="reportcompany">
+            <div class="companyInformation">
+                <h3>
+                 {{facturaForPrint.empresaObj.razonSocial.toUpperCase()}}
+                  <div *ngIf="facturaForPrint.empresaObj.razonSocial.toUpperCase()!==facturaForPrint.empresaObj.nombreComercial.toUpperCase()"> {{facturaForPrint.empresaObj.nombreComercial.toUpperCase()}}</div>
+                </h3>
+                <p>
+                    {{"Sucursal: " + facturaForPrint.sucursalObj.nombre}} <br>
+                    {{facturaForPrint.sucursalObj.direccion}} • {{facturaForPrint.sucursalObj.telefono1}} <br>
+                    RNC: {{facturaForPrint.empresaObj.rnc}} 
+                </p>
+            </div>
+            <div class="invoiceInformation">
+                <div class="invoiceInformationDetails">
+                    <div class="titleReport">FACTURA</div>
+                    <p>
+                        <b >NO. {{facturaForPrint.numeracion}} </b> <br>
+                        {{facturaForPrint.numeracionObj.nombre}} <br>
+                        FECHA EXPEDICIÓN: {{facturaForPrint.fechaCreacion | date: 'dd/MM/YYYY'}} <br>
+                        FECHA VENCIMIENTO: {{facturaForPrint.vencimiento | date: 'dd/MM/YYYY'}}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="custumerInformation">
+
+            <div class="colTitle">
+                <div>SEÑOR(ES):</div>
+                <div>DIRECCIÓN:</div>
+                <div>CED /RNC:</div>
+            </div>
+            <div class="colInformation">
+                <div>{{facturaForPrint.contacto.nombreRazonSocial}}</div>
+                <div>{{facturaForPrint.contacto.direccion}}</div>
+                <div style="display:  flex;">
+                    {{facturaForPrint.contacto.rnc}}
+                    <section style="margin-left: 200px;">
+                        TELEFONO: {{facturaForPrint.contacto.telefono1}} - {{facturaForPrint.contacto.telefono2}}
+                    </section>
+                </div>
+            </div>
+        </div>
+
+        <div class="ItemInformation">
+           
+            <table>
+                <tr class="trheader">
+                  <th style="width: 30px;">Cod</th>
+                  <th>Producto/Servicio</th>
+                  <th>Cantidad</th>
+                  <th>Precio</th>
+                  <th>Descuento</th>
+                  <th>Impuestos</th>
+                  <th class="textright">SubTotal</th>
+                </tr>
+              
+                <tbody *ngIf="facturaForPrint!==undefined">
+                 <tr *ngFor="let detail of facturaForPrint.detalle">
+                    <td>{{detail.idDetalleFactura }}</td>
+                    <td class="itemDescription">{{detail.producto.nombre}}</td>
+                    <td>{{detail.cantidad}}</td>
+                    <td> {{moneda.simbolo}} {{detail.precio | number : "1.2-5"}}</td>
+                    <td>{{moneda.simbolo}}{{detail.descuento | number : "1.2-5"}}</td>
+                    <td>{{moneda.simbolo}}{{detail.impuestos | number : "1.2-5"}}</td>
+                    <td class="textright">{{moneda.simbolo}}{{detail.subTotal | number : "1.2-5"}}</td>
+                </tr>
+                
+                </tbody>
+              </table>
+              <div class="footerInformation">
+                <div class="footerComentarios">
+                    <div>{{facturaForPrint.comentario}}</div>
+                </div>
+
+                <div>
+                    <div class="colFooterTitle textright">Subtotal</div>
+                    <div class="colFooterTitle textright">ITBIS(18%)</div>
+                    <div class="colFooterTitle textright">Descuento</div>
+                    <div class="colFooterTitle textright">Total</div>
+                </div>
+                <div>
+                    <div class="colFooterTitle textright">{{moneda.simbolo}} {{facturaForPrint.subTotal | number : '1.2-5'}}</div>
+                    <div class="colFooterTitle textright">{{moneda.simbolo}} {{facturaForPrint.itbis | number : '1.2-5'}}</div>
+                    <div class="colFooterTitle textright">{{moneda.simbolo}} {{facturaForPrint.descuento}}</div>
+                    <div class="colFooterTitle textright">{{moneda.simbolo}} {{((facturaForPrint.subTotal + facturaForPrint.itbis)) -facturaForPrint.descuento | number : '1.2-5'}}</div>
+                </div>
+
+              </div>
+          
+
+
+
+               <div class="firmas">
+            <div>
+                ____________________________________
+                <section>ELABORADO POR</section>
+            
+            </div>
+            <div>
+                _________________________________________
+                <section>ACEPTADA, FIRMA Y/O SELLO Y FECHA</section> 
+            </div>
+
+
+        </div>  
+        </div>
+
+       
+
+
+
+
+
+    </div>
 </div>

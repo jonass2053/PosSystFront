@@ -19,6 +19,7 @@ import { UsuarioService } from '../../../../services/usuario.service';
 import { MarcasService } from '../../../../services/marcas.service';
 import { ModelosService } from '../../../../services/modelos.service';
 import { blob, json } from 'stream/consumers';
+import { InformationService } from '../../../../services/information.service';
 declare var $: any;
 @Component({
   selector: 'app-producto',
@@ -46,7 +47,8 @@ export class ProductoComponent implements OnInit {
     private almacenService: AlmacenService,
     private usuarioService: UsuarioService,
     private marcaService: MarcasService,
-    private modeloService: ModelosService
+    private modeloService: ModelosService,
+    private informationService : InformationService
 
   ) {
 
@@ -244,7 +246,7 @@ export class ProductoComponent implements OnInit {
 
   getAll() {
     this.cargando = true;
-    this.productoService.getAll().subscribe((data: any) => {
+    this.productoService.getAll(this.informationService.idEmpresa).subscribe((data: any) => {
       this.dataList = data.data;
       if (this.dataList.length > 0) {
         this.sinRegistros = false

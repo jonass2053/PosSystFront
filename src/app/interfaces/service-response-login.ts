@@ -2,6 +2,7 @@ export interface ServiceResponse {
     message: string,
     token: string,
     status: string,
+    statusCode : number,
     currentPage: number,
     cantPage: number,
     totalPage: number,

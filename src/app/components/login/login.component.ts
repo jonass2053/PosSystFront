@@ -7,6 +7,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ServiceResponseLogin } from '../../interfaces/service-response-login';
 
 import { AlertServiceService } from '../utilities/alert-service.service';
+import { InformationService } from '../../services/information.service';
 
 
 @Component({
@@ -24,7 +25,8 @@ export class LoginComponent {
     private routess: Router,
     private usuario: UsuarioService,
     private fb: FormBuilder,
-    private alertasService: AlertServiceService) { }
+    private alertasService: AlertServiceService,
+    private information : InformationService) { }
     alerta : Boolean = true;
     mensaje : string = "";
 
@@ -45,6 +47,7 @@ export class LoginComponent {
           {    
             this.alerta = false;
             this.usuario.usuarioLogueado = data;  
+            this.information.idEmpresa =data.data.sucursal.idEmpresa; 
             localStorage.setItem('user', JSON.stringify(data))
             document.defaultView?.localStorage.setItem('token', JSON.stringify(data.token))
             this.routess.navigate(['/layout'])

@@ -61,7 +61,7 @@
                             <mat-form-field class="control" appearance="outline">
                                 <mat-label>Fecha</mat-label>
                                 <input matInput [matDatepicker]="pickerFecha" formControlName="fecha"
-                                    (dateChange)="setVencimiento()">
+                                    (dateChange)="setVencimiento($event)">
                                 <mat-datepicker-toggle matIconSuffix [for]="pickerFecha"></mat-datepicker-toggle>
                                 <mat-datepicker #pickerFecha></mat-datepicker>
                             </mat-form-field>
@@ -69,12 +69,12 @@
 
                             <mat-form-field class="control" appearance="outline">
                                 <mat-label>Plazo</mat-label>
-                                <mat-select formControlName="idTermino" (selectionChange)="setVencimiento()">
+                                <mat-select formControlName="idTermino" (selectionChange)="setVencimiento($event)">
                                     @for (termino of dataListTerminos; track termino) {
                                     <mat-option [value]="termino.idTermino">{{termino.nombre}}</mat-option>
                                     }
                                 </mat-select>
-                            </mat-form-field>
+                            </mat-form-field>   
                             &nbsp;
 
 
@@ -132,7 +132,7 @@
                             <mat-icon matSuffix>person</mat-icon>
                             <mat-label matTooltip="Puede consultar un cliente por identitifacion o su nombre">Cliente</mat-label>
                          
-                            <input type="text" matInput [matAutocomplete]="auto" (input)="searchContacto($event)" >
+                            <input type="text" matInput [matAutocomplete]="auto" (input)="searchContactos)" >
                             <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="selectContacto($event)" >
                                 <mat-option  *ngFor="let contacto of dataListContactos" [value]="contacto">
                                     {{ contacto.nombreRazonSocial }}
@@ -316,7 +316,7 @@
                 <div style="display: flex; justify-content: space-between;">
                     <div></div>
                     <div style=" display:  flex;">
-                        <input [ngClass]="{'disabledbtn': dataListDetalleFactura.length === 0, 'inactivo': dataListDetalleFactura.length>0}"  class="btnGuardar" type="button" value="Guardar y pagar" data-toggle="modal"
+                        <input *ngIf="btnPagar==9" [ngClass]="{'disabledbtn': dataListDetalleFactura.length === 0, 'inactivo': dataListDetalleFactura.length>0}"  class="btnGuardar" type="button" value="Guardar y pagar" data-toggle="modal"
                             data-target="#exampleModal">
                         &nbsp;
                         <input [ngClass]="{'disabledbtn': dataListDetalleFactura.length === 0, 'inactivo': dataListDetalleFactura.length>0}"  class="btnGuardar" type="submit" value=" + Guardar">
@@ -350,95 +350,95 @@
                           </button> -->
                        
 
-                          
-                          <mat-stepper linear #stepper>
-                            <mat-step [stepControl]="firstFormGroup" [editable]="isEditable">
-                              <form [formGroup]="firstFormGroup">
-                                <ng-template matStepLabel>Metodo de pago</ng-template>
-                                <div class="container" style="text-align: center; color: rgb(121, 121, 121);">
-                                    <!-- <h3 style="margin: 0; padding: 0;">---------------------------METODO DE
-                                        PAGO---------------------------</h3> -->
-                                    <div class="row" style="display: flex; justify-content: left;">
-                                        <div class="color-box" [ngClass]="{'active': activeIndex === 0}" (click)="setMetodoPago(1,'EFECTIVO', 0)" class="icono"><div><mat-icon>payments</mat-icon> <br>EFECTIVO</div></div>
-                                        <div class="color-box" [ngClass]="{'active': activeIndex === 1}" (click)="setMetodoPago(2, 'TARJETA', 1)"class="icono"><div><mat-icon>credit_card</mat-icon>  <br>TARGETA</div></div>
-                                        <div  cclass="color-box" [ngClass]="{'active': activeIndex === 2}"(click)="setMetodoPago(3, 'TRASNFERENCIA', 2)" class="icono"><div><mat-icon>account_balance</mat-icon>  <br>TRANSFERENCIA</div></div>
-                                    </div>
-        
-                                </div>
-                                <div>
-                                  <button  class="flexCenter" mat-button matStepperNext (click)="validSetFirsForm()">Siguiente <mat-icon>chevron_right</mat-icon> </button>
-                                </div>
-                              </form>
-                            </mat-step>
-                            <mat-step [stepControl]="secondFormGroup" [editable]="isEditable">
-                              <form [formGroup]="secondFormGroup" (ngSubmit)="pagarFactura()">
-                                <h3>{{metodoPagoSeleccionado}}</h3>
-                                <div class="titulo">
-                                    <div class="containerIcoText">
-                                        <h2> TOTAL  A PAGAR <b> {{moneda.simbolo}} {{totalApagar | number : '1.2-5'}}</b> </h2>
-                                    </div>
-                                    <div class="containerIcoText">
-                                        <h2>{{descripcionPago}} <b>{{moneda.simbolo}} {{cambio | number : '1.2-5'}}</b></h2>
-                                    </div> 
-                                </div>
+                
 
-                               
-                                <!-- <div class="StylePayment">
-                                    <h2>TOTAL  A PAGAR <b> {{moneda.simbolo}} {{totalApagar | number : '1.2-5'}}</b> </h2>
-                                    <h2>{{descripcionPago}} {{moneda.simbolo}} {{cambio | number : '1.2-5'}} </h2>
-                                </div> -->
-                               
-                                <ng-template matStepLabel>Datos del pago</ng-template>
-                                <div *ngIf="metodoPagoSeleccionado==''">
-                                    <h3>Debe seleccionar un metodo de pago para poder pagar este documento!</h3>
-                                </div>
-                                <div *ngIf="metodoPagoSeleccionado!==''">
-                                    <mat-form-field style="width: 20%;">
-                                        <mat-label>Efectivo</mat-label>
-                                        <input type="number" (keyup)="calcularPagoEfectivo($event)" matInput formControlName="secondCtrl"  placeholder="Dijiste el monto a pagar"
-                                               required>
-                                      </mat-form-field>
-                                      &nbsp;
-                                          <mat-form-field style="width: 25%;" *ngIf="metodoPagoSeleccionado!=='EFECTIVO'">
-                                              <mat-label>Cuenta bancaria</mat-label>
-                                              <mat-select>
-                                                @for (banco of dataListBancos; track banco) {
-                                                  <mat-option [value]="banco.idBanco">{{banco.tipoCuenta.nombre}} {{banco.nombreCuenta}}</mat-option>
-                                                }
-                                              </mat-select>
-                                            </mat-form-field>
-                                            &nbsp;
-                                            <mat-form-field style="width: 20%;" *ngIf="metodoPagoSeleccionado!=='EFECTIVO'">
-                                              <mat-label>Numero Ticket</mat-label>
-                                              <input type="text"  matInput formControlName="noComprobante" placeholder="No de Ticket o comprobante de pago">
-                                            </mat-form-field>
-      
-                                            &nbsp;
-                                            <mat-form-field style="width: 50%;">
-                                              <mat-label>Observación</mat-label>
-                                              <input  type="text"  matInput formControlName="observacionPago" placeholder="Escriba una observación">
-                                            </mat-form-field>
-                                </div>
-                                
-                                     
-                                <div style="display: flex;">
-                                  <button class="flexCenter" mat-button matStepperPrevious><mat-icon>chevron_left </mat-icon>Cambiar metodo de pago</button>
-                                </div>
 
-                                <div>
-                                    <div style=" display:  flex;">
-                                        <input class="btnGuardar" data-dismiss="modal" type="button" value="CANCELAR" data-toggle="modal" (click)="resetFormPago()"
-                                            data-target="#exampleModal">
-                                        &nbsp;
-                                        <input *ngIf="metodoPagoSeleccionado!=''" class="btnGuardar" type="submit" value="APLICAR PAGO" >
+                          <mat-stepper #stepper>
+                            <mat-step [stepControl]="firstFormGroup" errorMessage="Name is required.">
+                                <form [formGroup]="firstFormGroup">
+                                    <ng-template matStepLabel>Metodo de pago</ng-template>
+                                    <div class="container" style="text-align: center; color: rgb(121, 121, 121);">
+                                        <!-- <h3 style="margin: 0; padding: 0;">---------------------------METODO DE
+                                            PAGO---------------------------</h3> -->
+                                        <div class="row" style="display: flex; justify-content: left;">
+                                            <div class="color-box" [ngClass]="{'active': activeIndex === 0}" (click)="setMetodoPago(1,'EFECTIVO', 0)" class="icono"><div><mat-icon>payments</mat-icon> <br>EFECTIVO</div></div>
+                                            <div class="color-box" [ngClass]="{'active': activeIndex === 1}" (click)="setMetodoPago(2, 'TARJETA', 1)"class="icono"><div><mat-icon>credit_card</mat-icon>  <br>TARGETA</div></div>
+                                            <div  cclass="color-box" [ngClass]="{'active': activeIndex === 2}"(click)="setMetodoPago(3, 'TRASNFERENCIA', 2)" class="icono"><div><mat-icon>account_balance</mat-icon>  <br>TRANSFERENCIA</div></div>
+                                        </div>
+            
+                                     </div>
+                                     <div>
+                                      <button  class="flexCenter" mat-button matStepperNext>Siguiente <mat-icon>chevron_right</mat-icon> </button>
                                     </div>
-                                </div>
-                              </form>
+                                  </form>
                             </mat-step>
+                            <mat-step [stepControl]="secondFormGroup" errorMessage="Address is required.">
+                             
+                                <form [formGroup]="secondFormGroup" (ngSubmit)="pagarFactura()">
+                                    <!-- <h3>{{metodoPagoSeleccionado}}</h3> -->
+                                    <div class="titulo">
+                                        <div class="containerIcoText">
+                                            <h3> TOTAL  A PAGAR  <br><b> {{moneda.simbolo}} {{totalApagar | number : '1.2-5'}}</b> </h3>
+                                        </div>
+                                        <div class="containerIcoText">
+                                            <h3>{{descripcionPago}}  <br><b>{{moneda.simbolo}} {{cambio | number : '1.2-5'}}</b></h3>
+                                        </div> 
+                                    </div>
+    
+                                    <ng-template matStepLabel>{{metodoPagoSeleccionado}}</ng-template>
+                                    <!-- <div *ngIf="metodoPagoSeleccionado==''">
+                                        <h3>Debe seleccionar un metodo de pago para poder pagar este documento!</h3>
+                                    </div> -->
+                                    <div *ngIf="metodoPagoSeleccionado!==''">
+                                        <mat-form-field style="width: 100%;">
+                                            <mat-label>Efectivo</mat-label>
+                                            <input type="number" (keyup)="calcularPagoEfectivo($event)" matInput formControlName="secondCtrl"  placeholder="Dijiste el monto a pagar"
+                                                   required>
+                                          </mat-form-field>
+                                        
+                                              <mat-form-field style="width: 100%;" *ngIf="metodoPagoSeleccionado!=='EFECTIVO'">
+                                                  <mat-label>Cuenta bancaria</mat-label>
+                                                  <mat-select>
+                                                    @for (banco of dataListBancos; track banco) {
+                                                      <mat-option [value]="banco.idBanco">{{banco.tipoCuenta.nombre}} {{banco.nombreCuenta}}</mat-option>
+                                                    }
+                                                  </mat-select>
+                                                </mat-form-field>
+                                                
+                                                <mat-form-field style="width: 100%;" *ngIf="metodoPagoSeleccionado!=='EFECTIVO'">
+                                                  <mat-label>Numero Ticket</mat-label>
+                                                  <input type="text"  matInput formControlName="noComprobante" placeholder="No de Ticket o comprobante de pago">
+                                                </mat-form-field>
+          
+                                            
+                                                <mat-form-field style="width: 100%;">
+                                                  <mat-label>Observación</mat-label>
+                                                  <input  type="text"  matInput formControlName="observacionPago" placeholder="Escriba una observación">
+                                                </mat-form-field>
+                                    </div>
+                                    
+                                         
+                                    <div style="display: flex;">
+                                      <button class="flexCenter" mat-button matStepperPrevious><mat-icon>chevron_left </mat-icon>Cambiar metodo de pago</button>
+                                    </div>
+    
+                                    <div>
+                                        <div style=" display:  flex;">
+                                            <input class="btnGuardar" data-dismiss="modal" type="button" value="CANCELAR" data-toggle="modal" (click)="resetFormPago()"
+                                                data-target="#exampleModal">
+                                            &nbsp;
+                                            <input *ngIf="metodoPagoSeleccionado!=''" class="btnGuardar" type="submit" value="APLICAR PAGO" >
+                                        </div>
+                                    </div>
+                                  </form>
+                             
+                             
+                             
+                             
+
+                            </mat-step>
+                            
                           </mat-stepper>
-
-
-                        
 
                        
                    

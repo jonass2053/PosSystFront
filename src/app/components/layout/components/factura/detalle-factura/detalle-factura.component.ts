@@ -7,6 +7,7 @@ import { ActivatedRoute } from '@angular/router';
 import { AlertServiceService } from '../../../../utilities/alert-service.service';
 import { ServiceResponse } from '../../../../../interfaces/service-response-login';
 import { PagosService } from '../../../../../services/pagos.service';
+import { NgxPrintService, PrintOptions } from 'ngx-print';
 
 @Component({
   selector: 'app-detalle-factura',
@@ -25,12 +26,14 @@ export class DetalleFacturaComponent {
   moneda : string="";
   dataListIMpuestos : iiMpuesto[]=[];
   cargando = true;
+  verFactura = true;
   constructor(
     private facturaService : FacturaService,
     private usuarioService : UsuarioService,
     private route : ActivatedRoute,
     private alertas : AlertServiceService,
-    private pagosService : PagosService
+    private pagosService : PagosService,
+    private printService : NgxPrintService
   )
   {
     route.paramMap.subscribe((params : any)=>{
@@ -64,12 +67,31 @@ export class DetalleFacturaComponent {
       this.cargando=false;
       this.alertas.hideLoading();
     }, 1000);
-
-
   }
   
-  
+   async deletPago(idPago : number){
+    if(await this.alertas.questionDelete()){
+      this.pagosService.delete(idPago).subscribe((data: ServiceResponse)=>{
+        this.alertas.successAlert(data.message)
+        location.reload();
+      })
+    }
+  }
 
-
+  printFactura(factura : iFactura){ 
+        const customPrintOptions: PrintOptions = new PrintOptions({
+    printSectionId: 'print-section',
+    printTitle: "Factura",
+    useExistingCss: true,
+    openNewTab: false,
+    previewOnly: false,
+    closeWindow: true,
+    printDelay: 10
+   
+   
+    // Add any other print options as needed
+});
+this.printService.print(customPrintOptions)
+ }
 
 }

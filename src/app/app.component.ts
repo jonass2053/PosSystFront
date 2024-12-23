@@ -8,6 +8,7 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 import { UsuarioService } from './services/usuario.service';
 import { json } from 'stream/consumers';
 import { log } from 'console';
+import { InformationService } from './services/information.service';
 
 
 @Component({
@@ -33,17 +34,11 @@ import { log } from 'console';
 export class AppComponent {
   title = 'PosSystem';
 
-  constructor(private usuario : UsuarioService){
-    //console.log(document.defaultView?.localStorage.getItem('user'))
-    // let text = document.defaultView?.localStorage.getItem('user');
-    // console.log(localStorage.getItem('user'))
-    // if()
-    //   {
-    //  
-    //   }
-    if (typeof document !== 'undefined') {
+  constructor(private usuario : UsuarioService, private information : InformationService){
 
+    if (typeof document !== 'undefined') {
      usuario.usuarioLogueado = JSON.parse(document.defaultView?.localStorage.getItem('user')!);
+     information.idEmpresa =  usuario.usuarioLogueado.data.sucursal.idEmpresa;
 
   }
  

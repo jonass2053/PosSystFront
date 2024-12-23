@@ -14,7 +14,7 @@
         <section>
             <div class="example-button-row">
                 <button mat-stroked-button><mat-icon>edit</mat-icon>Editar</button>
-                <button mat-stroked-button><mat-icon>print</mat-icon> Imprimir</button>
+                <button mat-stroked-button (click)="printFactura(factura)"><mat-icon>print</mat-icon> Imprimir</button>
                 <button mat-stroked-button><mat-icon>share</mat-icon> Compartir</button>
             </div>
         </section>
@@ -121,9 +121,7 @@
                     <th scope="col">Descuento</th>
                     <th scope="col" style="text-align: right;">Total</th>
 
-                    <!-- <th class="cargandoTableIcono">
-                        <div *ngIf="cargando" class="loaderTable"></div>
-                    </th>    -->
+                  
                 </tr>
             </thead>
             <tbody>
@@ -183,16 +181,8 @@
                     <div>Total General</div>
                     <div>{{moneda}}{{factura.totalGeneral| number:'1.2-2'}}</div>
                 </div>
-                <!-- <hr>
-                <div class="totalesitem" style="font-size: 25px;">
-                    <div>Total</div>
-                    <div>{{moneda}}{{factura.totalGeneral | number:'1.2-2'}}</div>
-                </div> -->
-
             </div>
-
         </div>
-
     </div>
 
 
@@ -218,6 +208,7 @@
                             <th scope="col">Método de pago</th>
                             <th scope="col">Monto</th>
                             <th scope="col">Referencia</th>
+                            <th scope="col">Acciones</th>
        
 
                             <!-- <th class="cargandoTableIcono">
@@ -243,6 +234,10 @@
                             <td>
                                 <div>{{pago.notaPago}}</div>
                             </td>
+                            <td>
+                                <button matTooltip="Eliminar pago" class="btnaccion" (click)="deletPago(pago.idPago!)"
+                                data-target="#exampleModal"><mat-icon class="btnEliminar" data-toggle="modal">delete</mat-icon></button>
+                            </td>
                           
                             
                         </tr>
@@ -267,3 +262,4 @@
 
 
 </div>
+

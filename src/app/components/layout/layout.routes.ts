@@ -17,6 +17,7 @@ import { ListFacturasComponent } from "./components/factura/list-facturas/list-f
 import { BancosComponent } from "./components/bancos/bancos.component";
 import { PagoFacturaComponent } from "./components/factura/pago-factura/pago-factura.component";
 import { DetalleFacturaComponent } from "./components/factura/detalle-factura/detalle-factura.component";
+import { FacturaReportComponent } from "../../reports/factura-report/factura-report.component";
 
 
 
@@ -35,6 +36,7 @@ export const routes : Routes=[
         {path : 'factura', component : FacturaComponent},
         {path : 'facturas', component : ListFacturasComponent},
         {path : 'detalle_factura/:id', component : DetalleFacturaComponent},
+        {path : 'factura_report/:id', component : FacturaReportComponent},
         {path : 'pago', component : PagoFacturaComponent},
         {path : 'bancos', component : BancosComponent},
         {path : '', component : InicioComponent},

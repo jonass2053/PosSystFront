@@ -46,7 +46,7 @@ export class FacturaComponent {
     firstCtrl: ['', Validators.required],
   });
   secondFormGroup = this.fb.group({
-    secondCtrl: [''],
+    secondCtrl: ['0'],
     noComprobante : [''],
     observacionPago : [''],
     totalRecibido : [''],
@@ -57,6 +57,7 @@ export class FacturaComponent {
   moneda! : iMoneda;
   prodcutoSeleccionado! : iProducto;
   impuestoProduct : number = 0;
+  btnPagar : number = 0;
 
 
   constructor(
@@ -83,15 +84,9 @@ export class FacturaComponent {
     this.getTipoDocumentos();
     this.getAllBancos();
     if(facturaServcie.facturaEdit!=null)
-    {
-      console.log('editanado')
-      console.log(facturaServcie.facturaEdit.contacto.nombreRazonSocial)
       this.editarFactura(facturaServcie.facturaEdit);
-    }
     else
-    {
       facturaServcie.facturaEdit = null;
-    }
   
   }
  
@@ -403,7 +398,9 @@ export class FacturaComponent {
       let dateNow = new Date();
       this.miFormulario.patchValue({ idTermino: data.data.find((c: iTermino) => c.predeterminado == true).idTermino })
       this.setVencimiento();
-    })
+      this.btnPagar =  data.data.find((c: iTermino) => c.predeterminado == true).idTermino;
+      if(this.btnPagar==9)
+        this.setMetodoPago(1,'EFECTIVO', 0)})
   }
 
 
@@ -421,12 +418,14 @@ export class FacturaComponent {
     })
   }
 
-  setVencimiento() {
+  setVencimiento(event : any = null) {
     let dias = this.dataListTerminos.find((c: iTermino) => c.idTermino == this.miFormulario.value.idTermino)?.dias;
     let fechaVencimiento = this.calVencimiento(this.miFormulario.value.fecha, dias);
     // let fechaFormateada = this.datePipe.transform(fechaVencimiento, 'yyyy-MM-dd hh:mm:ss');
     let fechaFormateada = fechaVencimiento;
-    this.miFormulario.patchValue({ vencimiento: fechaFormateada })
+    this.miFormulario.patchValue({ vencimiento: fechaFormateada })      
+    this.btnPagar =  event!=undefined? event.value : 0;
+    
   }
 
   getAllVendedores() {
@@ -528,9 +527,7 @@ export class FacturaComponent {
   }
 
   guardarFactura() {
-   
-    this.miFormulario.patchValue(
-      {
+    this.miFormulario.patchValue({
         detalle: this.dataListDetalleFactura,
         idEmpresa: this.usuarioService.usuarioLogueado.data.sucursal.idEmpresa,
         idSucursal: this.usuarioService.usuarioLogueado.data.sucursal.idSucursal,
@@ -556,14 +553,13 @@ export class FacturaComponent {
           else {
             this.alertaService.errorAlert(data.message);
           }
-  
         })
       }
       else
       {
         
         this.facturaServcie.insert(this.miFormulario.value).subscribe((data: ServiceResponse) => {
-          if (data.status) {
+          if (data.statusCode==200) {
             this.alertaService.successAlert(data.message);
             this.resetHeader();
             this.resetDetails();
@@ -615,18 +611,27 @@ export class FacturaComponent {
     this.facturaServcie.facturaEdit=null;
   }
 
+  //Selecciona un metodo de pago
   setMetodoPago(metodo :  number,  descripcion : string, index : number){
     this.firstFormGroup.patchValue({firstCtrl : 'metodo'})
     this.metodoPagoSeleccionado = descripcion;
     this.setActive(index);
-
+    console.log(descripcion)
+    if(descripcion.toUpperCase()!=="EFECTIVO"){
+    this.dataListBancos =  this.dataListBancos.filter(c=>c.tipoCuenta.nombre.toUpperCase()!=="EFECTIVO");
+  }
+    else{
+      this.getAllBancos();
+    }
   }
 
+  // Valida el formulario para que este no se envie si no se ha seleccionado un metodo de pago
   validSetFirsForm(){
     if(this.firstFormGroup.invalid){
       this.alertaService.warnigAlert('Seleccione un metodo de pago');
     } 
   }
+
   activeIndex: number | null = null;
   
   setActive(index: number) {
@@ -634,29 +639,19 @@ export class FacturaComponent {
   }
 
   calcularPagoEfectivo(event : any){
-     this.cambio =this.totalApagar -event.target.value;
-     let totalRecibido = event.target.value; 
-     this.addMontoPagar(event);
-     if(this.cambio<0)
-      {
-        this.descripcionPago="CAMBIO" 
-        this.cambio = (this.cambio * -1)
-        this.miFormulario.patchValue({cambio : this.cambio, totalRecibido : event.target.value, montoPagado : event.target.value  })
-      }
-      else
-      {
-        this.descripcionPago="POR PAGAR" 
-      } 
+    this.cambio =this.totalApagar -event.target.value;
+    let totalRecibido = event.target.value; 
+    this.addMontoPagar(event);
+    this.descripcionPago = this.cambio<0? "CAMBIO" : "POR PAGAR";
+    this.cambio = this.cambio<0? (this.cambio * -1) :  this.cambio; 
+    this.miFormulario.patchValue({cambio : this.cambio, totalRecibido : event.target.value, montoPagado : event.target.value  })
+
   }
 
   getAllBancos(){
-    this.bancoService.getAll(this.usuarioService.usuarioLogueado.data.sucursal.idSucursal).subscribe((c: ServiceResponse)=>
-    {
-        this.dataListBancos = c.data;
-        
-    }
-    )
-  }
+    this.bancoService.getAll(this.usuarioService.usuarioLogueado.data.sucursal.idSucursal).subscribe((c: ServiceResponse)=>{
+        this.dataListBancos = c.data;   
+      })}
 
   addMontoPagar(event : any){
     event.target.value.length>0? this.miFormulario.patchValue({montoPagado : this.efectivo}) : 0;

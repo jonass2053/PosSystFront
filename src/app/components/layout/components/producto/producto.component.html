@@ -56,8 +56,8 @@
               <td><div> {{producto.cantInicial}}</div></td>
               <td class="acciones">
                 <button matTooltip="Editar" class="btnaccion" (click)="editar(producto)" data-toggle="modal"
-                  data-target="#exampleModal"><mat-icon data-toggle="modal">edit</mat-icon></button>
-                <button matTooltip="Eliminar" class="btnaccion" (click)="delete(producto.idProducto)" data-target="#exampleModal"><mat-icon
+                  data-target="#exampleModal"><mat-icon class="btnEditar" data-toggle="modal">edit</mat-icon></button>
+                <button matTooltip="Eliminar" class="btnaccion" (click)="delete(producto.idProducto)" data-target="#exampleModal"><mat-icon class="btnEliminar"
                     data-toggle="modal">delete</mat-icon></button>
               </td>
               <td></td>

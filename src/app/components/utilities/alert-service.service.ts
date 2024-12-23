@@ -15,9 +15,11 @@ ShowLoading()
       {
         Swal.showLoading();
       },
-      width: '225px',
-      html: "Cargando <br> por favor espere ...",
+      position: "top",
+      width: '100px',
+      // html: "Cargando... por favor espere.",
       allowOutsideClick: false,
+      
     }); 
   }
 hideLoading = ()=>{

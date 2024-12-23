@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { ServiceResponse } from '../interfaces/service-response-login';
 import { baseUrl } from '../../enviroment/enviroment.';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { AlertServiceService } from '../components/utilities/alert-service.service';
-import { Observable } from 'rxjs';
+import { catchError, Observable, throwError } from 'rxjs';
 import { iFactura } from '../interfaces/iTermino';
 import { UsuarioService } from './usuario.service';
+import { error } from 'console';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +28,9 @@ export class PagosService {
    
   facturaPagar! : iFactura;
   insert(formualrio : any) : Observable<ServiceResponse> {
-    return this.http.post<ServiceResponse>(`${this.url}`, formualrio, this.header)
+    return this.http.post<ServiceResponse>(`${this.url}`, formualrio, this.header).pipe(
+      catchError(this.handleError)
+    );
  }
  update(formualrio : any) : Observable<ServiceResponse>
  {
@@ -45,4 +48,20 @@ export class PagosService {
  {
   return this.http.get<ServiceResponse>(`${this.url}/get_by_idfactura/${idFactura}`, this.header)
  }
+
+ private handleError(error: HttpErrorResponse): Observable<never> {
+  let errorMessage = 'Ha ocurrido un error desconocido.';
+  console.log(error)
+  if (error.error instanceof ErrorEvent) {
+    // Error del lado del cliente
+    errorMessage = `Error del cliente: ${error.error.message}`;
+  } else {
+    // Error del lado del servidor
+    errorMessage = `Error del servidor: ${error.status} - ${error.message}`;
+    this.alertasService.errorAlert(error.message)
+    console.log(errorMessage)
+  }
+  console.error(errorMessage); // Registro del error
+  return throwError(() => new Error(errorMessage)); // Devuelve un Observable con el error
+}
 }

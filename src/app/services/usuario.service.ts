@@ -14,7 +14,6 @@ import { AlertServiceService } from '../components/utilities/alert-service.servi
 export class UsuarioService {
 
     constructor( private http : HttpClient, private error: HandleErrorService, private alertas : AlertServiceService) {
-      
      }
 
   token :  any;   

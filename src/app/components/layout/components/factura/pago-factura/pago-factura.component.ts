@@ -98,11 +98,9 @@ export class PagoFacturaComponent {
 
   insert(){
       this.pagoService.insert(this.miFormulario.value).subscribe((result : ServiceResponse)=>{
-        if(result.status)
-        {
-          this.alertas.successAlert(result.message);
+        if(result.statusCode==200){
           this.closeDialog();
-
+          this.alertas.successAlert(result.message);
         }
         else
           this.alertas.errorAlert(result.message)});
@@ -132,12 +130,8 @@ export class PagoFacturaComponent {
   }
  
   save(){
-    this.alertas.ShowLoading();
-    console.log(this.miFormulario.value.idPago)
-    if(this.miFormulario.valid)
-    {
+    if(this.miFormulario.valid){
       this.miFormulario.value.idPago===null? this.insert() : this.update();
-
     }
   }
 

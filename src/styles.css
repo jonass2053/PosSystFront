@@ -14,7 +14,8 @@ hamBurger.addEventListener("click", function () {
 
 
 body {
-  background-color: #edf2fa;
+  background-color: white;
+  /* background-color: #edf2fa; */
 }
 
 :root {
@@ -82,6 +83,7 @@ body {
 
 .dropdown-menu {
   background-color: var(--fondo-suave-color-secundario);
+  
 
 
 }
@@ -101,6 +103,7 @@ body {
 .navbar {
   color: rgb(31, 34, 115);
   background-color: var(--fondo-suave-color-secundario);
+
 
 }
 
@@ -235,6 +238,7 @@ nav {
   z-index: 99;
   width: 100%;
   background-color: var(--color-secundario);
+  background-color: red;
 
 }
 
@@ -546,12 +550,23 @@ nav input {
 
 }
 
-tr td {
-  height: 100%;
-
-
+tr{
+  position: relative;
+  height: 5vh;
 }
-
+tr td {
+ /* color: red; */
+ /* border: 1px solid silver; */
+ height: 30px;
+  
+}
+.limitar {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
 
 
 
@@ -721,7 +736,7 @@ tr td {
 .titulo {
   width: 100%;
   display: flex;
-  height: 35px;
+  min-height: 35px;
   margin-top: 10px;
   margin-bottom: 10px;
   justify-content: space-between;
@@ -731,6 +746,7 @@ tr td {
   padding: 20px;
   border-left: 10px solid rgba(0, 0, 0, 0.2);
   border-right: 10px solid rgba(0, 0, 0, 0.2);
+  height: 10px !important;
 
 
 }
@@ -828,10 +844,12 @@ mat-icon:hover {
 .acciones {
   /* width: 100px !important; */
   display: flex;
-  justify-content: center;
+  justify-content: right;
   align-items: center;
   margin: 0;
   padding: 0;
+  width: 100%;
+  min-height: 50px;
 
 
 }
@@ -1032,6 +1050,7 @@ mat-form-field {
   justify-content: center;
   align-items: center;
   color: var(--color-texto-interno);
+  
 
 }
 
@@ -1554,4 +1573,218 @@ mat-paginator {
 }
 .btnEditar{
   color: green;
+}
+.swal2-container {
+  z-index: 9999 !important;
+}
+
+
+.report
+{
+  color: red;
+  height: 800px;
+  border: 1px solid red;
+  background-color: white;
+  padding: 20px;
+  width: 750px;
+}
+.company
+{
+
+}
+.reportcompany
+{
+  
+  width: 100%;
+  display: flex;
+}
+.companyInformation
+{
+  width: 50%;
+  color: var(--color-texto-interno);
+  text-align: left;
+  font-size: 10px;
+  line-height: 13.5px;
+ 
+}
+.companyInformation h3
+{
+
+  margin-bottom: 0px;
+  margin-top: 10px;
+  font-weight: 500;
+  
+}
+.invoiceInformation
+{
+  width: 50%;
+  color: var(--color-texto-interno);
+  text-align: right;
+  display: flex;
+  font-size: 10px;
+
+
+}
+.invoiceInformationDetails
+{
+  margin-left: 170px;
+  text-align: center;
+}
+.titleReport
+{
+  background-color: silver;
+  padding: 0px;
+  margin: 2.5px;
+  font-weight: 500;
+  font-size: 25px;
+}
+.invoiceInformationDetails p
+{
+  line-height: 13.5px;
+}
+
+/* informacion dwl cliente */
+.custumerInformation
+{
+
+  width: 100%;
+  min-height: 50px;
+  display: flex;
+  font-size: 10px;
+
+}
+.custumerInformation .colTitle div
+{
+  color: var(--color-texto-interno);
+  border: 0.5px solid white;
+  padding: 1px;
+  width: 100px;
+  text-align: right;
+  height: 20px;
+  padding-right: 10px;
+  background-color: rgb(233, 233, 233)
+
+}
+.custumerInformation .colInformation div
+{
+  min-width: 635px;
+  color: silver;
+  border: 0.5px solid rgb(223, 223, 223);
+  padding: 1px;
+  height: 20px;
+  padding-left: 10px;
+  color: var(--color-texto-interno);
+
+}
+.telefono
+{
+  border-color: red !important;
+  max-width: 50px !important;
+}
+.ItemInformation
+{
+  margin-top: 10px;
+  color: var(--color-texto);
+
+}
+/* item information  */
+.ItemInformation
+{
+  width: 100%;
+  /* border: 1px solid rgb(223, 223, 223); */
+  height: 500px;
+}
+
+.trheader
+{
+  color: var(--color-texto);
+  background-color: rgb(223, 223, 223);
+  height: 15px !important;
+  
+}
+.ItemInformation table
+{
+  font-size: 10px;
+  width: 100%;
+}
+.ItemInformation table tr
+{
+  font-size: 10px;
+  height: 3px;
+  padding: 50px !important;
+  padding-left: 5px !important;
+  padding-right: 5px !important;
+}
+
+.ItemInformation table tr td
+{
+  padding-left: 5px !important;
+  padding-right: 5px !important;
+  border-right: 1px solid rgb(233, 233, 233);
+  border-left: 1px solid rgb(233, 233, 233);
+
+}
+.ItemInformation table tr th
+{
+  padding-left: 5px !important;
+  padding-right: 5px !important;
+  border-left: 1px solid rgb(233, 233, 233);
+}
+.ItemInformation table tbody
+{
+  border: 1px solid rgb(233, 233, 233);
+  min-height: 500px;
+}
+.textright
+{
+  text-align: right;
+  border-right: 0px;
+}
+.itemDescription
+{ 
+  max-width: 390px;
+  width: 350px;
+  word-wrap: break-word;
+  line-height: 13.5px;
+}
+
+.footerInformation
+{
+  width: 100%;
+  height: 50px;
+  font-size: 10px;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+}
+.footerInformation div
+{
+  font-size: 10px;
+}
+.footerComentarios
+{
+  width: 75%;
+  padding: 5px;
+}
+.colFooterTitle
+{
+  padding-right: 5px !important;
+}
+.firmas
+{
+  display:  flex;
+  margin-top: 80px;
+  font-size: 10px;
+
+}
+.firmas div
+{
+  display:  flex;
+  margin: 10px;
+  font-size: 10px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: var(--color-texto);
+  padding: 0;
 }
