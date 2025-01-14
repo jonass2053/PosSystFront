@@ -2,10 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxPrintService, PrintOptions } from 'ngx-print';
 import { FacturaService } from '../../services/factura.service';
-import { iFactura } from '../../interfaces/iTermino';
+import { iFactura, iMoneda } from '../../interfaces/iTermino';
 import { parse } from 'path';
 import { importaciones } from '../../components/utilities/material/material';
 import { AlertServiceService } from '../../components/utilities/alert-service.service';
+import { UsuarioService } from '../../services/usuario.service';
+import { GeneratePDFService } from '../../services/generate-pdf.service';
+import { MatDialogRef } from '@angular/material/dialog';
+import { InformationService } from '../../services/information.service';
 
 @Component({
   selector: 'app-factura-report',
@@ -21,31 +25,35 @@ export class FacturaReportComponent {
     private router : Router,
     private facturaService : FacturaService,
     private route: ActivatedRoute,
-    private alertService : AlertServiceService
+    private alertService : AlertServiceService,
+    private usuarioService : UsuarioService,
+    private reportService : GeneratePDFService,
+    private informationService : InformationService,
+    public dialogRef: MatDialogRef<FacturaReportComponent>
   
   ){
-     
-      
+    this.moneda = this.usuarioService.usuarioLogueado.data.sucursal.empresa.moneda; 
+    this.facturaForPrint = facturaService.facturaEdit;
+    this.tipoDocument = this.informationService.tipoDocumento;
+
   }
   ngAfterViewInit(){
-    this.getFacturaById();
     setTimeout(() => {
-      this.printFactura()
-    }, 1000);
-  
+      this.reportService.generatePDF('print-section', 'mi-documento.pdf');
+      setTimeout(() => {
+        this.dialogRef.close();
+      }, 50);
+    }, 200);
   }
-  id! : number;
+  id! : number; 
   factura! : iFactura;
+  facturaForPrint: any;
+  moneda!: iMoneda;
+  tipoDocument :  string='';
 
-  getFacturaById(){
-    this.alertService.ShowLoading();
-    let id =(this.route.snapshot.paramMap.get('id'));
-    this.id = parseInt(id!);
-    this.facturaService.getById(this.id).subscribe((data: any) => {
-      this.factura = data.data;
-     this.alertService.hideLoading();
-  })}
-  
+
+
+
   printFactura(){ 
     const customPrintOptions: PrintOptions = new PrintOptions({
       printSectionId: 'print-section',

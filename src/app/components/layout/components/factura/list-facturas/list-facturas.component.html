@@ -2,7 +2,7 @@
     <div class="containerInter">
         <div class="titulo">
             <div class="containerIcoText">
-                <mat-icon>inventory</mat-icon> Facturas
+                <mat-icon>inventory</mat-icon> {{document}}
             </div>
             <a [routerLink]="['/layout']">
                 <div class="containerIcoText"><mat-icon>arrow_back</mat-icon>Retroceder</div>
@@ -15,7 +15,7 @@
             <!-- <p style="font-size: small;">Crea una numeración para organizar y tener el control de tus comprobantes</p> -->
 
             <div class="containerfuncionesheader input-parent">
-                <a [routerLink]="['/layout/factura']" class="btnGuardar">+ Agregar</a>
+                <a (click)="addNewDocument()" class="btnGuardar">+ Agregar</a>
                 <!-- <input type="button" value=" + Agregar" data-toggle="modal" data-target="#exampleModal"
                     class="btnGuardar"> -->
                 <mat-form-field appearance="outline">
@@ -64,10 +64,10 @@
                             <td>
                                 <div>{{moneda.simbolo}} {{factura.totalGeneral | number : '1.2-5'}}</div>
                             </td>
-                            <td>
+                            <td style="color: green;">
                                 <div>{{moneda.simbolo}} {{factura.montoPagado | number : '1.2-5'}}</div>
                             </td>
-                            <td>
+                            <td  [style.color]="factura.estadoFactura.color">
                                 <div>{{moneda.simbolo}} {{factura.montoPorPagar| number : '1.2-5'}}</div>
                             </td>
                             <td style="color: white;">
@@ -116,18 +116,18 @@
                                         <mat-icon>print</mat-icon>
                                         <span>Imprimir</span>
                                     </button>
-                                    <button
-                                        [ngClass]="{'disabled': factura.montoPorPagar === 0, 'inactivo': factura.montoPorPagar !== 0}"
+                                    <button *ngIf="factura.montoPagado==0"
+                                        [ngClass]="{'disabled': factura.montoPagado !== 0, 'inactivo': factura.montoPagado !== 0}"
                                         mat-menu-item (click)="editar(factura)" mat-menu-item>
                                         <mat-icon>edit</mat-icon>
                                         <span>Editar</span>
                                     </button>
-                                    <button
+                                    <!-- <button
                                         [ngClass]="{'disabled': factura.montoPorPagar === 0, 'inactivo': factura.montoPorPagar !== 0}"
                                         mat-menu-item>
                                         <mat-icon>do_not_disturb_on</mat-icon>
                                         <span>Anular</span>
-                                    </button>
+                                    </button> -->
                                 </mat-menu>
 
                             </td>
@@ -172,7 +172,7 @@
 
 
     <!-- REPORTE DE FACTURA -->
-<div>
+<!-- <div>
     <div class="container report" id="print-section" *ngIf="facturaForPrint!==undefined">
         <div class="reportcompany">
             <div class="companyInformation">
@@ -289,4 +289,4 @@
 
 
     </div>
-</div>
+</div> -->

@@ -1,0 +1,41 @@
+.example-card {
+    max-width: 400px;
+  }
+  
+  .example-card-footer {
+    padding: 16px;
+  } 
+  .contenedores
+  {
+     width: 100%;
+  }
+  .cardOne
+  {
+    display:  flex;
+    flex-direction: row;
+    padding: 5px;
+  }
+.cardOne mat-card
+{
+    width: 50%;
+    margin: 5px;
+    border-color:  transparent;
+}
+.controlespago
+{
+  display:  flex;
+  flex-direction: row;
+}
+.estyletotal 
+{
+  border: 1px solid silver;
+  padding: 10px;
+  font-size: 20px;
+  border-radius: 8px;
+  width: auto;
+  margin: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}

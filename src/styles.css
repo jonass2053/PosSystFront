@@ -1581,9 +1581,8 @@ mat-paginator {
 
 .report
 {
-  color: red;
+ 
   height: 800px;
-  border: 1px solid red;
   background-color: white;
   padding: 20px;
   width: 750px;

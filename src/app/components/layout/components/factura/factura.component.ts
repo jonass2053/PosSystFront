@@ -22,6 +22,10 @@ import { constrainedMemory, exit } from 'process';
 import { FacturaService } from '../../../../services/factura.service';
 import { BancosService } from '../../../../services/bancos.service';
 import { json } from 'stream/consumers';
+import { log } from 'console';
+import { Router } from '@angular/router';
+import { InformationService } from '../../../../services/information.service';
+
 declare var $ : any;
 
 @Component({
@@ -58,6 +62,8 @@ export class FacturaComponent {
   prodcutoSeleccionado! : iProducto;
   impuestoProduct : number = 0;
   btnPagar : number = 0;
+  document : string ="";
+  idNumeracion : number = 0;
 
 
   constructor(
@@ -71,9 +77,11 @@ export class FacturaComponent {
     private vendedoresService: VendedoresService,
     private productoService: ProductoService,
     private facturaServcie: FacturaService,
-    private bancoService : BancosService
-
+    private bancoService : BancosService,
+    private router : Router,
+    private informationService : InformationService
   ) {
+    this.document =  informationService.tipoDocumento;
     if (this.usuarioService.usuarioLogueado != undefined) {
       this.moneda = this.usuarioService.usuarioLogueado.data.sucursal.empresa.moneda;
     }
@@ -112,10 +120,8 @@ export class FacturaComponent {
       montoPagado : factura.montoPagado, 
     })
     this.impuestosGenerales = factura.itbis;
-
     this.miFormulario.get('nombreClienteCompleto')?.setValue(factura.contacto); // Cambia "Opción 2" por el valor deseado
     this.dataListDetalleFactura = factura.detalle;
-    console.log(this.dataListDetalleFactura)
     // this.dataListDetalleFactura.forEach(c=>{
     //   c.impuestosObject?.forEach (element => {
     //     this.dataListImpuestosDetails.push(element)
@@ -213,7 +219,6 @@ export class FacturaComponent {
   
 
   addDetails() {
-    console.log(this.impuestos)
     let cantLocal = 0;
     if (this.idProducto==0) {
       this.alertaService.warnigAlert("Debe seleccionar un item y llenar los campos para poder agregar.")
@@ -254,23 +259,7 @@ export class FacturaComponent {
         this.dataListDetalleFactura.push(detalle);
       }
  
-      //Este codgio agrega los impuestos de cada producto que pertenece al detalle
-      // this.miFormulario.value.impuestoObjet.forEach((element : iiMpuesto) =>
-      // {
-      //   let existImpuesto = this.dataListImpuestosDetails.find(c=>c.idImpuesto==element.idImpuesto)
-      //   console.log(this.dataListImpuestosDetails)
-      //   if(existImpuesto===undefined)
-      //     {
-      //       element.monto += (element.porcentaje/100)*this.subTotal;
-      //       this.dataListImpuestosDetails.push(element);
-      //     }
-      //     else
-      //     {
-      //       this.dataListImpuestosDetails = this.dataListImpuestosDetails.filter(c=>c.idImpuesto!==existImpuesto.idImpuesto)
-      //       existImpuesto.monto+=element.monto;
-      //       this.dataListImpuestosDetails.push(existImpuesto);
-      //     }
-      // })
+     
 
        this.calculoGeneral();
        this.resetDetails();
@@ -330,10 +319,22 @@ export class FacturaComponent {
 
   getTipoDocumentos() {
     this.numeracionService.getAllTipoDocumentos().subscribe((data: ServiceResponse) => {
-      if (data.status) {
-        this.miFormulario.patchValue({ idTipoDocumento: data.data.find((c: iTipoDocumento) => c.nombre.toUpperCase().includes("FACTURA DE VENTA")).idTipoDocumento })
+      if (data.status && this.informationService.tipoDocumento!=="Cotización") {
+        this.miFormulario.patchValue({ 
+          idTipoDocumento: data.data.find((c: iTipoDocumento) => c.nombre.toUpperCase().includes("FACTURA DE VENTA")).idTipoDocumento,
+          
+        })
       }
+      else{
+        this.miFormulario.patchValue(
+          { idTipoDocumento: data.data.find((c: iTipoDocumento) => c.nombre.toUpperCase().includes("COTIZAC")).idTipoDocumento,
+            idNumeracion : 11
+           })
+      }
+
     })
+
+
   }
 
   selectContacto(event: any) {
@@ -341,15 +342,14 @@ export class FacturaComponent {
       {
         identificacion: event.option.value.rnc,
         telefono: event.option.value.telefono1,
-        idNumeracion: event.option.value.idTipoNumeracion,
-        idContacto: event.option.value.idContacto
+        idNumeracion: this.informationService.tipoDocumento==="Cotización"? 11 : event.option.value.idTipoNumeracion,
+        idContacto: event.option.value.idContacto,
+      
       })
-      console.log(this.miFormulario.value)
+      this.idNumeracion = this.informationService.tipoDocumento==="Cotización"? 11 : event.option.value.idTipoNumeracion;
     }
 
   selectProducto(event: any) {
-    console.log(event.option.value.precioFinal - event.option.value.precioBase)
-  console.log(event.option.value)
    this.idProducto = event.option.value.idProducto;
    this.nombre = event.option.value.nombre; 
    this.prodcutoSeleccionado = event.option.value;
@@ -448,7 +448,6 @@ export class FacturaComponent {
     }
     else {
       this.miFormulario.patchValue({descuento : 0, cantidad : 1, impuesto : this.impuestoProduct});
-      console.log()
     }
   }
 
@@ -491,7 +490,15 @@ export class FacturaComponent {
    // this.dataListImpuestosDetails = [];
     this.dataListContactos =[];
     this.idProducto=0;
-    this.miFormulario.patchValue({precio : 0, descuento: 0, subTotalDetails : 0, impuesto : 0, total : 0, producto : "", cantidad : 1 })
+    this.miFormulario.patchValue(
+      {precio : 0,
+       descuento: 0, 
+       subTotalDetails : 0,
+       impuesto : 0, 
+       total : 0, producto : "", 
+       cantidad : 1,
+     })
+    console.log(this.miFormulario.value)
   }
 
 
@@ -527,6 +534,7 @@ export class FacturaComponent {
   }
 
   guardarFactura() {
+    console.log('guardar factyurea')
     this.miFormulario.patchValue({
         detalle: this.dataListDetalleFactura,
         idEmpresa: this.usuarioService.usuarioLogueado.data.sucursal.idEmpresa,
@@ -536,7 +544,8 @@ export class FacturaComponent {
         subTotal: this.subTotalGeneral,
         totalGeneral: this.totalGeneral,
         itbis :  this.impuestosGenerales, 
-        impuestos: this.miFormulario.value.impuestoObjet 
+        impuestos: this.miFormulario.value.impuestoObjet,
+        idNumeracion : this.idNumeracion
       })
 
     if (this.miFormulario.valid && this.dataListDetalleFactura.length>0) {
@@ -575,6 +584,7 @@ export class FacturaComponent {
       
     }
     else {
+     console.log(this.miFormulario.value);
       this.alertaService.warnigAlert("Debe completar todos para poder guardar el documento");
     }
   }
@@ -677,6 +687,16 @@ export class FacturaComponent {
     $('#exampleModal').modal('show');
   }
   
-  
+  retroceder(){
+    if(this.facturaServcie.document==="Cotización")
+    {
+        this.router.navigate(['layout/cotizaciones'])
+    }
+    else
+    {
+      this.router.navigate(['layout/facturas'])
+
+    }
+  }
 }
 

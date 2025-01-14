@@ -190,9 +190,9 @@
                         <div *ngIf="listIngresos==true" ><i class="bi bi-caret-up-fill"></i></div>    
                     </li>
                     <li class="contItem" [class.show]="listIngresos"> 
-                            <a [routerLink]="['facturas']">Facturas</a>
-                            <a href="#">Pagos recibidos</a>
-                            <a href="#">Cotizaciones</a>
+                            <a (click)="selectDocument('Factura')">Facturas</a>
+                            <a [routerLink]="['pagos']">Pagos recibidos</a>
+                            <a (click)="selectDocument('Cotización')">Cotizaciones</a>
                             <a href="#">Conduce</a>
                             <a href="#">Nota de credito</a>
                     </li>

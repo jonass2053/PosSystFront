@@ -1,0 +1,164 @@
+<div class="containerConfiguraciones">
+
+    <div class="containerInter">
+        <div class="titulo">
+            <div class="containerIcoText">
+                <mat-icon>payments</mat-icon> Nuevo Pago
+            </div>
+
+            <a [routerLink]="['/layout/pagos']">
+                <div class="containerIcoText"><mat-icon>arrow_back</mat-icon>Retroceder</div>
+            </a>
+        </div>
+        <div class="contenedores">
+            <form [formGroup]="miFormulario">
+                <mat-card appearance="outlined" class="cardOne">
+                  <mat-card appearance="outlined">
+                    <mat-form-field appearance="outline">
+                      <mat-label>Fecha</mat-label>
+                      <input matInput [matDatepicker]="picker" formControlName="fecha">
+                      <mat-hint>MM/DD/YYYY</mat-hint>
+                      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                      <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+              
+                    <mat-form-field appearance="outline" class="control">
+                      <mat-icon matSuffix>person_add</mat-icon>
+                      <mat-label>Cliente / Contacto</mat-label>
+                      <input matInput [matAutocomplete]="auto" (input)="searchContacto($event)">
+                      <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="selectContacto($event)">
+                        <mat-option *ngFor="let contacto of dataListContactos" [value]="contacto">
+                          {{ contacto.nombreRazonSocial }}
+                        </mat-option>
+                      </mat-autocomplete>
+                    </mat-form-field>
+              
+                    <div class="controlespago">
+                      <mat-form-field appearance="outline">
+                        <mat-label>Método de pago</mat-label>
+                        <mat-select formControlName="idMetodoPago">
+                          <mat-option (click)="selectMetodo(metodo)" *ngFor="let metodo of dataListMetodoPago" [value]="metodo.idMetodoPago">
+                            {{ metodo.nombre }}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                      &nbsp;
+                      <mat-form-field appearance="outline">
+                        <mat-label>Banco</mat-label>
+                        <mat-select formControlName="idBanco">
+                          <mat-option *ngFor="let tipo of dataListBanco" [value]="tipo.idBanco">
+                            {{ tipo.nombreCuenta }}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                      &nbsp;
+                      <mat-form-field class="example-full-width" appearance="outline">
+                        <mat-label>No. Ticket</mat-label>
+                        <input matInput placeholder="No.Ticket" formControlName="noTicket">
+                      </mat-form-field>
+                    </div>
+                  </mat-card>
+                  <mat-card appearance="outlined">
+                    <mat-form-field class="fullwidth" appearance="outline">
+                      <mat-label>Nota del pago</mat-label>
+                      <textarea matInput formControlName="notaPago" rows="8"></textarea>
+                    </mat-form-field>
+                  </mat-card>
+                </mat-card>
+              </form>
+
+            <br>
+            <mat-card appearance="outlined">
+                <div class="bodypagos">
+                    <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+                        <mat-tab label="FACTURAS PENDIENTES/ COTIZACIONES">
+
+                            <div *ngIf="dataListFacturasPendientes.length<1"
+                                style="width: 100%; height: 150px; color: rgb(146, 146, 146);  display: grid; place-items: center; ">
+                                <div
+                                    style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
+                                    <mat-icon style="font-size: 40px; width: 60px; height: auto;">summarize</mat-icon>
+                                    <br>
+                                    {{msjTablePagos}}
+                                </div>
+
+                            </div>
+
+                            <table *ngIf="dataListFacturasPendientes.length>0"
+                                class="table table-hover table-striped control" style="margin-top:  10px;">
+                                <thead class="con">
+                                    <tr>
+                                        <th scope="col">Item</th>
+                                        <th scope="col" class="d-lg-block d-md-block d-sm-none d-xs-none">NO</th>
+                                        <th scope="col">Tipo Documento</th>
+                                        <th scope="col">Total</th>
+                                        <th scope="col">Cobrado</th>
+                                        <th scope="col">Por cobrar</th>
+                                        <th scope="col">Valor recibido</th>
+
+
+                                        <!-- <th class="cargandoTableIcono">
+                                            <div *ngIf="cargando" class="loaderTable"></div>
+                                        </th>    -->
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let factura of dataListFacturasPendientes let i = index"
+                                        class="filaBody" >
+
+                                        <td>
+                                            <div>{{i +1}}</div>
+                                        </td>
+                                        <td>
+                                            <div>{{factura.numeracion}}</div>
+                                        </td>
+                                        <td>
+                                            <div>{{factura.tipoDocumentoObj.nombre}}</div>
+                                        </td>
+                                        <td>
+                                            <div>{{moneda}}{{factura.totalGeneral | number:'1.2-2'}}</div>
+                                        </td>
+                                        <td style="color: green;">
+                                            <div>{{moneda}}{{factura.montoPagado| number:'1.2-2'}}</div>
+                                        </td>
+                                        <td [style.color]="factura.estadoFactura.color">
+                                            <div>{{moneda}}{{factura.montoPorPagar| number:'1.2-2'}}</div>
+                                        </td>
+                                        <td (click)="getIndex(i)">
+                                            <input type="number" style="border-radius: 5px;"
+                                                (keyup)="SumarMontoTotalPagado($event)" >
+                                        </td>
+
+                                        <!-- <td>
+                                            <button matTooltip="Eliminar pago" class="btnaccion" (click)="deletPago(pago.idPago!)"
+                                            data-target="#exampleModal"><mat-icon class="btnEliminar" data-toggle="modal">delete</mat-icon></button>
+                                        </td> -->
+
+
+                                    </tr>
+
+                                </tbody>
+                            </table>
+
+
+                        </mat-tab>
+                        <!-- <mat-tab label="Contabilidad"> Content 2 </mat-tab> -->
+                    </mat-tab-group>
+                </div>
+            </mat-card>
+        </div>
+
+
+        <div *ngIf="dataListFacturasPendientes.length>0" style="display: flex; justify-content: center; align-items: center; flex-direction: column;">    
+           <div style="display: flex;">
+            <div  class="estyletotal mt-3"> Monto total de la deuda {{moneda}}{{montoDeudor |  number : '1.2-5' }}</div>
+            <div  class="estyletotal mt-3"> Total Cobrado {{moneda}}{{montoResult |  number : '1.2-5' }}</div>
+           </div>
+            
+
+            <div class="example-button-container mt-3">
+                <button class="btnGuardar">Guardar</button>
+            </div>
+        </div>
+
+    </div>

@@ -18,6 +18,8 @@ import { BancosComponent } from "./components/bancos/bancos.component";
 import { PagoFacturaComponent } from "./components/factura/pago-factura/pago-factura.component";
 import { DetalleFacturaComponent } from "./components/factura/detalle-factura/detalle-factura.component";
 import { FacturaReportComponent } from "../../reports/factura-report/factura-report.component";
+import { PagosComponent } from "./components/pagos/pagos.component";
+import { AddpagoComponent } from "./components/pagos/addpago/addpago.component";
 
 
 
@@ -34,10 +36,15 @@ export const routes : Routes=[
         {path : 'marcas', component : MarcasComponent},
         {path : 'modelos', component : ModelosComponent},
         {path : 'factura', component : FacturaComponent},
+        {path : 'cotizacion', component : FacturaComponent},
         {path : 'facturas', component : ListFacturasComponent},
+        {path : 'cotizaciones', component : ListFacturasComponent},
         {path : 'detalle_factura/:id', component : DetalleFacturaComponent},
+        {path : 'detalle_cotizacion/:id', component : DetalleFacturaComponent},
         {path : 'factura_report/:id', component : FacturaReportComponent},
         {path : 'pago', component : PagoFacturaComponent},
+        {path : 'pagos/addpago', component : AddpagoComponent},
+        {path : 'pagos', component : PagosComponent},
         {path : 'bancos', component : BancosComponent},
         {path : '', component : InicioComponent},
       

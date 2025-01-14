@@ -9,6 +9,7 @@ import { UsuarioService } from './services/usuario.service';
 import { json } from 'stream/consumers';
 import { log } from 'console';
 import { InformationService } from './services/information.service';
+import { FacturaService } from './services/factura.service';
 
 
 @Component({
@@ -39,7 +40,8 @@ export class AppComponent {
     if (typeof document !== 'undefined') {
      usuario.usuarioLogueado = JSON.parse(document.defaultView?.localStorage.getItem('user')!);
      information.idEmpresa =  usuario.usuarioLogueado.data.sucursal.idEmpresa;
-
+     information.idSucursal = usuario.usuarioLogueado.data.sucursal.idSucursal;
+     information.tipoDocumento  = localStorage.getItem('tipoDocumento')!;
   }
  
   }

@@ -1,10 +1,10 @@
-<form action="" [formGroup]="miFormulario" (ngSubmit)="guardarFactura()">
+<form action="" [formGroup]="miFormulario" >
     <div class="containerInter">
         <div class="titulo">
             <div class="containerIcoText">
-                <mat-icon>person</mat-icon> Agregar nueva factura
+                <mat-icon>person</mat-icon> Agregar nueva {{document}}
             </div>
-            <a [routerLink]="['/layout/facturas']">
+            <a (click)="retroceder()">
                 <div class="containerIcoText"><mat-icon>arrow_back</mat-icon>Retroceder</div>
             </a>
         </div>
@@ -316,10 +316,10 @@
                 <div style="display: flex; justify-content: space-between;">
                     <div></div>
                     <div style=" display:  flex;">
-                        <input *ngIf="btnPagar==9" [ngClass]="{'disabledbtn': dataListDetalleFactura.length === 0, 'inactivo': dataListDetalleFactura.length>0}"  class="btnGuardar" type="button" value="Guardar y pagar" data-toggle="modal"
+                        <input *ngIf="btnPagar==9 && document!=='Cotización'" [ngClass]="{'disabledbtn': dataListDetalleFactura.length === 0, 'inactivo': dataListDetalleFactura.length>0}"  class="btnGuardar" type="button" value="Guardar y pagar" data-toggle="modal"
                             data-target="#exampleModal">
                         &nbsp;
-                        <input [ngClass]="{'disabledbtn': dataListDetalleFactura.length === 0, 'inactivo': dataListDetalleFactura.length>0}"  class="btnGuardar" type="submit" value=" + Guardar">
+                        <input (click)="guardarFactura()" [ngClass]="{'disabledbtn': dataListDetalleFactura.length === 0, 'inactivo': dataListDetalleFactura.length>0}"  class="btnGuardar" type="submit" value=" + Guardar ">
                     </div>
 
                 </div>
@@ -427,7 +427,7 @@
                                             <input class="btnGuardar" data-dismiss="modal" type="button" value="CANCELAR" data-toggle="modal" (click)="resetFormPago()"
                                                 data-target="#exampleModal">
                                             &nbsp;
-                                            <input *ngIf="metodoPagoSeleccionado!=''" class="btnGuardar" type="submit" value="APLICAR PAGO" >
+                                            <input *ngIf="metodoPagoSeleccionado!=''" class="btnGuardar" type="submit" value="APLICAR PAGO" (click)="guardarFactura()" >
                                         </div>
                                     </div>
                                   </form>

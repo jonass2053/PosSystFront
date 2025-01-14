@@ -21,6 +21,10 @@ import {MatDividerModule} from '@angular/material/divider';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {NgxPrintModule} from 'ngx-print';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
+import {MatChipsModule} from '@angular/material/chips'
+
 
 
 
@@ -77,7 +81,8 @@ export const  importaciones : any =[
   MatDividerModule,
   MatTabsModule,
   MatPaginatorModule,
-  NgxPrintModule
+  NgxPrintModule,
+  MatCardModule, MatChipsModule, MatProgressBarModule
 
 
 ]

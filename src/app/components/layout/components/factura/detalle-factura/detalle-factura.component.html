@@ -3,19 +3,18 @@
 
     <div class="titulo">
         <div class="containerIcoText">
-            <mat-icon>description</mat-icon> Factura de venta NCF FACT5
+            <mat-icon>description</mat-icon> {{factura.numeracionObj.nombre.toUpperCase()}} {{factura.numeracion.toUpperCase()}}
         </div>
-        <a [routerLink]="['/layout/facturas']">
+        <a (click)="retroceder()">
             <div class="containerIcoText"><mat-icon>arrow_back</mat-icon>Retroceder</div>
         </a>
-    </div>
-
+    </div> 
     <div class="btnheader">
         <section>
             <div class="example-button-row">
-                <button mat-stroked-button><mat-icon>edit</mat-icon>Editar</button>
+                <button *ngIf="factura.montoPagado==0" (click)="editar(factura)" mat-stroked-button><mat-icon>edit</mat-icon>Editar</button>
                 <button mat-stroked-button (click)="printFactura(factura)"><mat-icon>print</mat-icon> Imprimir</button>
-                <button mat-stroked-button><mat-icon>share</mat-icon> Compartir</button>
+                <!-- <button mat-stroked-button><mat-icon>share</mat-icon> Compartir</button> -->
             </div>
         </section>
     </div>
@@ -254,7 +253,7 @@
 
 
             </mat-tab>
-            <mat-tab label="Contabilidad"> Content 2 </mat-tab>
+            <!-- <mat-tab label="Contabilidad"> Content 2 </mat-tab> -->
         </mat-tab-group>
     </div>
 

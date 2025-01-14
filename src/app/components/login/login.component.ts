@@ -48,6 +48,7 @@ export class LoginComponent {
             this.alerta = false;
             this.usuario.usuarioLogueado = data;  
             this.information.idEmpresa =data.data.sucursal.idEmpresa; 
+            this.information.idSucursal = data.data.sucursal.idSucursal;
             localStorage.setItem('user', JSON.stringify(data))
             document.defaultView?.localStorage.setItem('token', JSON.stringify(data.token))
             this.routess.navigate(['/layout'])

@@ -95,12 +95,13 @@
   }
   
   .cards .card p.tip {
-    font-size: 1em;
-    font-weight: 700;
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 5px;
   }
   
   .cards .card p.second-text {
-    font-size: 2em;
+    font-size: 1.5rem;
   }
   
   .cards .card:hover {
@@ -953,4 +954,9 @@ video {
   body {
     -webkit-print-color-adjust: exact;
   }
+}
+
+.example-button-row button
+{
+  padding: 10px;
 }

@@ -12,6 +12,7 @@ export class InformationService {
   }
   idEmpresa: number=0;
   idSucursal : number=0;
+  tipoDocumento : string="";
 
 
 

@@ -93,14 +93,14 @@ export class PagoFacturaComponent {
         this.miFormulario.patchValue({idBanco : this.dataListBanco.find(c=>c.nombreCuenta.toUpperCase().includes("CAJA"))?.idBanco}) 
     else
      this.miFormulario.patchValue({idBanco : ""}) 
-
   }
 
   insert(){
+    this.alertas.ShowLoading();
       this.pagoService.insert(this.miFormulario.value).subscribe((result : ServiceResponse)=>{
         if(result.statusCode==200){
-          this.closeDialog();
           this.alertas.successAlert(result.message);
+          this.closeDialog();
         }
         else
           this.alertas.errorAlert(result.message)});

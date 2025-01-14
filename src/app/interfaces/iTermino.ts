@@ -262,6 +262,7 @@ export interface iMoneda
     montoPagado :  number,
     montoPorPagar : number,
     estadoFactura : {idDetalleFactura : number, nombre : string, color : string},
+    tipoDocumentoObj : iTipoDocumento
     detalle: iDetalleFactura[];
   }
   
@@ -310,11 +311,13 @@ export interface iMoneda
     idPago?: number;
     idContacto: number;
     idBanco: number;
+    bancoObj : iBanco,
     idMetodoPago: number;
     metodoPagoObj  : iMetodoPago,
     monto: number;
     notaPago: string;
     idFactura: number;
+    facturaObj : iFactura
     noTicket: string;
     fecha : string;
     

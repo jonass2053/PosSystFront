@@ -713,3 +713,7 @@ video {
     -webkit-print-color-adjust: exact;
   }
 }
+.nameEmpresa
+{
+  font-size: medium;
+}
