@@ -4,7 +4,7 @@ import { baseUrl } from '../../enviroment/enviroment.';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { AlertServiceService } from '../components/utilities/alert-service.service';
 import { catchError, Observable, throwError } from 'rxjs';
-import { iFactura } from '../interfaces/iTermino';
+import { iFactura, iPago } from '../interfaces/iTermino';
 import { UsuarioService } from './usuario.service';
 import { error } from 'console';
 
@@ -27,6 +27,7 @@ export class PagosService {
   }
 
   facturaPagar!: iFactura;
+  pagoForEdit! : iPago;
   insert(formulario: any): Observable<ServiceResponse> {
     return this.http.post<ServiceResponse>(`${this.url}`, formulario, this.header).pipe(
       catchError(this.handleError)

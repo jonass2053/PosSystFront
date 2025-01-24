@@ -38,4 +38,19 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
+
+}
+
+.tarjetaMonto{
+  text-align: center;
+  background-color: rgb(235, 235, 235);
+  border-color: green;
+  font-size: 15px;
+}
+.monto
+{
+  color: white;
+  background-color: green;
+  width: 100%;
+  padding: 2px;
 }

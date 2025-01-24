@@ -320,6 +320,11 @@ export interface iMoneda
     facturaObj : iFactura
     noTicket: string;
     fecha : string;
+    MultiPayment : {
+        IdPago : number,
+        IdFactura : number,
+        Monto : number
+    }
     
   }
   

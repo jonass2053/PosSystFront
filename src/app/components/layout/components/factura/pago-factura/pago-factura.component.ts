@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { importaciones, material } from '../../../../utilities/material/material';
 import { BancosService } from '../../../../../services/bancos.service';
-import { iBanco, iMetodoPago, iMoneda } from '../../../../../interfaces/iTermino';
+import { iBanco, iMetodoPago, iMoneda, iPago } from '../../../../../interfaces/iTermino';
 import { ServiceResponse } from '../../../../../interfaces/service-response-login';
 import { UsuarioService } from '../../../../../services/usuario.service';
 import { FacturaService } from '../../../../../services/factura.service';
@@ -46,8 +46,7 @@ export class PagoFacturaComponent {
     if (this.usuarioService.usuarioLogueado != undefined) {
       this.moneda = this.usuarioService.usuarioLogueado.data.sucursal.empresa.moneda;
     }
-      if(this.pagoService.facturaPagar!=null)
-        {
+      if(this.pagoService.facturaPagar!=null){
             this.nombreCliente = this.pagoService.facturaPagar.contacto.nombreRazonSocial;
             this.noFactura = this.pagoService.facturaPagar.numeracion;
             this.montoPorPagar = this.pagoService.facturaPagar.montoPorPagar;
@@ -55,11 +54,25 @@ export class PagoFacturaComponent {
               idFactura : this.pagoService.facturaPagar.idFactura, 
               idContacto : this.pagoService.facturaPagar.idContacto,
               monto : this.pagoService.facturaPagar.montoPorPagar
-             })
+             });
+
+             if(this.pagoService.pagoForEdit.idPago!==0){
+              this.miFormulario.patchValue({
+                idPago : this.pagoService.pagoForEdit.idPago,
+                idFactura : this.pagoService.facturaPagar.idFactura, 
+                idContacto : this.pagoService.facturaPagar.idContacto,
+                idMetodoPago :  this.pagoService.pagoForEdit.idMetodoPago,
+                idBanco: this.pagoService.pagoForEdit.idBanco,
+                monto : this.pagoService.pagoForEdit.monto,
+                notaPago :  this.pagoService.pagoForEdit.notaPago,
+                noTicket :  this.pagoService.pagoForEdit.noTicket,
+               });
+             }
         }
       this.getBancos();
       this.getMetodoPago();
   }
+
   miFormulario : FormGroup = this.fb.group({
     idPago : this.fb.control(null),
     idFactura : this.fb.control(null),
@@ -69,8 +82,8 @@ export class PagoFacturaComponent {
     monto : this.fb.control(0, Validators.required),
     notaPago:this.fb.control(''),
     noTicket : this.fb.control('')
-
   })
+
   noFactura : string ='';
   nombreCliente : string='';
   montoPorPagar : number=0;

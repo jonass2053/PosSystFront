@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { importaciones } from '../../../utilities/material/material';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AlertServiceService } from '../../../utilities/alert-service.service';
 import { MsjService } from '../../../utilities/msj.service';
 import { ProductoService } from '../../../../services/producto.service';
-import { iProducto, iContactoPos, iTermino, iVendedor, idNumeracion, idTipoContacto, iUnidades, iCuentas, iiMpuesto, iAlmacen, iCategoria, iMarca, iModelo, iImpuestoProductoCodigo, iMoneda, iPago } from '../../../../interfaces/iTermino';
+import { iProducto, iContactoPos, iTermino, iVendedor, idNumeracion, idTipoContacto, iUnidades, iCuentas, iiMpuesto, iAlmacen, iCategoria, iMarca, iModelo, iImpuestoProductoCodigo, iMoneda, iPago, iFactura } from '../../../../interfaces/iTermino';
 import { ThemePalette, provideNativeDateAdapter } from '@angular/material/core';
 import { ServiceResponse } from '../../../../interfaces/service-response-login';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -21,6 +21,9 @@ import { ModelosService } from '../../../../services/modelos.service';
 import { blob, json } from 'stream/consumers';
 import { InformationService } from '../../../../services/information.service';
 import { PagosService } from '../../../../services/pagos.service';
+import { MatDialog } from '@angular/material/dialog';
+import { PagoFacturaComponent } from '../factura/pago-factura/pago-factura.component';
+import { FacturaService } from '../../../../services/factura.service';
 @Component({
   selector: 'app-pagos',
   standalone: true,
@@ -41,14 +44,15 @@ export class PagosComponent {
     private usuarioService: UsuarioService,
     private marcaService: MarcasService,
     private modeloService: ModelosService,
-    private informationService : InformationService
+    private informationService : InformationService,
+    private facturaService : FacturaService
 
   ){
 
     this.getAll();
     this.moneda = this.usuarioService.usuarioLogueado.data.sucursal.empresa.moneda;
   }
-
+ dialog = inject(MatDialog);
   moneda! : iMoneda;
   cargando  : boolean = false;
   sinRegistros : boolean = false;
@@ -74,26 +78,30 @@ export class PagosComponent {
 
 
   }
-  editar(pago: iPago) {
-    
-  }
+
 
 
   getAll() {
-    this.showLoading();
+    this.alertaService.ShowLoading();
     this.pagoService.getAll(this.informationService.idSucursal).subscribe((data : ServiceResponse)=>{
       this.dataList = data.data;
-      this.showLoading();
-    
-    })
-  }
-  
- 
-
-
+      this.alertaService.hideLoading();
+    })}
 
   
+   edit(pago: iPago){
+      this.pagoService.facturaPagar = pago.facturaObj;
+      this.pagoService.pagoForEdit = pago;
+      var ref = this.dialog.open(PagoFacturaComponent, { hasBackdrop: true })
+      ref.beforeClosed().subscribe(c => {
+        this.getAll();
+        this.pagoService.pagoForEdit.idPago=0;
+      })}
+     
+       
+      
  
+
   getAllFilter(event: any) {
     const filtro = (event.target as HTMLInputElement).value;
     if (filtro == "") {
@@ -114,7 +122,7 @@ export class PagosComponent {
 
 
 showLoading(){
-  this.cargando = this.cargando===true? false : true
+  this.cargando = this.cargando===true? false : true;
 }
  
 

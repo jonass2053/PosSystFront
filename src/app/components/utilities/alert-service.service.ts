@@ -53,6 +53,14 @@ hideLoading = ()=>{
     });
   }
 
+  camposVacios()
+  {
+    Swal.fire({
+      text: "Debe completar todos los campos requeridos*",
+      icon: "warning"
+    });
+  }
+
   async questionDelete()
   {
     let value;

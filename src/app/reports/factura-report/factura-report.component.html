@@ -60,6 +60,7 @@
               
                 <tbody *ngIf="facturaForPrint!==undefined">
                  <tr *ngFor="let detail of facturaForPrint.detalle">
+                    
                     <td>{{detail.idDetalleFactura }}</td>
                     <td class="itemDescription">{{detail.producto.nombre}}</td>
                     <td>{{detail.cantidad}}</td>
@@ -67,7 +68,8 @@
                     <td>{{moneda.simbolo}}{{detail.descuento | number : "1.2-5"}}</td>
                     <td>{{moneda.simbolo}}{{detail.impuestos | number : "1.2-5"}}</td>
                     <td class="textright">{{moneda.simbolo}}{{detail.subTotal | number : "1.2-5"}}</td>
-                </tr>
+                </tr> 
+              
                 
                 </tbody>
               </table>

@@ -1,5 +1,5 @@
-<div class="containerConfiguraciones">
-
+<div class="">
+  <form [formGroup]="miFormulario" (ngSubmit)="createMultyPayment()" >
     <div class="containerInter">
         <div class="titulo">
             <div class="containerIcoText">
@@ -11,9 +11,21 @@
             </a>
         </div>
         <div class="contenedores">
-            <form [formGroup]="miFormulario">
+         
                 <mat-card appearance="outlined" class="cardOne">
                   <mat-card appearance="outlined">
+                    
+                    <mat-form-field appearance="outline" class="control">
+                      <mat-icon matSuffix>person_add</mat-icon>
+                      <mat-label>Cliente / Contacto</mat-label>
+                      <input matInput formControlName="nombreClienteCompleto" [matAutocomplete]="auto" (input)="searchContacto($event)">
+                      <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="selectContacto($event)">
+                        <mat-option *ngFor="let contacto of dataListContactos" [value]="contacto">
+                          {{ contacto.nombreRazonSocial }}
+                        </mat-option>
+                      </mat-autocomplete>
+                    </mat-form-field>
+                    
                     <mat-form-field appearance="outline">
                       <mat-label>Fecha</mat-label>
                       <input matInput [matDatepicker]="picker" formControlName="fecha">
@@ -22,16 +34,7 @@
                       <mat-datepicker #picker></mat-datepicker>
                     </mat-form-field>
               
-                    <mat-form-field appearance="outline" class="control">
-                      <mat-icon matSuffix>person_add</mat-icon>
-                      <mat-label>Cliente / Contacto</mat-label>
-                      <input matInput [matAutocomplete]="auto" (input)="searchContacto($event)">
-                      <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="selectContacto($event)">
-                        <mat-option *ngFor="let contacto of dataListContactos" [value]="contacto">
-                          {{ contacto.nombreRazonSocial }}
-                        </mat-option>
-                      </mat-autocomplete>
-                    </mat-form-field>
+                   
               
                     <div class="controlespago">
                       <mat-form-field appearance="outline">
@@ -65,8 +68,7 @@
                     </mat-form-field>
                   </mat-card>
                 </mat-card>
-              </form>
-
+           
             <br>
             <mat-card appearance="outlined">
                 <div class="bodypagos">
@@ -105,6 +107,7 @@
                                 <tbody>
                                     <tr *ngFor="let factura of dataListFacturasPendientes let i = index"
                                         class="filaBody" >
+                                        
 
                                         <td>
                                             <div>{{i +1}}</div>
@@ -124,9 +127,9 @@
                                         <td [style.color]="factura.estadoFactura.color">
                                             <div>{{moneda}}{{factura.montoPorPagar| number:'1.2-2'}}</div>
                                         </td>
-                                        <td (click)="getIndex(i)">
-                                            <input type="number" style="border-radius: 5px;"
-                                                (keyup)="SumarMontoTotalPagado($event)" >
+                                        <td>
+                                            <input (focus)="getIndex(i)" type="number" style="border-radius: 5px;"
+                                                (keyup)="SumarMontoTotalPagado($event)">
                                         </td>
 
                                         <!-- <td>
@@ -149,16 +152,19 @@
         </div>
 
 
-        <div *ngIf="dataListFacturasPendientes.length>0" style="display: flex; justify-content: center; align-items: center; flex-direction: column;">    
+        <div *ngIf="dataListFacturasPendientes.length>0" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; flex-direction: row;  width: 100%;">    
            <div style="display: flex;">
-            <div  class="estyletotal mt-3"> Monto total de la deuda {{moneda}}{{montoDeudor |  number : '1.2-5' }}</div>
-            <div  class="estyletotal mt-3"> Total Cobrado {{moneda}}{{montoResult |  number : '1.2-5' }}</div>
+            <div  class="estyletotal mt-3 tarjetaMonto"> Monto total de la deuda <div class="monto"> {{moneda}}{{montoDeudor |  number : '1.2-5' }}</div></div>
+            <div  class="estyletotal mt-3 tarjetaMonto"> Total Cobrado <div class="monto">{{moneda}}{{montoResult |  number : '1.2-5' }}</div> </div>
+            <div  class="estyletotal mt-3 tarjetaMonto"> Monto pendinte <div class="monto">{{moneda}}{{montoPendiente |  number : '1.2-5' }}</div> </div>
            </div>
             
 
             <div class="example-button-container mt-3">
-                <button class="btnGuardar">Guardar</button>
+                <!-- <button class="btnGuardar">Guardar</button> -->
+                <input type="submit" value="Guardar" class="btnGuardar">
             </div>
         </div>
 
-    </div>
+    </div>   
+  </form>
